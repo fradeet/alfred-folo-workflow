@@ -5,8 +5,10 @@ import { extname, join } from "node:path";
 import { isRecord } from "./folo-cli.js";
 
 const DEFAULT_MAX_AGE = 7 * 24 * 60 * 60 * 1_000;
+const FOLO_ICON_MAX_AGE = 30 * 24 * 60 * 60 * 1_000;
 const FAILURE_MAX_AGE = 60 * 60 * 1_000;
 const MAX_ICON_BYTES = 5 * 1_024 * 1_024;
+const REQUEST_TIMEOUT = 5_000;
 
 export interface IconCacheOptions {
   cacheDirectory?: string;
@@ -65,7 +67,8 @@ export async function cacheIcons(
   await mkdir(directory, { recursive: true });
 
   await mapWithConcurrency([...icons], 6, async ([key, url]) => {
-    const path = await cachedIcon(key, url, directory, fetcher, options.maxAge ?? DEFAULT_MAX_AGE, now);
+    const maxAge = options.maxAge ?? iconMaxAge(url);
+    const path = await cachedIcon(key, url, directory, fetcher, maxAge, now);
     if (path) paths.set(key, path);
   });
 
@@ -116,7 +119,7 @@ async function cachedIcon(
   if (await isFresh(failurePath, FAILURE_MAX_AGE, now)) return existing?.path;
 
   try {
-    const response = await fetcher(url, { signal: AbortSignal.timeout(3_000) });
+    const response = await fetcher(url, { signal: AbortSignal.timeout(REQUEST_TIMEOUT) });
     const contentType = response.headers.get("content-type")?.split(";", 1)[0]?.trim().toLowerCase();
     if (!response.ok || !contentType?.startsWith("image/")) throw new Error(`Invalid icon response: ${response.status}`);
 
@@ -173,6 +176,10 @@ function fileKey(value: string): string {
   return /^[a-zA-Z0-9_-]{1,200}$/.test(value)
     ? value
     : createHash("sha256").update(value).digest("hex");
+}
+
+function iconMaxAge(url: string): number {
+  return new URL(url).hostname === "icons.folo.is" ? FOLO_ICON_MAX_AGE : DEFAULT_MAX_AGE;
 }
 
 function imageExtension(contentType: string, url: string): string {

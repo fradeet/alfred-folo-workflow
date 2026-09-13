@@ -7,7 +7,7 @@
 	<key>hidelabels</key>
 	<false/>
 	<key>iconid</key>
-	<string>2D0B208E-9E02-432E-BCEC-F31222DF7D49</string>
+	<string>18F56F80-4800-449E-9E01-76519E3FC70D</string>
 	<key>iconisuserspecified</key>
 	<false/>
 	<key>items</key>
@@ -29,7 +29,23 @@
 			<key>itemuid</key>
 			<string>D28493FB-13A9-492B-925F-FEC656B04E48</string>
 		</dict>
-		<dict/>
+		<dict>
+			<key>actionconfig</key>
+			<dict>
+				<key>autoworkflowuid</key>
+				<true/>
+				<key>triggerid</key>
+				<string>folo-subscribed-unread-lists</string>
+			</dict>
+			<key>actionuid</key>
+			<string>remote.alfred.runworkflow</string>
+			<key>buttoniconid</key>
+			<string>ACFA11A1-6CBF-445E-9272-7FD78C04180A</string>
+			<key>buttonlabel</key>
+			<string>Unread Sub</string>
+			<key>itemuid</key>
+			<string>5F6C1459-A64E-4B47-B671-278A01215185</string>
+		</dict>
 		<dict/>
 		<dict/>
 		<dict/>
@@ -64,7 +80,23 @@
 			<key>itemuid</key>
 			<string>D28493FB-13A9-492B-925F-FEC656B04E48</string>
 		</dict>
-		<dict/>
+		<dict>
+			<key>actionconfig</key>
+			<dict>
+				<key>autoworkflowuid</key>
+				<true/>
+				<key>triggerid</key>
+				<string>folo-subscribed-unread-lists</string>
+			</dict>
+			<key>actionuid</key>
+			<string>remote.alfred.runworkflow</string>
+			<key>buttoniconid</key>
+			<string>ACFA11A1-6CBF-445E-9272-7FD78C04180A</string>
+			<key>buttonlabel</key>
+			<string>Unread Sub</string>
+			<key>itemuid</key>
+			<string>5F6C1459-A64E-4B47-B671-278A01215185</string>
+		</dict>
 		<dict/>
 		<dict/>
 		<dict/>
