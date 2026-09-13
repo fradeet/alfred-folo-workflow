@@ -49,7 +49,7 @@ async function login(): Promise<void> {
   const token = readToken(await readFile(data.configPath, "utf8"));
   const whoami = runFolo(["--token", token, "whoami"], {}, FoloWhoamiResult.from);
   setWorkflowToken(token);
-  process.stdout.write(`登录成功：${displayName(whoami)}`);
+  process.stdout.write(`Login Success：${displayName(whoami)}`);
 }
 
 const entryPath = process.argv[1];
