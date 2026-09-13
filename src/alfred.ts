@@ -1,5 +1,6 @@
 import { isRecord } from "./folo-cli.js";
-import { AlfredSF, AlfredSFCache, AlfredSFItem, AlfredSFItemText } from "./alfred-types.js";
+import { AlfredSF, AlfredSFCache, AlfredSFItem, AlfredSFItemIcon, AlfredSFItemText } from "./alfred-types.js";
+import { IconResolver } from "./icon-cache.js";
 
 const stripMarkup = (value: unknown): string =>
   String(value ?? "")
@@ -19,7 +20,7 @@ const text = (value: unknown, fallback = ""): string => {
 const optionalString = (value: unknown): string | undefined =>
   typeof value === "string" && value ? value : undefined;
 
-export function timelineItems(data: unknown, query = ""): AlfredSFItem[] {
+export function timelineItems(data: unknown, query = "", iconFor?: IconResolver): AlfredSFItem[] {
   const entries = isRecord(data) && Array.isArray(data.entries) ? data.entries : [];
   const needle = query.trim().toLocaleLowerCase();
 
@@ -39,6 +40,7 @@ export function timelineItems(data: unknown, query = ""): AlfredSFItem[] {
     return new AlfredSFItem(title, {
       subtitle,
       arg: url,
+      icon: icon(feed, iconFor),
       uid: entryId,
       match: searchable,
       quicklookurl: url,
@@ -50,7 +52,7 @@ export function timelineItems(data: unknown, query = ""): AlfredSFItem[] {
   return needle ? items.filter((item) => item.match?.includes(needle)) : items;
 }
 
-export function subscriptionItems(data: unknown, query = ""): AlfredSFItem[] {
+export function subscriptionItems(data: unknown, query = "", iconFor?: IconResolver): AlfredSFItem[] {
   const subscriptions = isRecord(data) && Array.isArray(data.subscriptions) ? data.subscriptions : [];
   const needle = query.trim().toLocaleLowerCase();
 
@@ -84,6 +86,7 @@ export function subscriptionItems(data: unknown, query = ""): AlfredSFItem[] {
     return [new AlfredSFItem(title, {
       subtitle,
       arg: foloUrl,
+      icon: icon(target, iconFor),
       uid: `${kind.toLocaleLowerCase()}-${id}`,
       match: searchable,
       mods: originalUrl ? {
@@ -101,7 +104,7 @@ export function subscriptionItems(data: unknown, query = ""): AlfredSFItem[] {
   return needle ? items.filter((item) => item.match?.includes(needle)) : items;
 }
 
-export function unreadItems(data: unknown, query = ""): AlfredSFItem[] {
+export function unreadItems(data: unknown, query = "", iconFor?: IconResolver): AlfredSFItem[] {
   const unread = isRecord(data) && Array.isArray(data.items) ? data.items : [];
   const needle = query.trim().toLocaleLowerCase();
 
@@ -127,6 +130,7 @@ export function unreadItems(data: unknown, query = ""): AlfredSFItem[] {
     return [new AlfredSFItem(title, {
       subtitle,
       arg: foloUrl,
+      icon: icon(source, iconFor),
       uid: `unread-${sourceType}-${sourceId}`,
       match: searchable,
       variables: { FOLO_IS_UNREAD: "1" },
@@ -171,6 +175,11 @@ export function output(items: AlfredSFItem[], cacheSeconds?: number): void {
     skipknowledge: true,
   });
   process.stdout.write(JSON.stringify(response));
+}
+
+function icon(source: unknown, iconFor?: IconResolver): AlfredSFItemIcon | undefined {
+  const path = iconFor?.(source);
+  return path ? new AlfredSFItemIcon(path) : undefined;
 }
 
 function formatDate(value: unknown): string {

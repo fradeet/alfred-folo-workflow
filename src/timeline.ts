@@ -3,6 +3,7 @@ import { pathToFileURL } from "node:url";
 import { emptyItem, errorItem, output, timelineItems } from "./alfred.js";
 import { runFolo } from "./folo-cli.js";
 import { FoloTimelineResult } from "./folo-types.js";
+import { cacheIcons } from "./icon-cache.js";
 
 export interface TimelineInput {
   query: string;
@@ -38,7 +39,7 @@ export function timelineArguments(input: TimelineInput, limit: string, unreadOnl
   return args;
 }
 
-function main(): void {
+async function main(): Promise<void> {
   const arguments_ = process.argv.slice(2);
   const unreadOnly = arguments_.includes("--unread-only");
   const input = parseTimelineInput(arguments_.filter((value) => value !== "--unread-only").join(" "));
@@ -46,7 +47,9 @@ function main(): void {
   const args = timelineArguments(input, limit, unreadOnly);
 
   try {
-    const items = timelineItems(runFolo(args, {}, FoloTimelineResult.from), input.query);
+    const data = runFolo(args, {}, FoloTimelineResult.from);
+    const iconFor = await cacheIcons(data.entries.map((item) => item.feeds));
+    const items = timelineItems(data, input.query, iconFor);
     const emptySubtitle = unreadOnly
       ? "This subscription has no unread entries"
       : input.target
@@ -62,5 +65,5 @@ function main(): void {
 
 const entryPath = process.argv[1];
 if (entryPath && import.meta.url === pathToFileURL(entryPath).href) {
-  main();
+  void main();
 }

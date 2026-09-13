@@ -10,6 +10,10 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
 - `flogin` — open the browser, save the token through Alfred, and notify on successful login.
 - Subscription results use their Folo URL; hold Option to open a Feed's original site URL.
 - Timeline results expose their entry ID to downstream actions as `FOLO_ENTRY_ID`.
+- Feed and list icons use Folo's `image` field. Feeds without one fall back to
+  `icons.folo.is/<site-domain>` and are cached by feed/list ID in Alfred's
+  workflow cache. A cache miss in `funread` starts a non-blocking background
+  subscription sync so the current results appear immediately.
 
 The keywords, result limit, and token can be changed in Alfred's
 workflow configuration.

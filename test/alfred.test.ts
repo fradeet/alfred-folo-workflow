@@ -1,4 +1,7 @@
 import assert from "node:assert/strict";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
 import { errorItem, subscriptionItems, timelineItems, unreadItems } from "../src/alfred.js";
 import {
@@ -24,6 +27,61 @@ import {
 import { displayName, readToken, setWorkflowToken } from "../src/login.js";
 import { markRead } from "../src/mark-read.js";
 import { parseTimelineInput, timelineArguments } from "../src/timeline.js";
+import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/icon-cache.js";
+
+test("feedIconUrl prefers an official image and falls back to Folo's domain icon", () => {
+  assert.equal(feedIconUrl({
+    image: "https://cdn.example.com/icon.webp",
+    siteUrl: "https://www.example.com/posts",
+  }), "https://cdn.example.com/icon.webp");
+  assert.equal(feedIconUrl({ siteUrl: "https://bookfere.com/feed" }), "https://icons.folo.is/bookfere.com");
+  assert.equal(feedIconUrl({ url: "https://allenai.org/rss.xml" }), "https://icons.folo.is/allenai.org");
+  assert.equal(feedIconUrl({ image: "file:///tmp/icon.png" }), undefined);
+});
+
+test("feedIconCacheKey uses feed and list IDs instead of image URLs", () => {
+  assert.equal(feedIconCacheKey({ id: "feed-1", image: "https://cdn.example.com/one.png" }), "feed-1");
+  assert.equal(feedIconCacheKey({ sourceType: "feed", sourceId: "feed-2" }), "feed-2");
+  assert.equal(feedIconCacheKey({ sourceType: "list", sourceId: "list-1" }), "list-1");
+});
+
+test("cacheIcons downloads each icon once and reuses its local path", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "alfred-folo-icons-"));
+  let requests = 0;
+  const fetcher: typeof fetch = async () => {
+    requests += 1;
+    return new Response(new Uint8Array([137, 80, 78, 71]), {
+      headers: { "content-type": "image/png" },
+    });
+  };
+
+  try {
+    const source = { id: "feed-1", image: "https://cdn.example.com/icon" };
+    const first = await cacheIcons([source, source], { cacheDirectory: directory, fetcher });
+    const firstPath = first(source);
+    assert.ok(firstPath?.endsWith(".png"));
+    assert.deepEqual([...await readFile(firstPath!)], [137, 80, 78, 71]);
+
+    const changedSource = { id: "feed-1", image: "https://cdn.example.com/changed-icon" };
+    const second = await cacheIcons([changedSource], { cacheDirectory: directory, fetcher });
+    assert.equal(second(changedSource), firstPath);
+    assert.equal(requests, 1);
+
+    const unreadSource = { sourceType: "feed", sourceId: "feed-1" };
+    const cachedOnly = await loadCachedIcons([unreadSource], { cacheDirectory: directory });
+    assert.equal(cachedOnly(unreadSource), firstPath);
+
+    const unread = unreadItems({
+      items: [{ sourceType: "list", sourceId: "feed-1", title: "List", unreadCount: 1 }],
+    }, "", cachedOnly);
+    assert.equal(unread[0]?.icon?.path, firstPath);
+
+    const items = timelineItems({ entries: [{ entries: { title: "Post" }, feeds: source }] }, "", second);
+    assert.equal(items[0]?.icon?.path, firstPath);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
 
 test("subscriptionItems maps every subscription target and filters locally", () => {
   const data = {
