@@ -1,0 +1,15 @@
+{
+  "name": "alfred-folo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "An Alfred workflow for browsing and managing Folo feeds.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "install:workflow": "npm install --prefix workflow",
+    "test": "node --test workflow/test/*.test.js",
+    "check": "npm test && plutil -lint workflow/info.plist",
+    "package": "./workflow-packager"
+  }
+}

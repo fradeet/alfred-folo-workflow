@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.alfredworkflow
+.DS_Store
+workflow/.DS_Store
+workflow/.sync.ffs_db
+workflow/prefs.plist
