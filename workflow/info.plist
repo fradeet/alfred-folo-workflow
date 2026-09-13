@@ -90,7 +90,7 @@
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
-				<string>src/timeline.js</string>
+				<string>dist/timeline.js</string>
 				<key>subtext</key>
 				<string>Search recent entries</string>
 				<key>title</key>
@@ -140,7 +140,7 @@
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>src/login.js</string>
+				<string>dist/login.js</string>
 				<key>type</key>
 				<integer>8</integer>
 			</dict>

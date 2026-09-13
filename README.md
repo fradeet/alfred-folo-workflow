@@ -19,9 +19,11 @@ workflow configuration.
 
 ## Development setup
 
-Install all runtime dependencies, including the pinned Folo CLI:
+Install the TypeScript development tools and all runtime dependencies, including
+the pinned Folo CLI:
 
 ```bash
+npm install
 npm run install:workflow
 ```
 
@@ -41,6 +43,10 @@ Verify the project and build an importable workflow:
 npm run check
 npm run package
 ```
+
+`npm run build` compiles the TypeScript sources in `src/` to executable ESM
+files in `workflow/dist/`. The generated directory is not committed and is
+rebuilt automatically before packaging.
 
 Then open `Folo.alfredworkflow` to install it in Alfred.
 

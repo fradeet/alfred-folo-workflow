@@ -10,8 +10,12 @@ temporary_directory="$(mktemp -d "${TMPDIR:-/tmp}/alfred-folo.XXXXXX")"
 cleanup() { rm -rf "${temporary_directory}"; }
 trap cleanup EXIT
 
+npm --prefix "${project_directory}" run build
 ditto "${workflow_directory}" "${temporary_directory}/workflow"
 find "${temporary_directory}/workflow" -name '.DS_Store' -delete
+rm -rf \
+  "${temporary_directory}/workflow/prefs.plist" \
+  "${temporary_directory}/workflow/.sync.ffs_db"
 npm install --prefix "${temporary_directory}/workflow" --omit=dev --ignore-scripts --no-audit --no-fund
 DITTONORSRC=1 ditto -ck "${temporary_directory}/workflow" "${workflow_file}"
 echo "Created ${workflow_file}"

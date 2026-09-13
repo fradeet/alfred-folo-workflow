@@ -2,28 +2,29 @@
 import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
-import { runFolo } from "./folo-cli.js";
+import { isRecord, runFolo } from "./folo-cli.js";
+import { FoloLoginResult, FoloWhoamiResult } from "./folo-types.js";
 
 const workflowId = "com.fradeet.alfred-folo";
 
-export function readToken(configText) {
-  const config = JSON.parse(configText);
+export function readToken(configText: string): string {
+  const config = JSON.parse(configText) as unknown;
 
-  if (typeof config?.token !== "string" || !config.token.trim()) {
+  if (!isRecord(config) || typeof config.token !== "string" || !config.token.trim()) {
     throw new Error("Folo config does not contain a token.");
   }
 
   return config.token;
 }
 
-export function displayName(whoami) {
-  const user = whoami?.user ?? {};
+export function displayName(whoami: FoloWhoamiResult): string {
+  const user = whoami.user;
   return [user.name, user.handle, user.email, user.id]
-    .find((value) => typeof value === "string" && value.trim()) ?? "Folo user";
+    .find((value): value is string => typeof value === "string" && Boolean(value.trim())) ?? "Folo user";
 }
 
-export function setWorkflowToken(token) {
-  if (typeof token !== "string" || !token.trim()) {
+export function setWorkflowToken(token: string): void {
+  if (!token.trim()) {
     throw new Error("Folo token must not be empty.");
   }
 
@@ -42,21 +43,18 @@ end tell`;
   }
 }
 
-async function login() {
-  const data = runFolo(["login"], { timeout: 190_000 });
-
-  if (typeof data?.configPath !== "string" || !data.configPath.trim()) {
-    throw new Error("Folo login did not return a config path.");
-  }
+async function login(): Promise<void> {
+  const data = runFolo(["login"], { timeout: 190_000 }, FoloLoginResult.from);
 
   const token = readToken(await readFile(data.configPath, "utf8"));
-  const whoami = runFolo(["--token", token, "whoami"]);
+  const whoami = runFolo(["--token", token, "whoami"], {}, FoloWhoamiResult.from);
   setWorkflowToken(token);
   process.stdout.write(`登录成功：${displayName(whoami)}`);
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  login().catch((error) => {
+const entryPath = process.argv[1];
+if (entryPath && import.meta.url === pathToFileURL(entryPath).href) {
+  login().catch((error: unknown) => {
     console.error(error instanceof Error ? error.message : String(error));
     process.exitCode = 1;
   });

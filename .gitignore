@@ -1,5 +1,6 @@
 node_modules/
 dist/
+workflow/dist/
 *.alfredworkflow
 .DS_Store
 workflow/.DS_Store
