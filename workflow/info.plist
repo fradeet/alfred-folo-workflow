@@ -521,7 +521,7 @@
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>keyword</key>
-				<string>funread</string>
+				<string>{var:FOLO_UNREAD_KEYWORD}</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -588,7 +588,7 @@
 		<key>047B6A17-139C-42B0-9653-D90335C28209</key>
 		<dict>
 			<key>xpos</key>
-			<real>1045</real>
+			<real>1345</real>
 			<key>ypos</key>
 			<real>185</real>
 		</dict>
@@ -731,22 +731,22 @@
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>folo</string>
+				<string>funread</string>
 				<key>placeholder</key>
-				<string>folo</string>
+				<string>funread</string>
 				<key>required</key>
 				<true/>
 				<key>trim</key>
 				<true/>
 			</dict>
 			<key>description</key>
-			<string>Timeline keyword</string>
+			<string></string>
 			<key>label</key>
-			<string>Timeline Keyword</string>
+			<string>Unread Keyword</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>FOLO_KEYWORD</string>
+			<string>FOLO_UNREAD_KEYWORD</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -773,6 +773,27 @@
 			<key>config</key>
 			<dict>
 				<key>default</key>
+				<string>folo</string>
+				<key>placeholder</key>
+				<string>folo</string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Timeline keyword</string>
+			<key>label</key>
+			<string>Timeline Keyword</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>FOLO_KEYWORD</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
 				<string>30</string>
 				<key>placeholder</key>
 				<string>30</string>
@@ -792,7 +813,7 @@
 		</dict>
 	</array>
 	<key>version</key>
-	<string>0.3.2</string>
+	<string>0.3.3</string>
 	<key>webaddress</key>
 	<string></string>
 </dict>
