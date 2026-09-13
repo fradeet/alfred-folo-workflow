@@ -21,6 +21,29 @@
 				<false/>
 			</dict>
 		</array>
+		<key>528EBBE4-AC53-41B4-BE91-D87A4C9BFB74</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string>Browse subscription timeline</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>BB50A60F-23F2-4624-AE32-5036F1DBEC59</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Open original URL</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>8EB5D4EF-BC4F-46B0-93F4-9045C8885F8C</key>
 		<array>
 			<dict>
@@ -34,6 +57,8 @@
 				<false/>
 			</dict>
 		</array>
+		<key>BB50A60F-23F2-4624-AE32-5036F1DBEC59</key>
+		<array/>
 		<key>C1A3E00B-AB1B-40D0-A288-30D4B9443D65</key>
 		<array>
 			<dict>
@@ -51,83 +76,13 @@
 	<key>createdby</key>
 	<string>fradeet</string>
 	<key>description</key>
-	<string>Browse your Folo timeline from Alfred.</string>
+	<string>Browse your Folo timeline and subscriptions from Alfred.</string>
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
 	<string>Folo</string>
 	<key>objects</key>
 	<array>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>alfredfiltersresults</key>
-				<true/>
-				<key>alfredfiltersresultsmatchmode</key>
-				<integer>0</integer>
-				<key>argumenttreatemptyqueryasnil</key>
-				<true/>
-				<key>argumenttrimmode</key>
-				<integer>0</integer>
-				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>escaping</key>
-				<integer>0</integer>
-				<key>keyword</key>
-				<string>{var:FOLO_KEYWORD}</string>
-				<key>queuedelaycustom</key>
-				<integer>1</integer>
-				<key>queuedelayimmediatelyinitially</key>
-				<true/>
-				<key>queuedelaymode</key>
-				<integer>0</integer>
-				<key>queuemode</key>
-				<integer>1</integer>
-				<key>runningsubtext</key>
-				<string>Loading Folo timeline…</string>
-				<key>script</key>
-				<string></string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string>dist/timeline.js</string>
-				<key>subtext</key>
-				<string>Search recent entries</string>
-				<key>title</key>
-				<string>Folo Timeline</string>
-				<key>type</key>
-				<integer>8</integer>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
-			<key>uid</key>
-			<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
-			<key>version</key>
-			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>browser</key>
-				<string></string>
-				<key>skipqueryencode</key>
-				<false/>
-				<key>skipvarencode</key>
-				<false/>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string></string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
-			<key>uid</key>
-			<string>BB50A60F-23F2-4624-AE32-5036F1DBEC59</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
@@ -178,13 +133,18 @@
 				<key>argumenttype</key>
 				<integer>2</integer>
 				<key>keyword</key>
-				<string>{var:FOLO_LOGIN_KEYWORD}</string>
+				<string>flogin</string>
 				<key>subtext</key>
 				<string>Open the browser and authenticate with Folo</string>
 				<key>text</key>
 				<string>Folo Login</string>
 				<key>withspace</key>
 				<false/>
+			</dict>
+			<key>inboundconfig</key>
+			<dict>
+				<key>externalid</key>
+				<string>folo-login</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.keyword</string>
@@ -193,9 +153,136 @@
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Loading Folo timeline…</string>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>dist/timeline.js</string>
+				<key>subtext</key>
+				<string>Search recent entries</string>
+				<key>title</key>
+				<string>Folo Timeline</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>inboundconfig</key>
+			<dict>
+				<key>externalid</key>
+				<string>folo-timeline</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string></string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>BB50A60F-23F2-4624-AE32-5036F1DBEC59</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<true/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>{var:FOLO_LISTS_KEYWORD}</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Loading Folo subscriptions…</string>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>dist/subscriptions.js</string>
+				<key>subtext</key>
+				<string>Search all your subscriptions</string>
+				<key>title</key>
+				<string>Folo Subscriptions</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>inboundconfig</key>
+			<dict>
+				<key>externalid</key>
+				<string>folo-subscribed-lists</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>528EBBE4-AC53-41B4-BE91-D87A4C9BFB74</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
 	</array>
 	<key>readme</key>
-	<string>Use `flogin` to authenticate, then use `folo` to browse your timeline.</string>
+	<string>Use `flogin` to authenticate, `folo` to browse your timeline, and `flists` to browse all subscriptions.</string>
 	<key>uidata</key>
 	<dict>
 		<key>0A1506F8-7EB3-4938-90AE-509944E38B25</key>
@@ -203,35 +290,48 @@
 			<key>xpos</key>
 			<real>40</real>
 			<key>ypos</key>
+			<real>185</real>
+		</dict>
+		<key>528EBBE4-AC53-41B4-BE91-D87A4C9BFB74</key>
+		<dict>
+			<key>xpos</key>
 			<real>40</real>
+			<key>ypos</key>
+			<real>330</real>
 		</dict>
 		<key>63E2EF96-CB1A-4E6C-8062-D487A9BDDB9A</key>
 		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
 			<key>xpos</key>
-			<real>560</real>
+			<real>475</real>
 			<key>ypos</key>
-			<real>180</real>
+			<real>25</real>
 		</dict>
 		<key>8EB5D4EF-BC4F-46B0-93F4-9045C8885F8C</key>
 		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
 			<key>xpos</key>
 			<real>40</real>
 			<key>ypos</key>
-			<real>180</real>
+			<real>25</real>
 		</dict>
 		<key>BB50A60F-23F2-4624-AE32-5036F1DBEC59</key>
 		<dict>
 			<key>xpos</key>
-			<real>320</real>
+			<real>255</real>
 			<key>ypos</key>
-			<real>40</real>
+			<real>185</real>
 		</dict>
 		<key>C1A3E00B-AB1B-40D0-A288-30D4B9443D65</key>
 		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
 			<key>xpos</key>
-			<real>320</real>
+			<real>255</real>
 			<key>ypos</key>
-			<real>180</real>
+			<real>25</real>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
@@ -240,22 +340,22 @@
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>flogin</string>
+				<string></string>
 				<key>placeholder</key>
-				<string>flogin</string>
+				<string>Zexf......</string>
 				<key>required</key>
 				<true/>
 				<key>trim</key>
 				<true/>
 			</dict>
 			<key>description</key>
-			<string>Sign in with Folo CLI</string>
+			<string>Use 'flogin' to login to Folo, or manually input the user token.</string>
 			<key>label</key>
-			<string>Login Keyword</string>
+			<string>Folo Token</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>FOLO_LOGIN_KEYWORD</string>
+			<string>FOLO_TOKEN</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -282,22 +382,22 @@
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string></string>
+				<string>flists</string>
 				<key>placeholder</key>
-				<string>Managed by flogin</string>
+				<string>flists</string>
 				<key>required</key>
-				<false/>
+				<true/>
 				<key>trim</key>
 				<true/>
 			</dict>
 			<key>description</key>
-			<string>Set automatically after login</string>
+			<string>Subscription list keyword</string>
 			<key>label</key>
-			<string>Folo Token</string>
+			<string>Subscriptions Keyword</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>FOLO_TOKEN</string>
+			<string>FOLO_LISTS_KEYWORD</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -320,31 +420,10 @@
 			<key>variable</key>
 			<string>FOLO_LIMIT</string>
 		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>default</key>
-				<string></string>
-				<key>placeholder</key>
-				<string>articles, social, pictures…</string>
-				<key>required</key>
-				<false/>
-				<key>trim</key>
-				<true/>
-			</dict>
-			<key>description</key>
-			<string>Optional Folo view filter</string>
-			<key>label</key>
-			<string>Timeline View</string>
-			<key>type</key>
-			<string>textfield</string>
-			<key>variable</key>
-			<string>FOLO_VIEW</string>
-		</dict>
 	</array>
 	<key>version</key>
 	<string>0.1.0</string>
 	<key>webaddress</key>
-	<string>https://folo.is</string>
+	<string></string>
 </dict>
 </plist>

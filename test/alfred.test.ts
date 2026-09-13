@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { errorItem, timelineItems } from "../src/alfred.js";
+import { errorItem, subscriptionItems, timelineItems } from "../src/alfred.js";
 import {
   AlfredSF,
   AlfredSFCache,
@@ -15,11 +15,79 @@ import {
 import { FoloError, parseFoloEnvelope } from "../src/folo-cli.js";
 import {
   FoloLoginResult,
+  FoloSubscriptionsResult,
   FoloTimelineResult,
   FoloView,
   FoloWhoamiResult,
 } from "../src/folo-types.js";
 import { displayName, readToken, setWorkflowToken } from "../src/login.js";
+import { parseTimelineInput } from "../src/timeline.js";
+
+test("subscriptionItems maps every subscription target and filters locally", () => {
+  const data = {
+    subscriptions: [
+      {
+        listId: "list-1",
+        title: null,
+        category: "Tech",
+        lists: {
+          id: "list-1",
+          title: "Daily Reads",
+          description: "A useful bundle",
+          feedIds: ["feed-1", "feed-2"],
+        },
+      },
+      {
+        feedId: "feed-1",
+        feeds: { id: "feed-1", title: "Example Feed", siteUrl: "https://example.com" },
+      },
+      { feedId: "inbox-inbox-1", inboxId: "inbox-1", inboxes: { id: "inbox-1", title: "Newsletters" } },
+    ],
+  };
+
+  const items = subscriptionItems(data);
+  assert.equal(items.length, 2);
+  assert.equal(items[0]?.title, "Daily Reads");
+  assert.match(items[0]?.subtitle ?? "", /List.*Tech.*2 feeds.*useful bundle/);
+  assert.equal(items[0]?.arg, "https://app.folo.is/share/lists/list-1");
+  assert.equal(items[1]?.arg, "https://app.folo.is/share/feeds/feed-1");
+  assert.equal(items[1]?.mods?.alt?.arg, "https://example.com");
+  assert.equal(subscriptionItems(data, "useful").length, 1);
+  assert.equal(subscriptionItems(data, "missing").length, 0);
+});
+
+test("parseTimelineInput converts Folo share URLs into timeline filters", () => {
+  assert.deepEqual(parseTimelineInput("https://app.folo.is/share/feeds/41470869403557888"), {
+    query: "",
+    target: { type: "feed", id: "41470869403557888" },
+  });
+  assert.deepEqual(parseTimelineInput("https://app.folo.is/share/lists/162747179238521856?view=0"), {
+    query: "",
+    target: { type: "list", id: "162747179238521856" },
+  });
+  assert.deepEqual(parseTimelineInput("Alfred Blog"), { query: "Alfred Blog" });
+});
+
+test("FoloSubscriptionsResult keeps feed, list, and inbox subscriptions", () => {
+  const result = FoloSubscriptionsResult.from({
+    subscriptions: [
+      { feedId: "feed-1", feeds: { id: "feed-1" } },
+      { inboxId: "inbox-1", inboxes: { id: "inbox-1" } },
+      {
+        listId: "list-1",
+        category: "Tech",
+        lists: { id: "list-1", title: "Daily Reads", feedIds: ["feed-1"] },
+      },
+    ],
+  });
+
+  assert.equal(result.subscriptions.length, 3);
+  assert.equal(result.subscriptions[0]?.feeds?.id, "feed-1");
+  assert.equal(result.subscriptions[1]?.inboxes?.id, "inbox-1");
+  assert.equal(result.subscriptions[2]?.lists?.title, "Daily Reads");
+  assert.deepEqual(result.subscriptions[2]?.lists?.feedIds, ["feed-1"]);
+  assert.throws(() => FoloSubscriptionsResult.from({ subscriptions: "invalid" }), /subscriptions array/i);
+});
 
 test("timelineItems maps and filters Folo entry envelopes", () => {
   const data = {

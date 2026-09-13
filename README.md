@@ -4,11 +4,12 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
 
 ## Features
 
-- `folo [query]` — browse and locally filter the latest timeline entries.
+- `folo [query or Folo URL]` — browse the latest timeline entries, optionally filtered by a Feed/List URL.
+- `flists [query]` — list and locally filter Feed/List subscriptions; Inbox subscriptions are hidden.
 - `flogin` — open the browser, save the token through Alfred, and notify on successful login.
-- Opening a timeline result opens its URL.
+- Subscription results use their Folo URL; hold Option to open a Feed's original site URL.
 
-The keywords, result limit, Folo view, and token can be changed in Alfred's
+The keywords, result limit, and token can be changed in Alfred's
 workflow configuration.
 
 ## Requirements

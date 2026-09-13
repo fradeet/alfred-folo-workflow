@@ -145,6 +145,88 @@ export class FoloTimelineResult {
   }
 }
 
+/** List metadata attached to a list subscription. */
+export class FoloList {
+  readonly id?: string;
+  readonly title?: string | null;
+  readonly description?: string | null;
+  readonly image?: string | null;
+  readonly ownerUserId?: string | null;
+  readonly feedIds: string[];
+  readonly view?: FoloView;
+  readonly fee?: number;
+
+  constructor(value: unknown) {
+    const data = record(value);
+    this.id = string(data.id);
+    this.title = nullableString(data.title);
+    this.description = nullableString(data.description);
+    this.image = nullableString(data.image);
+    this.ownerUserId = nullableString(data.ownerUserId);
+    this.feedIds = array(data.feedIds).flatMap((item) => typeof item === "string" ? [item] : []);
+    this.view = view(data.view);
+    this.fee = number(data.fee);
+  }
+}
+
+/** Inbox metadata attached to an inbox subscription. */
+export class FoloInbox {
+  readonly id?: string;
+  readonly title?: string | null;
+
+  constructor(value: unknown) {
+    const data = record(value);
+    this.id = string(data.id);
+    this.title = nullableString(data.title);
+  }
+}
+
+/** A feed, list, or inbox subscription. */
+export class FoloSubscription {
+  readonly feedId?: string;
+  readonly listId?: string;
+  readonly inboxId?: string;
+  readonly title?: string | null;
+  readonly category?: string | null;
+  readonly view?: FoloView;
+  readonly isPrivate?: boolean;
+  readonly createdAt?: string;
+  readonly feeds?: FoloFeed;
+  readonly lists?: FoloList;
+  readonly inboxes?: FoloInbox;
+
+  constructor(value: unknown) {
+    const data = record(value);
+    this.feedId = string(data.feedId);
+    this.listId = string(data.listId);
+    this.inboxId = string(data.inboxId);
+    this.title = nullableString(data.title);
+    this.category = nullableString(data.category);
+    this.view = view(data.view);
+    this.isPrivate = boolean(data.isPrivate);
+    this.createdAt = string(data.createdAt);
+    this.feeds = optionalRecord(data.feeds) ? new FoloFeed(data.feeds) : undefined;
+    this.lists = optionalRecord(data.lists) ? new FoloList(data.lists) : undefined;
+    this.inboxes = optionalRecord(data.inboxes) ? new FoloInbox(data.inboxes) : undefined;
+  }
+}
+
+/** All subscriptions returned by `folo subscription list`. */
+export class FoloSubscriptionsResult {
+  constructor(readonly subscriptions: FoloSubscription[]) {}
+
+  static from(value: unknown): FoloSubscriptionsResult {
+    const data = requiredRecord(value, "subscription list");
+    if (!Array.isArray(data.subscriptions)) {
+      throw new TypeError("Folo subscription list did not contain a subscriptions array.");
+    }
+
+    return new FoloSubscriptionsResult(
+      data.subscriptions.map((item) => new FoloSubscription(item)),
+    );
+  }
+}
+
 /** User profile included in login and whoami responses. */
 export class FoloUser {
   readonly id?: string;

@@ -48,6 +48,57 @@ export function timelineItems(data: unknown, query = ""): AlfredSFItem[] {
   return needle ? items.filter((item) => item.match?.includes(needle)) : items;
 }
 
+export function subscriptionItems(data: unknown, query = ""): AlfredSFItem[] {
+  const subscriptions = isRecord(data) && Array.isArray(data.subscriptions) ? data.subscriptions : [];
+  const needle = query.trim().toLocaleLowerCase();
+
+  const items = subscriptions.flatMap((item): AlfredSFItem[] => {
+    const subscription = isRecord(item) ? item : {};
+    const feed = isRecord(subscription.feeds) ? subscription.feeds : undefined;
+    const list = isRecord(subscription.lists) ? subscription.lists : undefined;
+    const target = list ?? feed;
+    if (!target) return [];
+
+    const kind = list ? "List" : "Feed";
+    const id = optionalString(subscription.listId)
+      ?? optionalString(subscription.feedId)
+      ?? optionalString(target.id);
+    if (!id) return [];
+
+    const title = text(optionalString(subscription.title) ?? target.title, `Untitled ${kind.toLowerCase()}`);
+    const description = text(target.description);
+    const category = text(subscription.category);
+    const feedCount = list && Array.isArray(list.feedIds) ? list.feedIds.length : undefined;
+    const detail = feedCount === undefined ? undefined : `${feedCount} ${feedCount === 1 ? "feed" : "feeds"}`;
+    const subtitle = [kind, category, detail, description]
+      .filter(Boolean)
+      .join(" · ");
+    const foloUrl = list
+      ? `https://app.folo.is/share/lists/${encodeURIComponent(id)}`
+      : `https://app.folo.is/share/feeds/${encodeURIComponent(id)}`;
+    const originalUrl = feed ? optionalString(feed.siteUrl) ?? optionalString(feed.url) : undefined;
+    const searchable = [title, kind, category, description, id].join(" ").toLocaleLowerCase();
+
+    return [new AlfredSFItem(title, {
+      subtitle,
+      arg: foloUrl,
+      uid: `${kind.toLocaleLowerCase()}-${id}`,
+      match: searchable,
+      mods: originalUrl ? {
+        alt: {
+          arg: originalUrl,
+          subtitle: "Open original URL",
+          valid: true,
+        },
+      } : undefined,
+      quicklookurl: foloUrl,
+      text: new AlfredSFItemText(foloUrl, description || title),
+    })];
+  });
+
+  return needle ? items.filter((item) => item.match?.includes(needle)) : items;
+}
+
 export function errorItem(error: unknown): AlfredSFItem {
   const code = isRecord(error) ? error.code : undefined;
   const unauthorized = code === "UNAUTHORIZED";
