@@ -2,6 +2,7 @@
   "name": "alfred-folo",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.34.5",
   "type": "module",
   "description": "An Alfred workflow for browsing and managing Folo feeds.",
   "engines": {
@@ -12,7 +13,7 @@
     "build": "node scripts/build.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "node --import tsx --test test/*.test.ts",
-    "check": "npm run typecheck && npm test && npm run build && plutil -lint workflow/info.plist",
+    "check": "pnpm run typecheck && pnpm test && pnpm run build && plutil -lint workflow/info.plist",
     "package": "./workflow-packager"
   },
   "devDependencies": {

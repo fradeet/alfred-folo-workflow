@@ -23,8 +23,8 @@ Install the TypeScript development tools and all runtime dependencies, including
 the pinned Folo CLI:
 
 ```bash
-npm install
-npm run install:workflow
+pnpm install
+pnpm run install:workflow
 ```
 
 Authenticate once using the official browser login:
@@ -40,11 +40,11 @@ The CLI also recognizes the `FOLO_TOKEN` environment variable and its normal
 Verify the project and build an importable workflow:
 
 ```bash
-npm run check
-npm run package
+pnpm run check
+pnpm run package
 ```
 
-`npm run build` compiles the TypeScript sources in `src/` to executable ESM
+`pnpm run build` compiles the TypeScript sources in `src/` to executable ESM
 files in `workflow/dist/`. The generated directory is not committed and is
 rebuilt automatically before packaging.
 
