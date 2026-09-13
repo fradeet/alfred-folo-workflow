@@ -25,11 +25,11 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>BB50A60F-23F2-4624-AE32-5036F1DBEC59</string>
+				<string>047B6A17-139C-42B0-9653-D90335C28209</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
-				<string>Open entry</string>
+				<string></string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -109,19 +109,6 @@
 				<false/>
 			</dict>
 		</array>
-		<key>9FDC8CEA-5A87-48E8-A387-A13959C1D713</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>0F4A0C17-ACBF-486D-898E-74451610FE41</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
 		<key>BB50A60F-23F2-4624-AE32-5036F1DBEC59</key>
 		<array/>
 		<key>C1A3E00B-AB1B-40D0-A288-30D4B9443D65</key>
@@ -141,11 +128,21 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>9FDC8CEA-5A87-48E8-A387-A13959C1D713</string>
+				<string>0F4A0C17-ACBF-486D-898E-74451610FE41</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>6E413F44-0226-4422-8701-2ABA1972AF46</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Open original URL</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -230,6 +227,27 @@
 			<string>C1A3E00B-AB1B-40D0-A288-30D4B9443D65</string>
 			<key>version</key>
 			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string></string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>047B6A17-139C-42B0-9653-D90335C28209</string>
+			<key>version</key>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -425,6 +443,27 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string></string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>6E413F44-0226-4422-8701-2ABA1972AF46</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<true/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -448,7 +487,7 @@
 				<key>queuemode</key>
 				<integer>1</integer>
 				<key>runningsubtext</key>
-				<string></string>
+				<string>Loading Unread......</string>
 				<key>script</key>
 				<string></string>
 				<key>scriptargtype</key>
@@ -456,7 +495,7 @@
 				<key>scriptfile</key>
 				<string>dist/unread.js</string>
 				<key>subtext</key>
-				<string></string>
+				<string>Retrieve unread feed</string>
 				<key>title</key>
 				<string>Folo unread</string>
 				<key>type</key>
@@ -497,31 +536,18 @@
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argument</key>
-				<string>{query}</string>
-				<key>passthroughargument</key>
-				<true/>
-				<key>variables</key>
-				<dict>
-					<key>FOLO_IS_UNREAD</key>
-					<string>1</string>
-				</dict>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.argument</string>
-			<key>uid</key>
-			<string>9FDC8CEA-5A87-48E8-A387-A13959C1D713</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
 	</array>
 	<key>readme</key>
 	<string>Use `flogin` to authenticate, `folo` to browse your timeline, and `flists` to browse all subscriptions.</string>
 	<key>uidata</key>
 	<dict>
+		<key>047B6A17-139C-42B0-9653-D90335C28209</key>
+		<dict>
+			<key>xpos</key>
+			<real>935</real>
+			<key>ypos</key>
+			<real>185</real>
+		</dict>
 		<key>070E56CC-0C4E-4D52-B656-07B557B92AE3</key>
 		<dict>
 			<key>xpos</key>
@@ -570,6 +596,13 @@
 			<key>ypos</key>
 			<real>25</real>
 		</dict>
+		<key>6E413F44-0226-4422-8701-2ABA1972AF46</key>
+		<dict>
+			<key>xpos</key>
+			<real>475</real>
+			<key>ypos</key>
+			<real>485</real>
+		</dict>
 		<key>8EB5D4EF-BC4F-46B0-93F4-9045C8885F8C</key>
 		<dict>
 			<key>colorindex</key>
@@ -588,19 +621,10 @@
 			<key>ypos</key>
 			<real>485</real>
 		</dict>
-		<key>9FDC8CEA-5A87-48E8-A387-A13959C1D713</key>
-		<dict>
-			<key>colorindex</key>
-			<integer>6</integer>
-			<key>xpos</key>
-			<real>510</real>
-			<key>ypos</key>
-			<real>515</real>
-		</dict>
 		<key>BB50A60F-23F2-4624-AE32-5036F1DBEC59</key>
 		<dict>
 			<key>xpos</key>
-			<real>905</real>
+			<real>475</real>
 			<key>ypos</key>
 			<real>330</real>
 		</dict>
@@ -711,7 +735,7 @@
 		</dict>
 	</array>
 	<key>version</key>
-	<string>0.3.0</string>
+	<string>0.3.1</string>
 	<key>webaddress</key>
 	<string></string>
 </dict>

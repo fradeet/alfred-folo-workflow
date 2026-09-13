@@ -127,6 +127,7 @@ export function unreadItems(data: unknown, query = ""): AlfredSFItem[] {
       arg: foloUrl,
       uid: `unread-${sourceType}-${sourceId}`,
       match: searchable,
+      variables: { FOLO_IS_UNREAD: "1" },
       mods: {
         alt: {
           arg: foloUrl,

@@ -71,6 +71,7 @@ test("unreadItems maps unread sources and filters locally", () => {
   assert.equal(items.length, 3);
   assert.match(items[0]?.subtitle ?? "", /12 unread.*Feed.*Tech/);
   assert.equal(items[0]?.arg, "https://app.folo.is/share/feeds/feed-1");
+  assert.deepEqual(items[0]?.variables, { FOLO_IS_UNREAD: "1" });
   assert.equal(items[0]?.mods?.alt?.arg, "https://app.folo.is/share/feeds/feed-1");
   assert.equal(items[1]?.arg, "https://app.folo.is/share/lists/list-1");
   assert.equal(items[2]?.arg, "https://app.folo.is/share/feeds/inbox-inbox-1");
