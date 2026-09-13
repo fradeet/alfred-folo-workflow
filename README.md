@@ -6,6 +6,7 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
 
 - `folo [query or Folo URL]` — browse the latest timeline entries, optionally filtered by a Feed/List URL.
 - `flists [query]` — list and locally filter Feed/List subscriptions; Inbox subscriptions are hidden.
+- `funread [query]` — list and locally filter subscriptions that contain unread entries.
 - `flogin` — open the browser, save the token through Alfred, and notify on successful login.
 - Subscription results use their Folo URL; hold Option to open a Feed's original site URL.
 

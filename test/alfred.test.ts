@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { errorItem, subscriptionItems, timelineItems } from "../src/alfred.js";
+import { errorItem, subscriptionItems, timelineItems, unreadItems } from "../src/alfred.js";
 import {
   AlfredSF,
   AlfredSFCache,
@@ -17,11 +17,12 @@ import {
   FoloLoginResult,
   FoloSubscriptionsResult,
   FoloTimelineResult,
+  FoloUnreadResult,
   FoloView,
   FoloWhoamiResult,
 } from "../src/folo-types.js";
 import { displayName, readToken, setWorkflowToken } from "../src/login.js";
-import { parseTimelineInput } from "../src/timeline.js";
+import { parseTimelineInput, timelineArguments } from "../src/timeline.js";
 
 test("subscriptionItems maps every subscription target and filters locally", () => {
   const data = {
@@ -56,6 +57,27 @@ test("subscriptionItems maps every subscription target and filters locally", () 
   assert.equal(subscriptionItems(data, "missing").length, 0);
 });
 
+test("unreadItems maps unread sources and filters locally", () => {
+  const data = {
+    total: 15,
+    items: [
+      { sourceType: "feed", sourceId: "feed-1", title: "Example Feed", category: "Tech", unreadCount: 12 },
+      { sourceType: "list", sourceId: "list-1", title: "Daily Reads", unreadCount: 2 },
+      { sourceType: "inbox", sourceId: "inbox-1", feedId: "inbox-inbox-1", title: "Newsletters", unreadCount: 1 },
+    ],
+  };
+
+  const items = unreadItems(data);
+  assert.equal(items.length, 3);
+  assert.match(items[0]?.subtitle ?? "", /12 unread.*Feed.*Tech/);
+  assert.equal(items[0]?.arg, "https://app.folo.is/share/feeds/feed-1");
+  assert.equal(items[0]?.mods?.alt?.arg, "https://app.folo.is/share/feeds/feed-1");
+  assert.equal(items[1]?.arg, "https://app.folo.is/share/lists/list-1");
+  assert.equal(items[2]?.arg, "https://app.folo.is/share/feeds/inbox-inbox-1");
+  assert.equal(unreadItems(data, "newsletters").length, 1);
+  assert.equal(unreadItems(data, "missing").length, 0);
+});
+
 test("parseTimelineInput converts Folo share URLs into timeline filters", () => {
   assert.deepEqual(parseTimelineInput("https://app.folo.is/share/feeds/41470869403557888"), {
     query: "",
@@ -66,6 +88,27 @@ test("parseTimelineInput converts Folo share URLs into timeline filters", () => 
     target: { type: "list", id: "162747179238521856" },
   });
   assert.deepEqual(parseTimelineInput("Alfred Blog"), { query: "Alfred Blog" });
+});
+
+test("timelineArguments applies unread filtering only to marked inputs", () => {
+  const unreadInput = parseTimelineInput("https://app.folo.is/share/feeds/feed-1");
+  assert.deepEqual(timelineArguments(unreadInput, "30", true), [
+    "timeline",
+    "--limit",
+    "30",
+    "--feed",
+    "feed-1",
+    "--unread-only",
+  ]);
+
+  const normalInput = parseTimelineInput("https://app.folo.is/share/lists/list-1");
+  assert.deepEqual(timelineArguments(normalInput, "30"), [
+    "timeline",
+    "--limit",
+    "30",
+    "--list",
+    "list-1",
+  ]);
 });
 
 test("FoloSubscriptionsResult keeps feed, list, and inbox subscriptions", () => {
@@ -87,6 +130,25 @@ test("FoloSubscriptionsResult keeps feed, list, and inbox subscriptions", () => 
   assert.equal(result.subscriptions[2]?.lists?.title, "Daily Reads");
   assert.deepEqual(result.subscriptions[2]?.lists?.feedIds, ["feed-1"]);
   assert.throws(() => FoloSubscriptionsResult.from({ subscriptions: "invalid" }), /subscriptions array/i);
+});
+
+test("FoloUnreadResult validates and converts unread subscriptions", () => {
+  const result = FoloUnreadResult.from({
+    total: 7,
+    items: [{
+      sourceType: "feed",
+      sourceId: "feed-1",
+      feedId: "feed-1",
+      title: "Example Feed",
+      unreadCount: 7,
+      view: 0,
+    }],
+  });
+
+  assert.equal(result.total, 7);
+  assert.equal(result.items[0]?.unreadCount, 7);
+  assert.equal(result.items[0]?.view, FoloView.Articles);
+  assert.throws(() => FoloUnreadResult.from({ items: "invalid" }), /items array/i);
 });
 
 test("timelineItems maps and filters Folo entry envelopes", () => {

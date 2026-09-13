@@ -96,6 +96,32 @@
 				<false/>
 			</dict>
 		</array>
+		<key>9B72F889-5649-44DB-94CF-E43F9D265191</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>D59678E1-D29B-4725-B5E3-1E2EEDC90E47</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>9FDC8CEA-5A87-48E8-A387-A13959C1D713</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>0F4A0C17-ACBF-486D-898E-74451610FE41</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>BB50A60F-23F2-4624-AE32-5036F1DBEC59</key>
 		<array/>
 		<key>C1A3E00B-AB1B-40D0-A288-30D4B9443D65</key>
@@ -111,6 +137,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>D59678E1-D29B-4725-B5E3-1E2EEDC90E47</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>9FDC8CEA-5A87-48E8-A387-A13959C1D713</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 	</dict>
 	<key>createdby</key>
 	<string>fradeet</string>
@@ -122,50 +161,6 @@
 	<string>Folo</string>
 	<key>objects</key>
 	<array>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>0</integer>
-				<key>script</key>
-				<string></string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>scriptfile</key>
-				<string>dist/login.js</string>
-				<key>type</key>
-				<integer>8</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>C1A3E00B-AB1B-40D0-A288-30D4B9443D65</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>lastpathcomponent</key>
-				<false/>
-				<key>onlyshowifquerypopulated</key>
-				<true/>
-				<key>removeextension</key>
-				<false/>
-				<key>text</key>
-				<string>{query}</string>
-				<key>title</key>
-				<string>Folo</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.notification</string>
-			<key>uid</key>
-			<string>63E2EF96-CB1A-4E6C-8062-D487A9BDDB9A</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
@@ -195,23 +190,46 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>acceptsfiles</key>
+				<key>lastpathcomponent</key>
 				<false/>
-				<key>acceptsmulti</key>
-				<integer>0</integer>
-				<key>acceptstext</key>
-				<false/>
-				<key>acceptsurls</key>
+				<key>onlyshowifquerypopulated</key>
 				<true/>
-				<key>name</key>
-				<string>Browse related timeline</string>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>{query}</string>
+				<key>title</key>
+				<string>Folo</string>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.trigger.universalaction</string>
+			<string>alfred.workflow.output.notification</string>
 			<key>uid</key>
-			<string>070E56CC-0C4E-4D52-B656-07B557B92AE3</string>
+			<string>63E2EF96-CB1A-4E6C-8062-D487A9BDDB9A</string>
 			<key>version</key>
 			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string>dist/login.js</string>
+				<key>type</key>
+				<integer>8</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>C1A3E00B-AB1B-40D0-A288-30D4B9443D65</string>
+			<key>version</key>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -241,17 +259,17 @@
 				<key>runningsubtext</key>
 				<string>Loading Folo timeline…</string>
 				<key>script</key>
-				<string>node dist/timeline.js "$FOLO_FILTER"</string>
+				<string></string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>timeline.sh</string>
 				<key>subtext</key>
 				<string>Search recent entries</string>
 				<key>title</key>
 				<string>Folo Timeline</string>
 				<key>type</key>
-				<integer>11</integer>
+				<integer>8</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -261,6 +279,27 @@
 			<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
 			<key>version</key>
 			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>acceptsfiles</key>
+				<false/>
+				<key>acceptsmulti</key>
+				<integer>0</integer>
+				<key>acceptstext</key>
+				<false/>
+				<key>acceptsurls</key>
+				<true/>
+				<key>name</key>
+				<string>Browse related timeline</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.universalaction</string>
+			<key>uid</key>
+			<string>070E56CC-0C4E-4D52-B656-07B557B92AE3</string>
+			<key>version</key>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -284,6 +323,27 @@
 			<string>alfred.workflow.utility.argument</string>
 			<key>uid</key>
 			<string>0F4A0C17-ACBF-486D-898E-74451610FE41</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string></string>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>triggerid</key>
+				<string>folo-subscribed-lists</string>
+				<key>triggername</key>
+				<string>Sub List</string>
+				<key>workflowonly</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.remote</string>
+			<key>uid</key>
+			<string>318AF45B-B2CB-4A05-B082-F4C436780C09</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -365,21 +425,95 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<true/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>funread</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string></string>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>dist/unread.js</string>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Folo unread</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>inboundconfig</key>
+			<dict>
+				<key>externalid</key>
+				<string>folo-subscribed-unread-lists</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>D59678E1-D29B-4725-B5E3-1E2EEDC90E47</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>argument</key>
 				<string></string>
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>triggerid</key>
-				<string>folo-subscribed-lists</string>
+				<string>folo-subscribed-unread-lists</string>
 				<key>triggername</key>
-				<string>Sub List</string>
+				<string>Unread Sub</string>
 				<key>workflowonly</key>
 				<false/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.trigger.remote</string>
 			<key>uid</key>
-			<string>318AF45B-B2CB-4A05-B082-F4C436780C09</string>
+			<string>9B72F889-5649-44DB-94CF-E43F9D265191</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>{query}</string>
+				<key>passthroughargument</key>
+				<true/>
+				<key>variables</key>
+				<dict>
+					<key>FOLO_IS_UNREAD</key>
+					<string>1</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>9FDC8CEA-5A87-48E8-A387-A13959C1D713</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -411,6 +545,8 @@
 		</dict>
 		<key>318AF45B-B2CB-4A05-B082-F4C436780C09</key>
 		<dict>
+			<key>colorindex</key>
+			<integer>4</integer>
 			<key>xpos</key>
 			<real>40</real>
 			<key>ypos</key>
@@ -418,6 +554,8 @@
 		</dict>
 		<key>528EBBE4-AC53-41B4-BE91-D87A4C9BFB74</key>
 		<dict>
+			<key>colorindex</key>
+			<integer>4</integer>
 			<key>xpos</key>
 			<real>255</real>
 			<key>ypos</key>
@@ -441,6 +579,24 @@
 			<key>ypos</key>
 			<real>25</real>
 		</dict>
+		<key>9B72F889-5649-44DB-94CF-E43F9D265191</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>6</integer>
+			<key>xpos</key>
+			<real>40</real>
+			<key>ypos</key>
+			<real>485</real>
+		</dict>
+		<key>9FDC8CEA-5A87-48E8-A387-A13959C1D713</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>6</integer>
+			<key>xpos</key>
+			<real>510</real>
+			<key>ypos</key>
+			<real>515</real>
+		</dict>
 		<key>BB50A60F-23F2-4624-AE32-5036F1DBEC59</key>
 		<dict>
 			<key>xpos</key>
@@ -456,6 +612,15 @@
 			<real>255</real>
 			<key>ypos</key>
 			<real>25</real>
+		</dict>
+		<key>D59678E1-D29B-4725-B5E3-1E2EEDC90E47</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>6</integer>
+			<key>xpos</key>
+			<real>255</real>
+			<key>ypos</key>
+			<real>485</real>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
@@ -546,7 +711,7 @@
 		</dict>
 	</array>
 	<key>version</key>
-	<string>0.1.0</string>
+	<string>0.3.0</string>
 	<key>webaddress</key>
 	<string></string>
 </dict>

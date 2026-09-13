@@ -99,6 +99,49 @@ export function subscriptionItems(data: unknown, query = ""): AlfredSFItem[] {
   return needle ? items.filter((item) => item.match?.includes(needle)) : items;
 }
 
+export function unreadItems(data: unknown, query = ""): AlfredSFItem[] {
+  const unread = isRecord(data) && Array.isArray(data.items) ? data.items : [];
+  const needle = query.trim().toLocaleLowerCase();
+
+  const items = unread.flatMap((item): AlfredSFItem[] => {
+    const source = isRecord(item) ? item : {};
+    const sourceType = source.sourceType;
+    const sourceId = optionalString(source.sourceId);
+    if ((sourceType !== "feed" && sourceType !== "list" && sourceType !== "inbox") || !sourceId) return [];
+
+    const kind = sourceType[0]!.toUpperCase() + sourceType.slice(1);
+    const title = text(source.title, `Untitled ${sourceType}`);
+    const category = text(source.category);
+    const unreadCount = typeof source.unreadCount === "number" && Number.isFinite(source.unreadCount)
+      ? source.unreadCount
+      : 0;
+    const unreadDetail = `${unreadCount} unread`;
+    const subtitle = [unreadDetail, kind, category].filter(Boolean).join(" · ");
+    const timelineType = sourceType === "list" ? "lists" : "feeds";
+    const timelineId = sourceType === "inbox" ? optionalString(source.feedId) ?? sourceId : sourceId;
+    const foloUrl = `https://app.folo.is/share/${timelineType}/${encodeURIComponent(timelineId)}`;
+    const searchable = [title, kind, category, unreadDetail, sourceId].join(" ").toLocaleLowerCase();
+
+    return [new AlfredSFItem(title, {
+      subtitle,
+      arg: foloUrl,
+      uid: `unread-${sourceType}-${sourceId}`,
+      match: searchable,
+      mods: {
+        alt: {
+          arg: foloUrl,
+          subtitle: "Open in Folo",
+          valid: true,
+        },
+      },
+      quicklookurl: foloUrl,
+      text: new AlfredSFItemText(foloUrl, `${title} · ${unreadDetail}`),
+    })];
+  });
+
+  return needle ? items.filter((item) => item.match?.includes(needle)) : items;
+}
+
 export function errorItem(error: unknown): AlfredSFItem {
   const code = isRecord(error) ? error.code : undefined;
   const unauthorized = code === "UNAUTHORIZED";

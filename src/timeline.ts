@@ -14,13 +14,13 @@ export function parseTimelineInput(value: string): TimelineInput {
 
   try {
     const url = new URL(query);
-    const match = /^\/share\/(feeds|lists)\/([0-9]+)\/?$/.exec(url.pathname);
+    const match = /^\/share\/(feeds|lists)\/([^/]+)\/?$/.exec(url.pathname);
     if (url.hostname === "app.folo.is" && match) {
       return {
         query: "",
         target: {
           type: match[1] === "lists" ? "list" : "feed",
-          id: match[2]!,
+          id: decodeURIComponent(match[2]!),
         },
       };
     }
@@ -31,15 +31,27 @@ export function parseTimelineInput(value: string): TimelineInput {
   return { query };
 }
 
-function main(): void {
-  const input = parseTimelineInput(process.argv.slice(2).join(" "));
-  const limit = /^\d+$/.test(process.env.FOLO_LIMIT ?? "") ? process.env.FOLO_LIMIT! : "30";
+export function timelineArguments(input: TimelineInput, limit: string, unreadOnly = false): string[] {
   const args = ["timeline", "--limit", limit];
   if (input.target) args.push(`--${input.target.type}`, input.target.id);
+  if (unreadOnly) args.push("--unread-only");
+  return args;
+}
+
+function main(): void {
+  const arguments_ = process.argv.slice(2);
+  const unreadOnly = arguments_.includes("--unread-only");
+  const input = parseTimelineInput(arguments_.filter((value) => value !== "--unread-only").join(" "));
+  const limit = /^\d+$/.test(process.env.FOLO_LIMIT ?? "") ? process.env.FOLO_LIMIT! : "30";
+  const args = timelineArguments(input, limit, unreadOnly);
 
   try {
     const items = timelineItems(runFolo(args, {}, FoloTimelineResult.from), input.query);
-    const emptySubtitle = input.target ? "This subscription has no entries" : "Try another query";
+    const emptySubtitle = unreadOnly
+      ? "This subscription has no unread entries"
+      : input.target
+        ? "This subscription has no entries"
+        : "Try another query";
     output(items.length ? items : [emptyItem("No Folo entries", emptySubtitle)], 60);
   } catch (error: unknown) {
     console.error(error);

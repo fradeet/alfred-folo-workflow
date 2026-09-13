@@ -227,6 +227,57 @@ export class FoloSubscriptionsResult {
   }
 }
 
+/** A subscription source with unread entries. */
+export class FoloUnreadItem {
+  readonly sourceType: "feed" | "list" | "inbox";
+  readonly sourceId: string;
+  readonly feedId?: string;
+  readonly title?: string | null;
+  readonly category?: string | null;
+  readonly view?: FoloView;
+  readonly unreadCount: number;
+  readonly isPrivate?: boolean;
+
+  constructor(value: unknown) {
+    const data = requiredRecord(value, "unread item");
+    if (data.sourceType !== "feed" && data.sourceType !== "list" && data.sourceType !== "inbox") {
+      throw new TypeError("Folo unread item did not contain a valid source type.");
+    }
+    if (typeof data.sourceId !== "string" || !data.sourceId) {
+      throw new TypeError("Folo unread item did not contain a source ID.");
+    }
+
+    this.sourceType = data.sourceType;
+    this.sourceId = data.sourceId;
+    this.feedId = string(data.feedId);
+    this.title = nullableString(data.title);
+    this.category = nullableString(data.category);
+    this.view = view(data.view);
+    this.unreadCount = number(data.unreadCount) ?? 0;
+    this.isPrivate = boolean(data.isPrivate);
+  }
+}
+
+/** Subscriptions returned by `folo unread list`, ordered by unread count. */
+export class FoloUnreadResult {
+  constructor(
+    readonly total: number,
+    readonly items: FoloUnreadItem[],
+  ) {}
+
+  static from(value: unknown): FoloUnreadResult {
+    const data = requiredRecord(value, "unread list");
+    if (!Array.isArray(data.items)) {
+      throw new TypeError("Folo unread list did not contain an items array.");
+    }
+
+    return new FoloUnreadResult(
+      number(data.total) ?? 0,
+      data.items.map((item) => new FoloUnreadItem(item)),
+    );
+  }
+}
+
 /** User profile included in login and whoami responses. */
 export class FoloUser {
   readonly id?: string;
