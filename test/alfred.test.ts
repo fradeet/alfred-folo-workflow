@@ -22,6 +22,7 @@ import {
   FoloWhoamiResult,
 } from "../src/folo-types.js";
 import { displayName, readToken, setWorkflowToken } from "../src/login.js";
+import { markRead } from "../src/mark-read.js";
 import { parseTimelineInput, timelineArguments } from "../src/timeline.js";
 
 test("subscriptionItems maps every subscription target and filters locally", () => {
@@ -172,6 +173,7 @@ test("timelineItems maps and filters Folo entry envelopes", () => {
   assert.equal(items.length, 1);
   assert.equal(items[0]?.title, "Hello & Folo");
   assert.equal(items[0]?.arg, "https://example.com/post");
+  assert.deepEqual(items[0]?.variables, { FOLO_ENTRY_ID: "entry-1" });
   assert.equal(timelineItems(data, "missing").length, 0);
 });
 
@@ -180,6 +182,11 @@ test("timelineItems tolerates malformed entry data", () => {
   assert.equal(items.length, 2);
   assert.equal(items[0]?.title, "Untitled entry");
   assert.equal(items[0]?.arg, "https://app.folo.is");
+  assert.equal(items[0]?.variables, undefined);
+});
+
+test("markRead rejects a missing entry ID before calling Folo", () => {
+  assert.throws(() => markRead("  "), /Entry ID is required/);
 });
 
 test("errorItem gives authentication guidance", () => {

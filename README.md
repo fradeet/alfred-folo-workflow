@@ -9,6 +9,7 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
 - `funread [query]` — list and locally filter subscriptions that contain unread entries.
 - `flogin` — open the browser, save the token through Alfred, and notify on successful login.
 - Subscription results use their Folo URL; hold Option to open a Feed's original site URL.
+- Timeline results expose their entry ID to downstream actions as `FOLO_ENTRY_ID`.
 
 The keywords, result limit, and token can be changed in Alfred's
 workflow configuration.
@@ -49,6 +50,13 @@ pnpm run package
 `pnpm run build` compiles the TypeScript sources in `src/` to executable ESM
 files in `workflow/dist/`. The generated directory is not committed and is
 rebuilt automatically before packaging.
+
+The single-entry read action accepts an entry ID and echoes the same ID after a
+successful update:
+
+```bash
+node workflow/dist/mark-read.js "$FOLO_ENTRY_ID"
+```
 
 Then open `Folo.alfredworkflow` to install it in Alfred.
 

@@ -33,15 +33,17 @@ export function timelineItems(data: unknown, query = ""): AlfredSFItem[] {
     const date = formatDate(entry.publishedAt);
     const subtitle = [feedTitle, author, date].filter(Boolean).join(" · ");
     const url = optionalString(entry.url) ?? optionalString(feed.siteUrl) ?? "https://app.folo.is";
+    const entryId = optionalString(entry.id);
     const searchable = [title, feedTitle, author, summary, url].join(" ").toLocaleLowerCase();
 
     return new AlfredSFItem(title, {
       subtitle,
       arg: url,
-      uid: optionalString(entry.id),
+      uid: entryId,
       match: searchable,
       quicklookurl: url,
       text: new AlfredSFItemText(url, summary || title),
+      variables: entryId ? { FOLO_ENTRY_ID: entryId } : undefined,
     });
   });
 
