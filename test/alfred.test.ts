@@ -14,7 +14,7 @@ import {
   AlfredTVBehaviourInputField,
   AlfredTVBehaviourResponse,
   AlfredTVBehaviourScroll,
-} from "../src/alfred-types.js";
+} from "../src/types/alfred-types.js";
 import { FoloError, parseFoloEnvelope } from "../src/folo-cli.js";
 import {
   FoloLoginResult,
@@ -23,7 +23,7 @@ import {
   FoloUnreadResult,
   FoloView,
   FoloWhoamiResult,
-} from "../src/folo-types.js";
+} from "../src/types/folo-types.js";
 import { displayName, readToken, setWorkflowToken } from "../src/login.js";
 import { markRead } from "../src/mark-read.js";
 import { parseTimelineInput, timelineArguments } from "../src/timeline.js";

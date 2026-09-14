@@ -2,7 +2,7 @@
 import { pathToFileURL } from "node:url";
 import { emptyItem, errorItem, output, timelineItems } from "./alfred.js";
 import { runFolo } from "./folo-cli.js";
-import { FoloTimelineResult } from "./folo-types.js";
+import { FoloTimelineResult } from "./types/folo-types.js";
 import { cacheIcons } from "./icon-cache.js";
 
 export interface TimelineInput {

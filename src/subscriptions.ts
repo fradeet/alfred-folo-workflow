@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { emptyItem, errorItem, output, subscriptionItems } from "./alfred.js";
 import { runFolo } from "./folo-cli.js";
-import { FoloSubscriptionsResult } from "./folo-types.js";
+import { FoloSubscriptionsResult } from "./types/folo-types.js";
 import { cacheIcons } from "./icon-cache.js";
 
 const query = process.argv.slice(2).join(" ");

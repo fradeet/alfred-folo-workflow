@@ -3,7 +3,7 @@ import { mkdir, open, stat, unlink } from "node:fs/promises";
 import { join } from "node:path";
 import { cacheIcons, iconCacheDirectory } from "./icon-cache.js";
 import { runFolo } from "./folo-cli.js";
-import { FoloSubscriptionsResult } from "./folo-types.js";
+import { FoloSubscriptionsResult } from "./types/folo-types.js";
 
 const LOCK_MAX_AGE = 60_000;
 

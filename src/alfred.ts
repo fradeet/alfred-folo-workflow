@@ -1,5 +1,5 @@
 import { isRecord } from "./folo-cli.js";
-import { AlfredSF, AlfredSFCache, AlfredSFItem, AlfredSFItemIcon, AlfredSFItemText } from "./alfred-types.js";
+import { AlfredSF, AlfredSFCache, AlfredSFItem, AlfredSFItemIcon, AlfredSFItemText } from "./types/alfred-types.js";
 import { IconResolver } from "./icon-cache.js";
 
 const stripMarkup = (value: unknown): string =>

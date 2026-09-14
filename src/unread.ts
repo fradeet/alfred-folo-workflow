@@ -3,7 +3,7 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { emptyItem, errorItem, output, unreadItems } from "./alfred.js";
 import { runFolo } from "./folo-cli.js";
-import { FoloUnreadResult } from "./folo-types.js";
+import { FoloUnreadResult } from "./types/folo-types.js";
 import { loadCachedIcons } from "./icon-cache.js";
 
 const query = process.argv.slice(2).join(" ");

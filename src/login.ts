@@ -3,7 +3,7 @@ import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import { isRecord, runFolo } from "./folo-cli.js";
-import { FoloLoginResult, FoloWhoamiResult } from "./folo-types.js";
+import { FoloLoginResult, FoloWhoamiResult } from "./types/folo-types.js";
 
 const workflowId = "com.fradeet.alfred-folo";
 
