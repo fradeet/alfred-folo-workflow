@@ -4,6 +4,7 @@ import { emptyItem, errorItem, output, timelineItems } from "./alfred.js";
 import { runFolo } from "./folo-cli.js";
 import { FoloTimelineResult } from "./types/folo-types.js";
 import { cacheIcons } from "./icon-cache.js";
+import { parseFoloShareUrl } from "./folo-url.js";
 
 export interface TimelineInput {
   query: string;
@@ -12,22 +13,8 @@ export interface TimelineInput {
 
 export function parseTimelineInput(value: string): TimelineInput {
   const query = value.trim();
-
-  try {
-    const url = new URL(query);
-    const match = /^\/share\/(feeds|lists)\/([^/]+)\/?$/.exec(url.pathname);
-    if (url.hostname === "app.folo.is" && match) {
-      return {
-        query: "",
-        target: {
-          type: match[1] === "lists" ? "list" : "feed",
-          id: decodeURIComponent(match[2]!),
-        },
-      };
-    }
-  } catch {
-    // A normal Alfred query is not expected to be a URL.
-  }
+  const target = parseFoloShareUrl(query);
+  if (target) return { query: "", target };
 
   return { query };
 }

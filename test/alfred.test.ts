@@ -27,6 +27,7 @@ import {
 import { displayName, readToken, setWorkflowToken } from "../src/login.js";
 import { markRead } from "../src/mark-read.js";
 import { parseTimelineInput, timelineArguments } from "../src/timeline.js";
+import { parseFoloShareUrl } from "../src/folo-url.js";
 import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/icon-cache.js";
 
 test("feedIconUrl prefers an official image and falls back to Folo's domain icon", () => {
@@ -148,6 +149,18 @@ test("parseTimelineInput converts Folo share URLs into timeline filters", () => 
     target: { type: "list", id: "162747179238521856" },
   });
   assert.deepEqual(parseTimelineInput("Alfred Blog"), { query: "Alfred Blog" });
+});
+
+test("parseFoloShareUrl parses feed and list share URLs", () => {
+  assert.deepEqual(parseFoloShareUrl("https://app.folo.is/share/feeds/feed-1"), {
+    type: "feed",
+    id: "feed-1",
+  });
+  assert.deepEqual(parseFoloShareUrl("https://app.folo.is/share/lists/list-1/"), {
+    type: "list",
+    id: "list-1",
+  });
+  assert.equal(parseFoloShareUrl("Alfred Blog"), undefined);
 });
 
 test("timelineArguments applies unread filtering only to marked inputs", () => {
