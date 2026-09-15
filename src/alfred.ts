@@ -171,8 +171,7 @@ export function emptyItem(title: string, subtitle: string): AlfredSFItem {
 
 export function output(items: AlfredSFItem[], cacheSeconds?: number): void {
   const response = new AlfredSF(items, {
-    cache: cacheSeconds ? new AlfredSFCache(cacheSeconds, true) : undefined,
-    skipknowledge: true,
+    cache: cacheSeconds ? new AlfredSFCache(cacheSeconds) : undefined,
   });
   process.stdout.write(JSON.stringify(response));
 }
