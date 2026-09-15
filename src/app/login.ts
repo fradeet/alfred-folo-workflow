@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
+import { env } from "node:process";
 import { pathToFileURL } from "node:url";
 import { runFolo } from "../shared/folo-cli.js";
 import { isRecord } from "../shared/guards.js";
 import { FoloLoginResult, FoloWhoamiResult } from "../types/folo-types.js";
-
-const workflowId = "com.fradeet.alfred-folo";
 
 export function readToken(configText: string): string {
   const config = JSON.parse(configText) as unknown;
@@ -24,19 +23,28 @@ export function displayName(whoami: FoloWhoamiResult): string {
     .find((value): value is string => typeof value === "string" && Boolean(value.trim())) ?? "Folo user";
 }
 
-export function setWorkflowToken(token: string): void {
+export function setWorkflowToken(token: string, environment: NodeJS.ProcessEnv = env): void {
   if (!token.trim()) {
     throw new Error("Folo token must not be empty.");
+  }
+  const workflowId = environment.alfred_workflow_bundleid?.trim();
+  if (!workflowId) {
+    throw new Error("Alfred did not provide alfred_workflow_bundleid.");
   }
 
   const appleScript = `
 set tokenValue to system attribute "FOLO_LOGIN_TOKEN"
+set workflowId to system attribute "ALFRED_WORKFLOW_BUNDLE_ID"
 tell application id "com.runningwithcrayons.Alfred"
-  set configuration "FOLO_TOKEN" to value tokenValue in workflow "${workflowId}"
+  set configuration "FOLO_TOKEN" to value tokenValue in workflow workflowId
 end tell`;
   const result = spawnSync("/usr/bin/osascript", ["-e", appleScript], {
     encoding: "utf8",
-    env: { ...process.env, FOLO_LOGIN_TOKEN: token },
+    env: {
+      ...environment,
+      FOLO_LOGIN_TOKEN: token,
+      ALFRED_WORKFLOW_BUNDLE_ID: workflowId,
+    },
   });
 
   if (result.status !== 0) {

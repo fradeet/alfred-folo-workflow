@@ -279,6 +279,7 @@ test("login helpers read the saved token and resolve a username", () => {
   })), "Ada");
   assert.throws(() => readToken("{}"), /token/i);
   assert.throws(() => setWorkflowToken(""), /empty/i);
+  assert.throws(() => setWorkflowToken("secret", {}), /alfred_workflow_bundleid/i);
 });
 
 test("FoloTimelineResult converts the observed CLI timeline shape", () => {
