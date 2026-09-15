@@ -1,4 +1,5 @@
 import { isRecord } from "./guards.js";
+import { FoloEntryOutput } from "./entry-output.js";
 import { AlfredSF, AlfredSFCache, AlfredSFItem, AlfredSFItemIcon, AlfredSFItemText } from "../types/alfred-types.js";
 import { IconResolver } from "./icon-cache.js";
 
@@ -24,7 +25,7 @@ export function timelineItems(data: unknown, query = "", iconFor?: IconResolver)
   const entries = isRecord(data) && Array.isArray(data.entries) ? data.entries : [];
   const needle = query.trim().toLocaleLowerCase();
 
-  const items = entries.map((item): AlfredSFItem => {
+  const items = entries.flatMap((item): AlfredSFItem[] => {
     const entry = isRecord(item) && isRecord(item.entries) ? item.entries : {};
     const feed = isRecord(item) && isRecord(item.feeds) ? item.feeds : {};
     const title = text(entry.title, "Untitled entry");
@@ -35,18 +36,19 @@ export function timelineItems(data: unknown, query = "", iconFor?: IconResolver)
     const subtitle = [feedTitle, author, date].filter(Boolean).join(" · ");
     const url = optionalString(entry.url) ?? optionalString(feed.siteUrl) ?? "https://app.folo.is";
     const entryId = optionalString(entry.id);
+    if (!entryId) return [];
+    const entryOutput = new FoloEntryOutput(url, entryId);
     const searchable = [title, feedTitle, author, summary, url].join(" ").toLocaleLowerCase();
 
-    return new AlfredSFItem(title, {
+    return [new AlfredSFItem(title, {
       subtitle,
-      arg: url,
+      arg: entryOutput.serialize(),
       icon: icon(feed, iconFor),
       uid: entryId,
       match: searchable,
       quicklookurl: url,
       text: new AlfredSFItemText(url, summary || title),
-      variables: entryId ? { FOLO_ENTRY_ID: entryId } : undefined,
-    });
+    })];
   });
 
   return needle ? items.filter((item) => item.match?.includes(needle)) : items;

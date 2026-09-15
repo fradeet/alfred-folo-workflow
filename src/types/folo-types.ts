@@ -65,7 +65,7 @@ export class FoloEntryTags {
 
 /** Content metadata returned in the `entries` field of a timeline row. */
 export class FoloEntry {
-  readonly id?: string;
+  readonly id: string;
   readonly title?: string;
   readonly url?: string;
   readonly description?: string;
@@ -87,7 +87,10 @@ export class FoloEntry {
   /** Creates an entry from an untrusted CLI value, omitting invalid optional fields. */
   constructor(value: unknown) {
     const data = record(value);
-    this.id = string(data.id);
+    if (typeof data.id !== "string" || !data.id.trim()) {
+      throw new TypeError("Folo entry did not contain an entry ID.");
+    }
+    this.id = data.id;
     this.title = string(data.title);
     this.url = string(data.url);
     this.description = string(data.description);

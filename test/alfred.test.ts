@@ -16,6 +16,7 @@ import {
   AlfredTVBehaviourScroll,
 } from "../src/types/alfred-types.js";
 import { FoloError, parseFoloEnvelope } from "../src/shared/folo-cli.js";
+import { FoloEntryOutput } from "../src/shared/entry-output.js";
 import {
   FoloLoginResult,
   FoloSubscriptionsResult,
@@ -77,7 +78,7 @@ test("cacheIcons downloads each icon once and reuses its local path", async () =
     }, "", cachedOnly);
     assert.equal(unread[0]?.icon?.path, firstPath);
 
-    const items = timelineItems({ entries: [{ entries: { title: "Post" }, feeds: source }] }, "", second);
+    const items = timelineItems({ entries: [{ entries: { id: "entry-1", title: "Post" }, feeds: source }] }, "", second);
     assert.equal(items[0]?.icon?.path, firstPath);
   } finally {
     await rm(directory, { recursive: true, force: true });
@@ -253,21 +254,33 @@ test("timelineItems maps and filters Folo entry envelopes", () => {
   const items = timelineItems(data, "useful");
   assert.equal(items.length, 1);
   assert.equal(items[0]?.title, "Hello & Folo");
-  assert.equal(items[0]?.arg, "https://example.com/post");
-  assert.deepEqual(items[0]?.variables, { FOLO_ENTRY_ID: "entry-1" });
+  assert.deepEqual(JSON.parse(String(items[0]?.arg)), {
+    url: "https://example.com/post",
+    entryId: "entry-1",
+  });
+  assert.equal(items[0]?.variables, undefined);
   assert.equal(timelineItems(data, "missing").length, 0);
 });
 
-test("timelineItems tolerates malformed entry data", () => {
+test("timelineItems filters entries without required IDs", () => {
   const items = timelineItems({ entries: [null, { entries: "invalid" }] });
-  assert.equal(items.length, 2);
-  assert.equal(items[0]?.title, "Untitled entry");
-  assert.equal(items[0]?.arg, "https://app.folo.is");
-  assert.equal(items[0]?.variables, undefined);
+  assert.equal(items.length, 0);
 });
 
 test("markRead rejects a missing entry ID before calling Folo", () => {
   assert.throws(() => markRead("  "), /Entry ID is required/);
+});
+
+test("FoloEntryOutput serializes and parses the shared entry argument", () => {
+  const serialized = new FoloEntryOutput("https://example.com/post", "entry-1").serialize();
+
+  assert.equal(serialized, '{"url":"https://example.com/post","entryId":"entry-1"}');
+  assert.deepEqual(FoloEntryOutput.parse(serialized), new FoloEntryOutput(
+    "https://example.com/post",
+    "entry-1",
+  ));
+  assert.throws(() => FoloEntryOutput.parse("https://example.com/post"), /valid JSON/);
+  assert.throws(() => FoloEntryOutput.parse('{"url":"https://example.com/post"}'), /contain an entry ID/);
 });
 
 test("errorItem gives authentication guidance", () => {
@@ -339,6 +352,10 @@ test("FoloTimelineResult converts the observed CLI timeline shape", () => {
 test("Folo result classes validate required top-level fields", () => {
   assert.throws(() => FoloTimelineResult.from({}), /timeline.*invalid payload/i);
   assert.throws(() => FoloTimelineResult.from({ entries: "invalid" }), /entries array/i);
+  assert.throws(
+    () => FoloTimelineResult.from({ entries: [{ entries: {}, feeds: {} }] }),
+    /entry ID/i,
+  );
   assert.throws(() => FoloLoginResult.from({ message: "ok" }), /config path/i);
 });
 
