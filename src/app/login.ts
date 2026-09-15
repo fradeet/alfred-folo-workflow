@@ -5,7 +5,7 @@ import { env } from "node:process";
 import { pathToFileURL } from "node:url";
 import { runFolo } from "../shared/folo-cli.js";
 import { isRecord } from "../shared/guards.js";
-import { FoloLoginResult, FoloWhoamiResult } from "../types/folo-types.js";
+import { FoloLoginResult } from "../types/folo-types.js";
 
 export function readToken(configText: string): string {
   const config = JSON.parse(configText) as unknown;
@@ -15,12 +15,6 @@ export function readToken(configText: string): string {
   }
 
   return config.token;
-}
-
-export function displayName(whoami: FoloWhoamiResult): string {
-  const user = whoami.user;
-  return [user.name, user.handle, user.email, user.id]
-    .find((value): value is string => typeof value === "string" && Boolean(value.trim())) ?? "Folo user";
 }
 
 export function setWorkflowToken(token: string, environment: NodeJS.ProcessEnv = env): void {
@@ -56,9 +50,8 @@ async function login(): Promise<void> {
   const data = runFolo(["login"], { timeout: 190_000 }, FoloLoginResult.from);
 
   const token = readToken(await readFile(data.configPath, "utf8"));
-  const whoami = runFolo(["--token", token, "whoami"], {}, FoloWhoamiResult.from);
   setWorkflowToken(token);
-  process.stdout.write(`Login Success：${displayName(whoami)}`);
+  process.stdout.write(JSON.stringify(data.user));
 }
 
 const entryPath = process.argv[1];

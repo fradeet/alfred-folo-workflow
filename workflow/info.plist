@@ -153,7 +153,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>63E2EF96-CB1A-4E6C-8062-D487A9BDDB9A</string>
+				<string>F2D25FAA-6A4D-4ACB-96F5-AEA036D44D38</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -185,6 +185,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>F2D25FAA-6A4D-4ACB-96F5-AEA036D44D38</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>63E2EF96-CB1A-4E6C-8062-D487A9BDDB9A</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 	</dict>
 	<key>createdby</key>
 	<string>fradeet</string>
@@ -196,6 +209,24 @@
 	<string>Folo RSS Reader</string>
 	<key>objects</key>
 	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>tasksettings</key>
+				<dict>
+					<key>key_path</key>
+					<string>name</string>
+				</dict>
+				<key>taskuid</key>
+				<string>com.alfredapp.automation.core/json-processing/json.key-value</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.automation.task</string>
+			<key>uid</key>
+			<string>F2D25FAA-6A4D-4ACB-96F5-AEA036D44D38</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
@@ -232,9 +263,9 @@
 				<key>removeextension</key>
 				<false/>
 				<key>text</key>
-				<string>{query}</string>
+				<string>Welcome, {query}</string>
 				<key>title</key>
-				<string>Folo</string>
+				<string>{const:alfred_workflow_name}</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.output.notification</string>
@@ -681,7 +712,7 @@
 			<key>note</key>
 			<string>Login Success.</string>
 			<key>xpos</key>
-			<real>475</real>
+			<real>690</real>
 			<key>ypos</key>
 			<real>25</real>
 		</dict>
@@ -743,6 +774,13 @@
 			<real>255</real>
 			<key>ypos</key>
 			<real>485</real>
+		</dict>
+		<key>F2D25FAA-6A4D-4ACB-96F5-AEA036D44D38</key>
+		<dict>
+			<key>xpos</key>
+			<real>475</real>
+			<key>ypos</key>
+			<real>25</real>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>

@@ -120,6 +120,22 @@ export class FoloCollection {
   }
 }
 
+/** Partial public user data embedded in feeds and boosts. */
+export class FoloUserPreview {
+  readonly id?: string;
+  readonly name?: string | null;
+  readonly handle?: string | null;
+  readonly image?: string | null;
+
+  constructor(value: unknown) {
+    const data = record(value);
+    this.id = string(data.id);
+    this.name = nullableString(data.name);
+    this.handle = nullableString(data.handle);
+    this.image = nullableString(data.image);
+  }
+}
+
 /** Feed metadata associated with a timeline entry. */
 export class FoloFeed {
   readonly type?: string;
@@ -132,7 +148,7 @@ export class FoloFeed {
   readonly errorMessage?: string | null;
   readonly errorAt?: string | null;
   readonly ownerUserId?: string | null;
-  readonly owner?: FoloUser;
+  readonly owner?: FoloUserPreview;
 
   /** Creates feed metadata from an untrusted CLI value. */
   constructor(value: unknown) {
@@ -147,7 +163,7 @@ export class FoloFeed {
     this.errorMessage = nullableString(data.errorMessage);
     this.errorAt = nullableString(data.errorAt);
     this.ownerUserId = nullableString(data.ownerUserId);
-    this.owner = optionalRecord(data.owner) ? new FoloUser(data.owner) : undefined;
+    this.owner = optionalRecord(data.owner) ? new FoloUserPreview(data.owner) : undefined;
   }
 }
 
@@ -273,10 +289,10 @@ export class FoloSubscription {
 
 /** Users boosting a subscribed feed. */
 export class FoloBoost {
-  readonly boosters: FoloUser[];
+  readonly boosters: FoloUserPreview[];
 
   constructor(value: unknown) {
-    this.boosters = array(record(value).boosters).map((item) => new FoloUser(item));
+    this.boosters = array(record(value).boosters).map((item) => new FoloUserPreview(item));
   }
 }
 
@@ -349,14 +365,14 @@ export class FoloUnreadResult {
 
 /** User profile included in login and whoami responses. */
 export class FoloUser {
-  readonly id?: string;
+  readonly id: string;
   readonly name?: string | null;
   readonly handle?: string | null;
-  readonly email?: string;
+  readonly email: string;
   readonly emailVerified?: boolean | null;
   readonly image?: string | null;
-  readonly createdAt?: string;
-  readonly updatedAt?: string;
+  readonly createdAt: string;
+  readonly updatedAt: string;
   readonly twoFactorEnabled?: boolean | null;
   readonly isAnonymous?: boolean | null;
   readonly suspended?: boolean | null;
@@ -373,15 +389,15 @@ export class FoloUser {
 
   /** Creates a user profile from an untrusted CLI value. */
   constructor(value: unknown) {
-    const data = record(value);
-    this.id = string(data.id);
+    const data = requiredRecord(value, "user");
+    this.id = requiredString(data.id, "user ID");
     this.name = nullableString(data.name);
     this.handle = nullableString(data.handle);
-    this.email = string(data.email);
+    this.email = requiredString(data.email, "user email");
     this.emailVerified = nullableBoolean(data.emailVerified);
     this.image = nullableString(data.image);
-    this.createdAt = string(data.createdAt);
-    this.updatedAt = string(data.updatedAt);
+    this.createdAt = requiredString(data.createdAt, "user creation time");
+    this.updatedAt = requiredString(data.updatedAt, "user update time");
     this.twoFactorEnabled = nullableBoolean(data.twoFactorEnabled);
     this.isAnonymous = nullableBoolean(data.isAnonymous);
     this.suspended = nullableBoolean(data.suspended);
@@ -494,6 +510,13 @@ function stringArray(value: unknown): string[] {
 
 function string(value: unknown): string | undefined {
   return typeof value === "string" ? value : undefined;
+}
+
+function requiredString(value: unknown, name: string): string {
+  if (typeof value !== "string" || !value.trim()) {
+    throw new TypeError(`Folo response did not contain a valid ${name}.`);
+  }
+  return value;
 }
 
 function nullableString(value: unknown): string | null | undefined {

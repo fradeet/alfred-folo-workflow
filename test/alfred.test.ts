@@ -22,10 +22,10 @@ import {
   FoloSubscriptionsResult,
   FoloTimelineResult,
   FoloUnreadResult,
+  FoloUser,
   FoloView,
-  FoloWhoamiResult,
 } from "../src/types/folo-types.js";
-import { displayName, readToken, setWorkflowToken } from "../src/app/login.js";
+import { readToken, setWorkflowToken } from "../src/app/login.js";
 import { markRead } from "../src/app/mark-read.js";
 import { parseTimelineInput, timelineArguments } from "../src/app/timeline.js";
 import { parseFoloShareUrl } from "../src/shared/folo-url.js";
@@ -294,15 +294,58 @@ test("errorItem gives useful timeout guidance", () => {
   assert.match(item.subtitle ?? "", /timed out/i);
 });
 
-test("login helpers read the saved token and resolve a username", () => {
+test("login helpers read and validate the saved token", () => {
   assert.equal(readToken('{"token":"secret"}'), "secret");
-  assert.equal(displayName(FoloWhoamiResult.from({
-    user: { name: "Ada", email: "ada@example.com" },
-    session: {},
-  })), "Ada");
   assert.throws(() => readToken("{}"), /token/i);
   assert.throws(() => setWorkflowToken(""), /empty/i);
   assert.throws(() => setWorkflowToken("secret", {}), /alfred_workflow_bundleid/i);
+});
+
+test("FoloLoginResult exposes the user returned by login", () => {
+  const result = FoloLoginResult.from({
+    message: "Login successful.",
+    configPath: "/tmp/folo-config.json",
+    user: {
+      id: "user-1",
+      name: "Ada",
+      handle: "ada",
+      email: "ada@example.com",
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-02T00:00:00.000Z",
+    },
+  });
+
+  assert.ok(result.user instanceof FoloUser);
+  assert.deepEqual(JSON.parse(JSON.stringify(result.user)), {
+    id: "user-1",
+    name: "Ada",
+    handle: "ada",
+    email: "ada@example.com",
+    createdAt: "2026-01-01T00:00:00.000Z",
+    updatedAt: "2026-01-02T00:00:00.000Z",
+  });
+});
+
+test("FoloUser requires the non-null authentication fields", () => {
+  const requiredUser = {
+    id: "user-1",
+    email: "ada@example.com",
+    createdAt: "2026-01-01T00:00:00.000Z",
+    updatedAt: "2026-01-02T00:00:00.000Z",
+  };
+
+  const expectedErrors: Record<string, RegExp> = {
+    id: /user ID/i,
+    email: /user email/i,
+    createdAt: /user creation time/i,
+    updatedAt: /user update time/i,
+  };
+
+  for (const [field, expectedError] of Object.entries(expectedErrors)) {
+    const incompleteUser = { ...requiredUser } as Record<string, string>;
+    delete incompleteUser[field];
+    assert.throws(() => new FoloUser(incompleteUser), expectedError);
+  }
 });
 
 test("FoloTimelineResult converts the observed CLI timeline shape", () => {
