@@ -187,7 +187,13 @@ test("timelineArguments applies unread filtering only to marked inputs", () => {
 test("FoloSubscriptionsResult keeps feed, list, and inbox subscriptions", () => {
   const result = FoloSubscriptionsResult.from({
     subscriptions: [
-      { feedId: "feed-1", feeds: { id: "feed-1" } },
+      {
+        userId: "user-1",
+        feedId: "feed-1",
+        hideFromTimeline: false,
+        feeds: { id: "feed-1", owner: { id: "owner-1", name: "Ada" } },
+        boost: { boosters: [{ id: "booster-1", name: "Grace" }] },
+      },
       { inboxId: "inbox-1", inboxes: { id: "inbox-1" } },
       {
         listId: "list-1",
@@ -199,6 +205,10 @@ test("FoloSubscriptionsResult keeps feed, list, and inbox subscriptions", () => 
 
   assert.equal(result.subscriptions.length, 3);
   assert.equal(result.subscriptions[0]?.feeds?.id, "feed-1");
+  assert.equal(result.subscriptions[0]?.userId, "user-1");
+  assert.equal(result.subscriptions[0]?.hideFromTimeline, false);
+  assert.equal(result.subscriptions[0]?.feeds?.owner?.name, "Ada");
+  assert.equal(result.subscriptions[0]?.boost?.boosters[0]?.name, "Grace");
   assert.equal(result.subscriptions[1]?.inboxes?.id, "inbox-1");
   assert.equal(result.subscriptions[2]?.lists?.title, "Daily Reads");
   assert.deepEqual(result.subscriptions[2]?.lists?.feedIds, ["feed-1"]);
@@ -291,11 +301,26 @@ test("FoloTimelineResult converts the observed CLI timeline shape", () => {
       entries: {
         id: "entry-1",
         title: "Example",
-        media: [{ url: "https://example.com/image.png", type: "photo", width: 640, height: 480 }],
+        media: [{
+          url: "https://example.com/image.png",
+          type: "photo",
+          preview_image_url: "https://example.com/preview.png",
+          width: 640,
+          height: 480,
+          blurhash: "LEHV6nWB2yk8pyo0adR*.7kCMdnj",
+        }],
         categories: ["tech"],
+        attachments: [{
+          url: "https://example.com/audio.mp3",
+          duration_in_seconds: 120,
+          mime_type: "audio/mpeg",
+          size_in_bytes: 1024,
+        }],
+        tags: { schemaOrgCategory: "Technology", mediaTopics: ["software"] },
       },
       feeds: { id: "feed-1", title: "Example Feed" },
       settings: {},
+      collections: { createdAt: "2026-09-12T00:00:00.000Z" },
     }],
     nextCursor: "2026-09-13T00:00:00.000Z",
     hasNext: true,
@@ -303,6 +328,10 @@ test("FoloTimelineResult converts the observed CLI timeline shape", () => {
 
   assert.equal(result.entries[0]?.view, FoloView.Articles);
   assert.equal(result.entries[0]?.entries.media[0]?.width, 640);
+  assert.equal(result.entries[0]?.entries.media[0]?.previewImageUrl, "https://example.com/preview.png");
+  assert.equal(result.entries[0]?.entries.attachments[0]?.mimeType, "audio/mpeg");
+  assert.deepEqual(result.entries[0]?.entries.tags?.mediaTopics, ["software"]);
+  assert.equal(result.entries[0]?.collections?.createdAt, "2026-09-12T00:00:00.000Z");
   assert.equal(result.entries[0]?.feeds.title, "Example Feed");
   assert.equal(result.hasNext, true);
 });

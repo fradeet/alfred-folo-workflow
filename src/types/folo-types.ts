@@ -12,9 +12,11 @@ export enum FoloView {
 export class FoloMedia {
   constructor(
     readonly url?: string,
-    readonly type?: string,
+    readonly type?: "photo" | "video",
+    readonly previewImageUrl?: string,
     readonly width?: number,
     readonly height?: number,
+    readonly blurhash?: string,
   ) {}
 
   /** Creates media metadata from an untrusted CLI value. */
@@ -22,10 +24,42 @@ export class FoloMedia {
     const data = record(value);
     return new FoloMedia(
       string(data.url),
-      string(data.type),
+      mediaType(data.type),
+      string(data.preview_image_url),
       number(data.width),
       number(data.height),
+      string(data.blurhash),
     );
+  }
+}
+
+/** Downloadable attachment metadata attached to a Folo entry. */
+export class FoloAttachment {
+  readonly url?: string;
+  readonly title?: string;
+  readonly durationInSeconds?: number;
+  readonly mimeType?: string;
+  readonly sizeInBytes?: number;
+
+  constructor(value: unknown) {
+    const data = record(value);
+    this.url = string(data.url);
+    this.title = string(data.title);
+    this.durationInSeconds = number(data.duration_in_seconds);
+    this.mimeType = string(data.mime_type);
+    this.sizeInBytes = number(data.size_in_bytes);
+  }
+}
+
+/** Topic classification metadata generated for a Folo entry. */
+export class FoloEntryTags {
+  readonly schemaOrgCategory?: string | null;
+  readonly mediaTopics: string[];
+
+  constructor(value: unknown) {
+    const data = record(value);
+    this.schemaOrgCategory = nullableString(data.schemaOrgCategory);
+    this.mediaTopics = stringArray(data.mediaTopics);
   }
 }
 
@@ -44,10 +78,11 @@ export class FoloEntry {
   readonly publishedAt?: string;
   readonly media: FoloMedia[];
   readonly categories: string[];
-  readonly attachments?: unknown;
+  readonly attachments: FoloAttachment[];
   readonly extra?: unknown;
   readonly language?: string | null;
   readonly summary?: string;
+  readonly tags?: FoloEntryTags;
 
   /** Creates an entry from an untrusted CLI value, omitting invalid optional fields. */
   constructor(value: unknown) {
@@ -64,11 +99,21 @@ export class FoloEntry {
     this.insertedAt = string(data.insertedAt);
     this.publishedAt = string(data.publishedAt);
     this.media = array(data.media).map(FoloMedia.from);
-    this.categories = array(data.categories).flatMap((item) => typeof item === "string" ? [item] : []);
-    this.attachments = data.attachments;
+    this.categories = stringArray(data.categories);
+    this.attachments = array(data.attachments).map((item) => new FoloAttachment(item));
     this.extra = data.extra;
     this.language = nullableString(data.language);
     this.summary = string(data.summary);
+    this.tags = optionalRecord(data.tags) ? new FoloEntryTags(data.tags) : undefined;
+  }
+}
+
+/** Collection metadata attached to a collected timeline entry. */
+export class FoloCollection {
+  readonly createdAt?: string;
+
+  constructor(value: unknown) {
+    this.createdAt = string(record(value).createdAt);
   }
 }
 
@@ -84,6 +129,7 @@ export class FoloFeed {
   readonly errorMessage?: string | null;
   readonly errorAt?: string | null;
   readonly ownerUserId?: string | null;
+  readonly owner?: FoloUser;
 
   /** Creates feed metadata from an untrusted CLI value. */
   constructor(value: unknown) {
@@ -98,6 +144,7 @@ export class FoloFeed {
     this.errorMessage = nullableString(data.errorMessage);
     this.errorAt = nullableString(data.errorAt);
     this.ownerUserId = nullableString(data.ownerUserId);
+    this.owner = optionalRecord(data.owner) ? new FoloUser(data.owner) : undefined;
   }
 }
 
@@ -110,6 +157,7 @@ export class FoloTimelineItem {
   readonly entries: FoloEntry;
   readonly feeds: FoloFeed;
   readonly settings: Record<string, unknown>;
+  readonly collections?: FoloCollection;
 
   /** Creates a timeline row from an untrusted CLI value. */
   constructor(value: unknown) {
@@ -117,10 +165,13 @@ export class FoloTimelineItem {
     this.read = boolean(data.read);
     this.view = view(data.view);
     this.aiScore = nullableNumber(data.aiScore);
-    this.from = array(data.from).flatMap((item) => typeof item === "string" ? [item] : []);
+    this.from = stringArray(data.from);
     this.entries = new FoloEntry(data.entries);
     this.feeds = new FoloFeed(data.feeds);
     this.settings = record(data.settings);
+    this.collections = optionalRecord(data.collections)
+      ? new FoloCollection(data.collections)
+      : undefined;
   }
 }
 
@@ -183,6 +234,7 @@ export class FoloInbox {
 
 /** A feed, list, or inbox subscription. */
 export class FoloSubscription {
+  readonly userId?: string;
   readonly feedId?: string;
   readonly listId?: string;
   readonly inboxId?: string;
@@ -190,13 +242,16 @@ export class FoloSubscription {
   readonly category?: string | null;
   readonly view?: FoloView;
   readonly isPrivate?: boolean;
+  readonly hideFromTimeline?: boolean | null;
   readonly createdAt?: string;
   readonly feeds?: FoloFeed;
   readonly lists?: FoloList;
   readonly inboxes?: FoloInbox;
+  readonly boost?: FoloBoost;
 
   constructor(value: unknown) {
     const data = record(value);
+    this.userId = string(data.userId);
     this.feedId = string(data.feedId);
     this.listId = string(data.listId);
     this.inboxId = string(data.inboxId);
@@ -204,10 +259,21 @@ export class FoloSubscription {
     this.category = nullableString(data.category);
     this.view = view(data.view);
     this.isPrivate = boolean(data.isPrivate);
+    this.hideFromTimeline = nullableBoolean(data.hideFromTimeline);
     this.createdAt = string(data.createdAt);
     this.feeds = optionalRecord(data.feeds) ? new FoloFeed(data.feeds) : undefined;
     this.lists = optionalRecord(data.lists) ? new FoloList(data.lists) : undefined;
     this.inboxes = optionalRecord(data.inboxes) ? new FoloInbox(data.inboxes) : undefined;
+    this.boost = optionalRecord(data.boost) ? new FoloBoost(data.boost) : undefined;
+  }
+}
+
+/** Users boosting a subscribed feed. */
+export class FoloBoost {
+  readonly boosters: FoloUser[];
+
+  constructor(value: unknown) {
+    this.boosters = array(record(value).boosters).map((item) => new FoloUser(item));
   }
 }
 
@@ -419,6 +485,10 @@ function array(value: unknown): unknown[] {
   return Array.isArray(value) ? value : [];
 }
 
+function stringArray(value: unknown): string[] {
+  return array(value).flatMap((item) => typeof item === "string" ? [item] : []);
+}
+
 function string(value: unknown): string | undefined {
   return typeof value === "string" ? value : undefined;
 }
@@ -441,6 +511,10 @@ function boolean(value: unknown): boolean | undefined {
 
 function nullableBoolean(value: unknown): boolean | null | undefined {
   return value === null ? null : boolean(value);
+}
+
+function mediaType(value: unknown): "photo" | "video" | undefined {
+  return value === "photo" || value === "video" ? value : undefined;
 }
 
 function view(value: unknown): FoloView | undefined {
