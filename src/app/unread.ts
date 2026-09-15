@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { emptyItem, errorItem, output, unreadItems } from "./alfred.js";
-import { runFolo } from "./folo-cli.js";
-import { FoloUnreadResult } from "./types/folo-types.js";
-import { loadCachedIcons } from "./icon-cache.js";
+import { emptyItem, errorItem, output, unreadItems } from "../shared/alfred.js";
+import { runFolo } from "../shared/folo-cli.js";
+import { FoloUnreadResult } from "../types/folo-types.js";
+import { loadCachedIcons } from "../shared/icon-cache.js";
 
 const query = process.argv.slice(2).join(" ");
 

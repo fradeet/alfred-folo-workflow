@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { mkdir, readdir, rename, stat, unlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { extname, join } from "node:path";
-import { isRecord } from "./folo-cli.js";
+import { isRecord } from "./guards.js";
 
 const DEFAULT_MAX_AGE = 7 * 24 * 60 * 60 * 1_000;
 const FOLO_ICON_MAX_AGE = 30 * 24 * 60 * 60 * 1_000;

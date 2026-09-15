@@ -1,9 +1,26 @@
 import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isRecord } from "./guards.js";
 
-const workflowDirectory = dirname(dirname(fileURLToPath(import.meta.url)));
-const cliEntry = join(workflowDirectory, "node_modules", "folocli", "dist", "index.js");
+const CLI_RELATIVE_ENTRY = join("node_modules", "folocli", "dist", "index.js");
+
+// The compiled module may sit at any depth under the workflow bundle
+// (e.g. dist/shared/), so locate the bundled CLI by walking up to the
+// directory that actually contains its node_modules entry.
+function resolveCliEntry(): string {
+  let directory = dirname(fileURLToPath(import.meta.url));
+  for (;;) {
+    const candidate = join(directory, CLI_RELATIVE_ENTRY);
+    if (existsSync(candidate)) return candidate;
+    const parent = dirname(directory);
+    if (parent === directory) return join(directory, CLI_RELATIVE_ENTRY);
+    directory = parent;
+  }
+}
+
+const cliEntry = resolveCliEntry();
 
 export interface RunFoloOptions {
   timeout?: number;
@@ -19,10 +36,6 @@ export class FoloError extends Error {
     super(message);
     this.name = "FoloError";
   }
-}
-
-export function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
 }
 
 export function parseFoloEnvelope(rawOutput: string, fallbackMessage?: string): unknown {

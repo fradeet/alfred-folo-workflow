@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { pathToFileURL } from "node:url";
-import { FoloError, runFolo } from "./folo-cli.js";
+import { FoloError, runFolo } from "../shared/folo-cli.js";
 
 export function markRead(entryId: string): string {
   const normalizedEntryId = entryId.trim();

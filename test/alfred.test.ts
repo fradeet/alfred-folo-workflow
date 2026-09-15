@@ -3,7 +3,7 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { errorItem, subscriptionItems, timelineItems, unreadItems } from "../src/alfred.js";
+import { errorItem, subscriptionItems, timelineItems, unreadItems } from "../src/shared/alfred.js";
 import {
   AlfredSF,
   AlfredSFCache,
@@ -15,7 +15,7 @@ import {
   AlfredTVBehaviourResponse,
   AlfredTVBehaviourScroll,
 } from "../src/types/alfred-types.js";
-import { FoloError, parseFoloEnvelope } from "../src/folo-cli.js";
+import { FoloError, parseFoloEnvelope } from "../src/shared/folo-cli.js";
 import {
   FoloLoginResult,
   FoloSubscriptionsResult,
@@ -24,11 +24,11 @@ import {
   FoloView,
   FoloWhoamiResult,
 } from "../src/types/folo-types.js";
-import { displayName, readToken, setWorkflowToken } from "../src/login.js";
-import { markRead } from "../src/mark-read.js";
-import { parseTimelineInput, timelineArguments } from "../src/timeline.js";
-import { parseFoloShareUrl } from "../src/folo-url.js";
-import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/icon-cache.js";
+import { displayName, readToken, setWorkflowToken } from "../src/app/login.js";
+import { markRead } from "../src/app/mark-read.js";
+import { parseTimelineInput, timelineArguments } from "../src/app/timeline.js";
+import { parseFoloShareUrl } from "../src/shared/folo-url.js";
+import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/shared/icon-cache.js";
 
 test("feedIconUrl prefers an official image and falls back to Folo's domain icon", () => {
   assert.equal(feedIconUrl({

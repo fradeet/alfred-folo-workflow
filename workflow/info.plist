@@ -242,7 +242,7 @@
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>dist/login.js</string>
+				<string>dist/app/login.js</string>
 				<key>type</key>
 				<integer>8</integer>
 			</dict>
@@ -402,7 +402,7 @@
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
-				<string>dist/mark-read.js</string>
+				<string>dist/app/mark-read.js</string>
 				<key>type</key>
 				<integer>8</integer>
 			</dict>
@@ -445,7 +445,7 @@
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
-				<string>dist/subscriptions.js</string>
+				<string>dist/app/subscriptions.js</string>
 				<key>subtext</key>
 				<string>Search all your subscriptions</string>
 				<key>title</key>
@@ -537,7 +537,7 @@
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
-				<string>dist/unread.js</string>
+				<string>dist/app/unread.js</string>
 				<key>subtext</key>
 				<string>Retrieve unread feed</string>
 				<key>title</key>

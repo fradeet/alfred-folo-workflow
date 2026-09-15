@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import { pathToFileURL } from "node:url";
-import { emptyItem, errorItem, output, timelineItems } from "./alfred.js";
-import { runFolo } from "./folo-cli.js";
-import { FoloTimelineResult } from "./types/folo-types.js";
-import { cacheIcons } from "./icon-cache.js";
-import { parseFoloShareUrl } from "./folo-url.js";
+import { emptyItem, errorItem, output, timelineItems } from "../shared/alfred.js";
+import { runFolo } from "../shared/folo-cli.js";
+import { FoloTimelineResult } from "../types/folo-types.js";
+import { cacheIcons } from "../shared/icon-cache.js";
+import { parseFoloShareUrl } from "../shared/folo-url.js";
 
 export interface TimelineInput {
   query: string;

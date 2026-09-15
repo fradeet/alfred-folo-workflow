@@ -60,7 +60,7 @@ The single-entry read action accepts an entry ID and echoes the same ID after a
 successful update:
 
 ```bash
-node workflow/dist/mark-read.js "$FOLO_ENTRY_ID"
+node workflow/dist/app/mark-read.js "$FOLO_ENTRY_ID"
 ```
 
 Then open `Folo.alfredworkflow` to install it in Alfred.
