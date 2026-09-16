@@ -79,6 +79,9 @@ contracts -> types/shared
 
 - Values passed between Alfred nodes are serialized class contracts, not raw
   Folo CLI objects and not anonymous object literals.
+- The upstream item payload and downstream orchestration input must use the same
+  neutral contract type from `src/contracts/`. Do not add an app-specific input
+  wrapper when it carries no additional validation or semantics.
 - Give each cross-app contract a stable `kind` discriminator.
 - Implement explicit `toJSON()` and `serialize()` output plus `from()` or
   `parse()` validation at the receiving boundary.
@@ -89,6 +92,8 @@ contracts -> types/shared
   recombine business fields such as `entryId`, `url`, or feed identifiers.
 - Plain strings are appropriate only for terminal adapters whose consumer
   requires them, such as Alfred's Open URL action.
+- When one downstream app accepts several upstream contracts, use a discriminated
+  union and a boundary parser instead of wrapper classes around each selection.
 
 ## Types and validation
 

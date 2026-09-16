@@ -14,19 +14,17 @@ import { FoloResourceSelection } from "../contracts/resource-selection.js";
 import { TimelineSelection } from "../contracts/timeline-selection.js";
 import { parseRecord } from "../contracts/serialized-value.js";
 
-export class ResourceUrlAppInput {
-  constructor(readonly selection: FoloResourceSelection | TimelineSelection) {}
+export type ResourceUrlAppInput = FoloResourceSelection | TimelineSelection;
 
-  static parse(value: string): ResourceUrlAppInput {
-    const data = parseRecord(value, "Resource URL input");
-    if (data.kind === "folo-resource") {
-      return new ResourceUrlAppInput(FoloResourceSelection.from(data));
-    }
-    if (data.kind === "timeline-entry") {
-      return new ResourceUrlAppInput(TimelineSelection.from(data));
-    }
-    throw new TypeError("Resource URL input has an unsupported kind");
+export function parseResourceUrlInput(value: string): ResourceUrlAppInput {
+  const data = parseRecord(value, "Resource URL input");
+  if (data.kind === "folo-resource") {
+    return FoloResourceSelection.from(data);
   }
+  if (data.kind === "timeline-entry") {
+    return TimelineSelection.from(data);
+  }
+  throw new TypeError("Resource URL input has an unsupported kind");
 }
 
 export class ResourceUrlAppOutput {
@@ -38,16 +36,14 @@ export class ResourceUrlAppOutput {
 }
 
 export function resourceUrl(input: ResourceUrlAppInput): ResourceUrlAppOutput {
-  const url = input.selection instanceof FoloResourceSelection
-    ? input.selection.openUrl
-    : input.selection.url;
+  const url = input instanceof FoloResourceSelection ? input.openUrl : input.url;
   return new ResourceUrlAppOutput(url);
 }
 
 function main(): void {
   const input = process.argv.slice(2).join(" ").trim();
   try {
-    process.stdout.write(resourceUrl(ResourceUrlAppInput.parse(input)).serialize());
+    process.stdout.write(resourceUrl(parseResourceUrlInput(input)).serialize());
   } catch (error: unknown) {
     console.error(error instanceof Error ? error.message : String(error));
     process.exitCode = 1;

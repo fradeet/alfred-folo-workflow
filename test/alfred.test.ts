@@ -29,13 +29,17 @@ import {
   FoloView,
 } from "../src/types/folo-types.js";
 import { readToken, setWorkflowToken } from "../src/app/login.js";
-import { resourceTimelineInput, shareUrlTimelineInput } from "../src/app/timeline-params-converter.js";
+import {
+  FoloShareUrlInput,
+  resourceTimelineInput,
+  shareUrlTimelineInput,
+} from "../src/app/timeline-params-converter.js";
 import { TimelineAppInput } from "../src/app/timeline.js";
 import { parseFoloShareUrl } from "../src/shared/folo-url.js";
 import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/shared/icon-cache.js";
 import { FoloResourceSelection } from "../src/contracts/resource-selection.js";
 import { TimelineSelection } from "../src/contracts/timeline-selection.js";
-import { ResourceUrlAppInput, resourceUrl } from "../src/app/resource-url.js";
+import { resourceUrl } from "../src/app/resource-url.js";
 
 test("feedIconUrl prefers an official image and falls back to Folo's domain icon", () => {
   assert.equal(feedIconUrl({
@@ -197,20 +201,20 @@ test("resourceUrl consumes a complete resource selection", () => {
     "list-1",
     "https://app.folo.is/share/lists/list-1",
   );
-  assert.equal(resourceUrl(ResourceUrlAppInput.parse(feed.serialize())).serialize(), "https://example.com");
-  assert.equal(resourceUrl(ResourceUrlAppInput.parse(list.serialize())).serialize(), list.shareUrl);
+  assert.equal(resourceUrl(FoloResourceSelection.parse(feed.serialize())).serialize(), "https://example.com");
+  assert.equal(resourceUrl(FoloResourceSelection.parse(list.serialize())).serialize(), list.shareUrl);
 });
 
 test("shareUrlTimelineInput converts share URLs into typed timeline input", () => {
   assert.equal(
-    shareUrlTimelineInput("https://app.folo.is/share/feeds/41470869403557888")?.request.feed,
+    shareUrlTimelineInput(new FoloShareUrlInput("https://app.folo.is/share/feeds/41470869403557888")).request.feed,
     "41470869403557888",
   );
   assert.equal(
-    shareUrlTimelineInput("https://app.folo.is/share/lists/162747179238521856")?.request.list,
+    shareUrlTimelineInput(new FoloShareUrlInput("https://app.folo.is/share/lists/162747179238521856")).request.list,
     "162747179238521856",
   );
-  assert.equal(shareUrlTimelineInput("https://example.com/feed"), undefined);
+  assert.throws(() => new FoloShareUrlInput("https://example.com/feed"), /Folo share URL/i);
 });
 
 test("TimelineBlockInput maps its fields onto Folo CLI flags", () => {
@@ -236,13 +240,13 @@ test("TimelineBlockInput maps its fields onto Folo CLI flags", () => {
   assert.deepEqual(new TimelineBlockInput().withDefaultLimit(50).toArguments(), ["timeline", "--limit", "50"]);
 });
 
-test("resourceTimelineInput accepts the serialized selection without intermediate extraction", () => {
+test("resourceTimelineInput accepts the upstream selection directly", () => {
   const selection = new FoloResourceSelection(
     "list",
     "list-1",
     "https://app.folo.is/share/lists/list-1",
   );
-  assert.equal(resourceTimelineInput(selection.serialize())?.request.list, "list-1");
+  assert.equal(resourceTimelineInput(selection).request.list, "list-1");
 });
 
 test("FoloSubscriptionsResult keeps feed, list, and inbox subscriptions", () => {

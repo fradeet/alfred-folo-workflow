@@ -14,14 +14,6 @@ import { MarkReadBlockInput, MarkReadBlockOutput, markEntryRead } from "../block
 import { TimelineSelection } from "../contracts/timeline-selection.js";
 import { SerializedValue } from "../contracts/serialized-value.js";
 
-export class MarkReadAppInput {
-  constructor(readonly selection: TimelineSelection) {}
-
-  static parse(value: string): MarkReadAppInput {
-    return new MarkReadAppInput(TimelineSelection.parse(value));
-  }
-}
-
 export class MarkReadAppOutput extends SerializedValue {
   readonly kind = "mark-read-result";
 
@@ -35,14 +27,14 @@ export class MarkReadAppOutput extends SerializedValue {
 }
 
 /** Marks the selected Folo entry as read. */
-export function markRead(input: MarkReadAppInput): MarkReadAppOutput {
-  const result: MarkReadBlockOutput = markEntryRead(new MarkReadBlockInput(input.selection.entryId));
+export function markRead(input: TimelineSelection): MarkReadAppOutput {
+  const result: MarkReadBlockOutput = markEntryRead(new MarkReadBlockInput(input.entryId));
   return new MarkReadAppOutput(result.entryId);
 }
 
 function main(): void {
   try {
-    const input = MarkReadAppInput.parse(process.argv.slice(2).join(" "));
+    const input = TimelineSelection.parse(process.argv.slice(2).join(" "));
     process.stdout.write(markRead(input).serialize());
   } catch (error: unknown) {
     console.error(error instanceof Error ? error.message : String(error));
