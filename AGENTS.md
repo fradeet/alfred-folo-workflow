@@ -64,6 +64,14 @@ contracts -> types/shared
 
 - An app file is an Alfred boundary: parse argv/environment into an input class,
   compose block operations, and emit an output class.
+- Pass an app's primary input, especially a serialized class contract, through
+  command-line arguments. Apps may read auxiliary configuration or
+  workflow-global state directly from environment variables.
+- Use a shell adapter when Alfred supplies an app's primary input through an
+  environment variable. The adapter must forward the complete value unchanged
+  as one command-line argument to the app entry point.
+- Keep shell adapters thin. JSON parsing, validation, field extraction, and
+  business logic belong in TypeScript app entry points, not shell scripts.
 - Export the input class, output class, and orchestration function when practical
   so they can be tested without executing the entry point.
 - If an app module is imported by another module, guard its CLI entry point with
@@ -108,8 +116,13 @@ contracts -> types/shared
 
 ## Alfred workflow rules
 
-- Script Filter item `arg` values must contain the complete serialized selection
-  expected by downstream apps.
+- Pass cross-node selections as complete serialized contracts, whether carried
+  by a Script Filter item `arg` or an Alfred workflow variable. Do not split a
+  contract across several arguments or variables.
+- When an Alfred workflow variable carries an app's primary input, use a shell
+  adapter to convert that environment value into the app's command-line
+  argument. Reserve direct environment reads in TypeScript for auxiliary
+  configuration and workflow-global state.
 - Keep workflow nodes focused on routing. Business parsing and field selection
   belong in TypeScript app entry points.
 - When changing app inputs, outputs, filenames, or connections, update

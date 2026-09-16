@@ -6,10 +6,6 @@ import { FoloResourceSelection } from "../src/contracts/resource-selection.js";
 import { TimelineSelection } from "../src/contracts/timeline-selection.js";
 import { FoloEntry, FoloFeed, FoloTimelineSubscription } from "../src/types/folo-types.js";
 import { parseResourceUrlInput, resourceUrl } from "../src/app/resource-url.js";
-import {
-  convertTimelineParams,
-  parseTimelineParamsConverterInput,
-} from "../src/app/timeline-params-converter.js";
 
 test("resource selections retain their complete cross-app contract", () => {
   const value = new FoloResourceSelection(
@@ -22,10 +18,9 @@ test("resource selections retain their complete cross-app contract", () => {
   assert.equal(FoloResourceSelection.parse(value.serialize()).openUrl, "https://example.com");
   assert.ok(parseResourceUrlInput(value.serialize()) instanceof FoloResourceSelection);
   assert.equal(resourceUrl(value).url, "https://example.com");
-  assert.equal(convertTimelineParams(value).request.feed, "feed-1");
-  assert.ok(parseTimelineParamsConverterInput(value.serialize()) instanceof FoloResourceSelection);
+  assert.equal(TimelineAppInput.parse(value.serialize()).request.feed, "feed-1");
   assert.throws(
-    () => parseTimelineParamsConverterInput('{"kind":"folo-resource"}'),
+    () => TimelineAppInput.parse('{"kind":"folo-resource"}'),
     /resource type|incomplete/i,
   );
 });

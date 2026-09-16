@@ -4,8 +4,9 @@
  *
  * Input (argv joined with spaces): either
  * - a plain filter query matched against the fetched entries, or
- * - a serialized {@link TimelineAppInput} produced by upstream workflow items
- *   (e.g. timeline-params-converter). Malformed JSON falls back to a query.
+ * - a serialized {@link FoloResourceSelection} from the subscriptions or
+ *   unread Script Filter, or
+ * - a serialized {@link TimelineAppInput}. Malformed JSON falls back to a query.
  *
  * Environment: `FOLO_LIMIT` sets the default entry limit (digits only, otherwise 30).
  *
@@ -18,7 +19,9 @@
 import { pathToFileURL } from "node:url";
 import { emptyItem, errorItem, timelineItems } from "../shared/alfred.js";
 import { cacheIcons } from "../shared/icon-cache.js";
+import { parseFoloShareUrl } from "../shared/folo-url.js";
 import { TimelineBlockInput, getTimeline } from "../block/folo/timeline.js";
+import { FoloResourceSelection } from "../contracts/resource-selection.js";
 import { SerializedValue, parseRecord } from "../contracts/serialized-value.js";
 import { AlfredSF, AlfredSFCache, AlfredSFItem } from "../types/alfred-types.js";
 
@@ -50,16 +53,34 @@ export class TimelineAppInput extends SerializedValue {
 
   static parse(value: string): TimelineAppInput {
     const query = value.trim();
-    if (!query.startsWith("{")) return new TimelineAppInput(query);
+    if (!query.startsWith("{")) {
+      const target = parseFoloShareUrl(query);
+      return target
+        ? new TimelineAppInput(
+            "",
+            new TimelineBlockInput(target.type === "list" ? { list: target.id } : { feed: target.id }),
+          )
+        : new TimelineAppInput(query);
+    }
     let data: Record<string, unknown>;
     try {
       data = parseRecord(query, "Timeline app input");
     } catch {
       return new TimelineAppInput(query);
     }
-    return data.kind === "timeline-input"
-      ? TimelineAppInput.from(data)
-      : new TimelineAppInput(query);
+    if (data.kind === "timeline-input") return TimelineAppInput.from(data);
+    if (data.kind === "folo-resource") {
+      const resource = FoloResourceSelection.from(data);
+      return new TimelineAppInput(
+        "",
+        new TimelineBlockInput(
+          resource.resourceType === "list"
+            ? { list: resource.resourceId }
+            : { feed: resource.resourceId },
+        ),
+      );
+    }
+    return new TimelineAppInput(query);
   }
 }
 

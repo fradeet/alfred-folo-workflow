@@ -6,8 +6,9 @@
  * titles, kinds, categories, descriptions, and IDs.
  *
  * Output:
- * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` is a
- *   serialized resource selection. An empty result yields a non-valid item.
+ * - stdout: Alfred Script Filter JSON cached for 60s. Each item's
+ *   `frr_timeline_filter` variable is a serialized resource selection. An empty
+ *   result yields a non-valid item.
  * - On failure: an error item is emitted and the exit code is 1.
  */
 import { emptyItem, errorItem, subscriptionItems } from "../shared/alfred.js";

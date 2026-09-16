@@ -88,16 +88,18 @@ export function subscriptionItems(data: FoloSubscriptionsResult, query = "", ico
       foloUrl,
       feed?.siteUrl,
     );
+    const serializedSelection = selection.serialize();
     const searchable = [title, kind, category, description, id].join(" ").toLocaleLowerCase();
 
     return [new AlfredSFItem(title, {
       subtitle,
-      arg: selection.serialize(),
       icon: icon(target, iconFor),
       uid: `${kind.toLocaleLowerCase()}-${id}`,
       match: searchable,
+      mods: { alt: { arg: serializedSelection } },
       quicklookurl: foloUrl,
       text: new AlfredSFItemText(foloUrl, description || title),
+      variables: { frr_timeline_filter: serializedSelection },
     })];
   });
 
@@ -125,16 +127,18 @@ export function unreadItems(data: FoloUnreadResult, query = "", iconFor?: IconRe
       timelineId,
       foloUrl,
     );
+    const serializedSelection = selection.serialize();
     const searchable = [title, kind, category, unreadDetail, sourceId].join(" ").toLocaleLowerCase();
 
     return [new AlfredSFItem(title, {
       subtitle,
-      arg: selection.serialize(),
       icon: icon(source, iconFor),
       uid: `unread-${sourceType}-${sourceId}`,
       match: searchable,
+      mods: { alt: { arg: serializedSelection } },
       quicklookurl: foloUrl,
       text: new AlfredSFItemText(foloUrl, `${title} · ${unreadDetail}`),
+      variables: { frr_timeline_filter: serializedSelection },
     })];
   });
 
