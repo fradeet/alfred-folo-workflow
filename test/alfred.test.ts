@@ -31,7 +31,7 @@ import { readToken, setWorkflowToken } from "../src/app/login.js";
 import { markRead } from "../src/app/mark-read.js";
 import { shareUrlTimelineParams } from "../src/app/timeline-params-converter.js";
 import { parseTimelineInput, timelineArguments } from "../src/app/timeline.js";
-import { parseFoloShareUrl } from "../src/shared/folo-url.js";
+import { foloResourceUrl, parseFoloShareUrl } from "../src/shared/folo-url.js";
 import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/shared/icon-cache.js";
 
 test("feedIconUrl prefers an official image and falls back to Folo's domain icon", () => {
@@ -114,9 +114,8 @@ test("subscriptionItems maps every subscription target and filters locally", () 
   assert.equal(items.length, 2);
   assert.equal(items[0]?.title, "Daily Reads");
   assert.match(items[0]?.subtitle ?? "", /List.*Tech.*2 feeds.*useful bundle/);
-  assert.equal(items[0]?.arg, JSON.stringify({ list: "list-1" }));
-  assert.equal(items[1]?.arg, JSON.stringify({ feed: "feed-1" }));
-  assert.equal(items[1]?.mods?.alt?.arg, "https://example.com");
+  assert.deepEqual(JSON.parse(String(items[0]?.arg)), data.subscriptions[0]);
+  assert.deepEqual(JSON.parse(String(items[1]?.arg)), data.subscriptions[1]);
   assert.equal(subscriptionItems(data, "useful").length, 1);
   assert.equal(subscriptionItems(data, "missing").length, 0);
 });
@@ -134,10 +133,10 @@ test("unreadItems maps unread sources and filters locally", () => {
   const items = unreadItems(data);
   assert.equal(items.length, 3);
   assert.match(items[0]?.subtitle ?? "", /12 unread.*Feed.*Tech/);
-  assert.equal(items[0]?.arg, JSON.stringify({ feed: "feed-1", unreadOnly: true }));
+  assert.deepEqual(JSON.parse(String(items[0]?.arg)), data.items[0]);
   assert.equal(items[0]?.variables, undefined);
-  assert.equal(items[1]?.arg, JSON.stringify({ list: "list-1", unreadOnly: true }));
-  assert.equal(items[2]?.arg, JSON.stringify({ feed: "inbox-inbox-1", unreadOnly: true }));
+  assert.deepEqual(JSON.parse(String(items[1]?.arg)), data.items[1]);
+  assert.deepEqual(JSON.parse(String(items[2]?.arg)), data.items[2]);
   assert.equal(unreadItems(data, "newsletters").length, 1);
   assert.equal(unreadItems(data, "missing").length, 0);
 });
@@ -170,6 +169,43 @@ test("parseFoloShareUrl parses feed and list share URLs", () => {
     id: "list-1",
   });
   assert.equal(parseFoloShareUrl("Alfred Blog"), undefined);
+});
+
+test("foloResourceUrl composes share URLs from subscription and unread structures", () => {
+  assert.equal(
+    foloResourceUrl({ listId: "list-1", category: "Tech" }),
+    "https://app.folo.is/share/lists/list-1",
+  );
+  assert.equal(
+    foloResourceUrl({ lists: { id: "list-2" } }),
+    "https://app.folo.is/share/lists/list-2",
+  );
+  assert.equal(
+    foloResourceUrl({ feedId: "feed-1", feeds: { id: "feed-ignored" } }),
+    "https://app.folo.is/share/feeds/feed-1",
+  );
+  assert.equal(
+    foloResourceUrl({ feeds: { id: "feed-2" } }),
+    "https://app.folo.is/share/feeds/feed-2",
+  );
+  assert.equal(
+    foloResourceUrl({ inboxId: "inbox-1", feedId: "inbox-inbox-1" }),
+    "https://app.folo.is/share/feeds/inbox-inbox-1",
+  );
+  assert.equal(
+    foloResourceUrl({ sourceType: "feed", sourceId: "feed-1" }),
+    "https://app.folo.is/share/feeds/feed-1",
+  );
+  assert.equal(
+    foloResourceUrl({ sourceType: "list", sourceId: "list-1" }),
+    "https://app.folo.is/share/lists/list-1",
+  );
+  assert.equal(
+    foloResourceUrl({ sourceType: "inbox", sourceId: "inbox-1", feedId: "inbox-inbox-1" }),
+    "https://app.folo.is/share/feeds/inbox-inbox-1",
+  );
+  assert.equal(foloResourceUrl({ title: "No identifiers" }), undefined);
+  assert.equal(foloResourceUrl("invalid"), undefined);
 });
 
 test("shareUrlTimelineParams converts share URLs into timeline params", () => {

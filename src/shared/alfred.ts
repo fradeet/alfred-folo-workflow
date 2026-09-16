@@ -83,23 +83,14 @@ export function subscriptionItems(data: unknown, query = "", iconFor?: IconResol
     const foloUrl = list
       ? `https://app.folo.is/share/lists/${encodeURIComponent(id)}`
       : `https://app.folo.is/share/feeds/${encodeURIComponent(id)}`;
-    const timelineParams = list ? { list: id } : { feed: id };
-    const originalUrl = feed ? optionalString(feed.siteUrl) ?? optionalString(feed.url) : undefined;
     const searchable = [title, kind, category, description, id].join(" ").toLocaleLowerCase();
 
     return [new AlfredSFItem(title, {
       subtitle,
-      arg: JSON.stringify(timelineParams),
+      arg: JSON.stringify(subscription),
       icon: icon(target, iconFor),
       uid: `${kind.toLocaleLowerCase()}-${id}`,
       match: searchable,
-      mods: originalUrl ? {
-        alt: {
-          arg: originalUrl,
-          subtitle: "Open original URL",
-          valid: true,
-        },
-      } : undefined,
       quicklookurl: foloUrl,
       text: new AlfredSFItemText(foloUrl, description || title),
     })];
@@ -129,15 +120,11 @@ export function unreadItems(data: unknown, query = "", iconFor?: IconResolver): 
     const timelineType = sourceType === "list" ? "lists" : "feeds";
     const timelineId = sourceType === "inbox" ? optionalString(source.feedId) ?? sourceId : sourceId;
     const foloUrl = `https://app.folo.is/share/${timelineType}/${encodeURIComponent(timelineId)}`;
-    const timelineParams = {
-      ...(sourceType === "list" ? { list: sourceId } : { feed: timelineId }),
-      unreadOnly: true,
-    };
     const searchable = [title, kind, category, unreadDetail, sourceId].join(" ").toLocaleLowerCase();
 
     return [new AlfredSFItem(title, {
       subtitle,
-      arg: JSON.stringify(timelineParams),
+      arg: JSON.stringify(source),
       icon: icon(source, iconFor),
       uid: `unread-${sourceType}-${sourceId}`,
       match: searchable,
