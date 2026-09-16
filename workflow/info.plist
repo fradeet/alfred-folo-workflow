@@ -48,7 +48,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
+				<string>A1F580FD-4E85-4F3D-B68E-781A35E2BAAF</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -134,6 +134,19 @@
 		</array>
 		<key>9FCCC6CA-5715-44A6-88E7-113666703284</key>
 		<array/>
+		<key>A1F580FD-4E85-4F3D-B68E-781A35E2BAAF</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>BB50A60F-23F2-4624-AE32-5036F1DBEC59</key>
 		<array/>
 		<key>C07E8E1C-01D8-4B1D-918E-56C4B698C076</key>
@@ -300,6 +313,34 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>dist/app/timeline-params-converter.js</string>
+				<key>type</key>
+				<integer>8</integer>
+			</dict>
+			<key>inboundconfig</key>
+			<dict>
+				<key>externalid</key>
+				<string>folo-timeline</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>0F4A0C17-ACBF-486D-898E-74451610FE41</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>browser</key>
 				<string></string>
 				<key>skipqueryencode</key>
@@ -350,7 +391,7 @@
 				<key>argumenttype</key>
 				<integer>2</integer>
 				<key>escaping</key>
-				<integer>102</integer>
+				<integer>0</integer>
 				<key>keyword</key>
 				<string>{var:FOLO_KEYWORD}</string>
 				<key>queuedelaycustom</key>
@@ -368,7 +409,9 @@
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
-				<string>script/timeline.sh</string>
+				<string>script/timeline-filter.sh</string>
+				<key>skipuniversalaction</key>
+				<true/>
 				<key>subtext</key>
 				<string>Search recent entries</string>
 				<key>title</key>
@@ -415,19 +458,14 @@
 				<false/>
 				<key>variables</key>
 				<dict>
-					<key>FOLO_FILTER</key>
+					<key>FRR_TIMELINE_FILTER</key>
 					<string>{query}</string>
 				</dict>
-			</dict>
-			<key>inboundconfig</key>
-			<dict>
-				<key>externalid</key>
-				<string>folo-timeline</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.utility.argument</string>
 			<key>uid</key>
-			<string>0F4A0C17-ACBF-486D-898E-74451610FE41</string>
+			<string>A1F580FD-4E85-4F3D-B68E-781A35E2BAAF</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -676,9 +714,9 @@
 			<key>colorindex</key>
 			<integer>3</integer>
 			<key>xpos</key>
-			<real>515</real>
+			<real>475</real>
 			<key>ypos</key>
-			<real>215</real>
+			<real>185</real>
 		</dict>
 		<key>318AF45B-B2CB-4A05-B082-F4C436780C09</key>
 		<dict>
@@ -742,6 +780,13 @@
 			<real>1345</real>
 			<key>ypos</key>
 			<real>330</real>
+		</dict>
+		<key>A1F580FD-4E85-4F3D-B68E-781A35E2BAAF</key>
+		<dict>
+			<key>xpos</key>
+			<real>620</real>
+			<key>ypos</key>
+			<real>215</real>
 		</dict>
 		<key>BB50A60F-23F2-4624-AE32-5036F1DBEC59</key>
 		<dict>
@@ -891,10 +936,8 @@
 			<string>FOLO_LIMIT</string>
 		</dict>
 	</array>
-	<key>variablesdontexport</key>
-	<array/>
 	<key>version</key>
-	<string>0.3.5</string>
+	<string>0.3.7</string>
 	<key>webaddress</key>
 	<string>https://github.com/fradeet/alfred-folo-workflow</string>
 </dict>

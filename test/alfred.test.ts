@@ -18,8 +18,10 @@ import {
 import { FoloError, parseFoloEnvelope } from "../src/shared/folo-cli.js";
 import { FoloEntryOutput } from "../src/shared/entry-output.js";
 import {
+  FoloAttachment,
   FoloLoginResult,
   FoloSubscriptionsResult,
+  FoloTimelineItem,
   FoloTimelineResult,
   FoloUnreadResult,
   FoloUser,
@@ -27,6 +29,7 @@ import {
 } from "../src/types/folo-types.js";
 import { readToken, setWorkflowToken } from "../src/app/login.js";
 import { markRead } from "../src/app/mark-read.js";
+import { shareUrlTimelineParams } from "../src/app/timeline-params-converter.js";
 import { parseTimelineInput, timelineArguments } from "../src/app/timeline.js";
 import { parseFoloShareUrl } from "../src/shared/folo-url.js";
 import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/shared/icon-cache.js";
@@ -111,8 +114,8 @@ test("subscriptionItems maps every subscription target and filters locally", () 
   assert.equal(items.length, 2);
   assert.equal(items[0]?.title, "Daily Reads");
   assert.match(items[0]?.subtitle ?? "", /List.*Tech.*2 feeds.*useful bundle/);
-  assert.equal(items[0]?.arg, "https://app.folo.is/share/lists/list-1");
-  assert.equal(items[1]?.arg, "https://app.folo.is/share/feeds/feed-1");
+  assert.equal(items[0]?.arg, JSON.stringify({ list: "list-1" }));
+  assert.equal(items[1]?.arg, JSON.stringify({ feed: "feed-1" }));
   assert.equal(items[1]?.mods?.alt?.arg, "https://example.com");
   assert.equal(subscriptionItems(data, "useful").length, 1);
   assert.equal(subscriptionItems(data, "missing").length, 0);
@@ -131,25 +134,30 @@ test("unreadItems maps unread sources and filters locally", () => {
   const items = unreadItems(data);
   assert.equal(items.length, 3);
   assert.match(items[0]?.subtitle ?? "", /12 unread.*Feed.*Tech/);
-  assert.equal(items[0]?.arg, "https://app.folo.is/share/feeds/feed-1");
-  assert.deepEqual(items[0]?.variables, { FOLO_IS_UNREAD: "1" });
-  assert.equal(items[0]?.mods?.alt?.arg, "https://app.folo.is/share/feeds/feed-1");
-  assert.equal(items[1]?.arg, "https://app.folo.is/share/lists/list-1");
-  assert.equal(items[2]?.arg, "https://app.folo.is/share/feeds/inbox-inbox-1");
+  assert.equal(items[0]?.arg, JSON.stringify({ feed: "feed-1", unreadOnly: true }));
+  assert.equal(items[0]?.variables, undefined);
+  assert.equal(items[1]?.arg, JSON.stringify({ list: "list-1", unreadOnly: true }));
+  assert.equal(items[2]?.arg, JSON.stringify({ feed: "inbox-inbox-1", unreadOnly: true }));
   assert.equal(unreadItems(data, "newsletters").length, 1);
   assert.equal(unreadItems(data, "missing").length, 0);
 });
 
-test("parseTimelineInput converts Folo share URLs into timeline filters", () => {
-  assert.deepEqual(parseTimelineInput("https://app.folo.is/share/feeds/41470869403557888"), {
+test("parseTimelineInput reads JSON params and falls back to a filter query", () => {
+  assert.deepEqual(parseTimelineInput('{"feed":"41470869403557888","unreadOnly":true}'), {
     query: "",
-    target: { type: "feed", id: "41470869403557888" },
+    params: { feed: "41470869403557888", unreadOnly: true },
   });
-  assert.deepEqual(parseTimelineInput("https://app.folo.is/share/lists/162747179238521856?view=0"), {
+  assert.deepEqual(parseTimelineInput('{"list":"162747179238521856"}'), {
     query: "",
-    target: { type: "list", id: "162747179238521856" },
+    params: { list: "162747179238521856" },
+  });
+  assert.deepEqual(parseTimelineInput('{"list":"list-1","bogus":"value","limit":0}'), {
+    query: "",
+    params: { list: "list-1" },
   });
   assert.deepEqual(parseTimelineInput("Alfred Blog"), { query: "Alfred Blog" });
+  assert.deepEqual(parseTimelineInput("{oops"), { query: "{oops" });
+  assert.deepEqual(parseTimelineInput('["feed"]'), { query: '["feed"]' });
 });
 
 test("parseFoloShareUrl parses feed and list share URLs", () => {
@@ -164,9 +172,23 @@ test("parseFoloShareUrl parses feed and list share URLs", () => {
   assert.equal(parseFoloShareUrl("Alfred Blog"), undefined);
 });
 
-test("timelineArguments applies unread filtering only to marked inputs", () => {
-  const unreadInput = parseTimelineInput("https://app.folo.is/share/feeds/feed-1");
-  assert.deepEqual(timelineArguments(unreadInput, "30", true), [
+test("shareUrlTimelineParams converts share URLs into timeline params", () => {
+  assert.deepEqual(shareUrlTimelineParams("https://app.folo.is/share/feeds/41470869403557888"), {
+    feed: "41470869403557888",
+  });
+  assert.deepEqual(shareUrlTimelineParams("https://app.folo.is/share/lists/162747179238521856"), {
+    list: "162747179238521856",
+  });
+  assert.deepEqual(shareUrlTimelineParams("https://app.folo.is/share/lists/list-1/"), {
+    list: "list-1",
+  });
+  assert.equal(shareUrlTimelineParams("https://example.com/feed"), undefined);
+  assert.equal(shareUrlTimelineParams("Alfred Blog"), undefined);
+  assert.equal(shareUrlTimelineParams(""), undefined);
+});
+
+test("timelineArguments maps JSON params onto Folo CLI flags", () => {
+  assert.deepEqual(timelineArguments({ feed: "feed-1", unreadOnly: true }, "30"), [
     "timeline",
     "--limit",
     "30",
@@ -175,14 +197,17 @@ test("timelineArguments applies unread filtering only to marked inputs", () => {
     "--unread-only",
   ]);
 
-  const normalInput = parseTimelineInput("https://app.folo.is/share/lists/list-1");
-  assert.deepEqual(timelineArguments(normalInput, "30"), [
+  assert.deepEqual(timelineArguments({ list: "list-1", limit: 10, view: "articles" }, "30"), [
     "timeline",
     "--limit",
-    "30",
+    "10",
+    "--view",
+    "articles",
     "--list",
     "list-1",
   ]);
+
+  assert.deepEqual(timelineArguments(undefined, "50"), ["timeline", "--limit", "50"]);
 });
 
 test("FoloSubscriptionsResult keeps feed, list, and inbox subscriptions", () => {
@@ -239,6 +264,7 @@ test("timelineItems maps and filters Folo entry envelopes", () => {
   const data = {
     entries: [{
       read: false,
+      subscriptions: { category: "Tech", title: "News" },
       entries: {
         id: "entry-1",
         title: "Hello &amp; Folo",
@@ -257,6 +283,9 @@ test("timelineItems maps and filters Folo entry envelopes", () => {
   assert.deepEqual(JSON.parse(String(items[0]?.arg)), {
     url: "https://example.com/post",
     entryId: "entry-1",
+    entry: data.entries[0]?.entries,
+    feed: data.entries[0]?.feeds,
+    subscriptions: { category: "Tech", title: "News" },
   });
   assert.equal(items[0]?.variables, undefined);
   assert.equal(timelineItems(data, "missing").length, 0);
@@ -272,9 +301,24 @@ test("markRead rejects a missing entry ID before calling Folo", () => {
 });
 
 test("FoloEntryOutput serializes and parses the shared entry argument", () => {
-  const serialized = new FoloEntryOutput("https://example.com/post", "entry-1").serialize();
+  const entry = { id: "entry-1", title: "Post" };
+  const feed = { id: "feed-1", title: "Example Feed" };
+  const serialized = new FoloEntryOutput(
+    "https://example.com/post",
+    "entry-1",
+    entry,
+    feed,
+    { category: "Tech", title: "" },
+  ).serialize();
 
-  assert.equal(serialized, '{"url":"https://example.com/post","entryId":"entry-1"}');
+  assert.equal(
+    serialized,
+    '{"url":"https://example.com/post","entryId":"entry-1","entry":{"id":"entry-1","title":"Post"},"feed":{"id":"feed-1","title":"Example Feed"},"subscriptions":{"category":"Tech","title":""}}',
+  );
+  assert.equal(
+    new FoloEntryOutput("https://example.com/post", "entry-1").serialize(),
+    '{"url":"https://example.com/post","entryId":"entry-1"}',
+  );
   assert.deepEqual(FoloEntryOutput.parse(serialized), new FoloEntryOutput(
     "https://example.com/post",
     "entry-1",
@@ -353,7 +397,9 @@ test("FoloTimelineResult converts the observed CLI timeline shape", () => {
     entries: [{
       read: false,
       view: 0,
+      aiScore: null,
       from: ["feed-1"],
+      subscriptions: { category: "资源", title: "" },
       entries: {
         id: "entry-1",
         title: "Example",
@@ -383,6 +429,9 @@ test("FoloTimelineResult converts the observed CLI timeline shape", () => {
   });
 
   assert.equal(result.entries[0]?.view, FoloView.Articles);
+  assert.equal(result.entries[0]?.aiScore, null);
+  assert.equal(result.entries[0]?.subscriptions?.category, "资源");
+  assert.equal(result.entries[0]?.subscriptions?.title, "");
   assert.equal(result.entries[0]?.entries.media[0]?.width, 640);
   assert.equal(result.entries[0]?.entries.media[0]?.previewImageUrl, "https://example.com/preview.png");
   assert.equal(result.entries[0]?.entries.attachments[0]?.mimeType, "audio/mpeg");
@@ -390,6 +439,41 @@ test("FoloTimelineResult converts the observed CLI timeline shape", () => {
   assert.equal(result.entries[0]?.collections?.createdAt, "2026-09-12T00:00:00.000Z");
   assert.equal(result.entries[0]?.feeds.title, "Example Feed");
   assert.equal(result.hasNext, true);
+});
+
+test("FoloAttachment accepts string-encoded numeric fields", () => {
+  const attachment = new FoloAttachment({
+    url: "https://example.com/audio.mp3",
+    duration_in_seconds: "120",
+    size_in_bytes: "0",
+    mime_type: "audio/mpeg",
+  });
+
+  assert.equal(attachment.url, "https://example.com/audio.mp3");
+  assert.equal(attachment.durationInSeconds, 120);
+  assert.equal(attachment.sizeInBytes, 0);
+  assert.equal(new FoloAttachment({ duration_in_seconds: "soon" }).durationInSeconds, undefined);
+  assert.equal(new FoloAttachment({}).url, "");
+});
+
+test("FoloTimelineItem defaults required fields and preserves null payloads", () => {
+  const item = new FoloTimelineItem({
+    entries: { id: "entry-1", categories: null, summary: null },
+    feeds: {},
+  });
+
+  assert.equal(item.read, false);
+  assert.equal(item.view, FoloView.Articles);
+  assert.deepEqual(item.from, []);
+  assert.equal(item.entries.guid, "");
+  assert.equal(item.entries.insertedAt, "");
+  assert.equal(item.entries.publishedAt, "");
+  assert.equal(item.entries.categories, null);
+  assert.equal(item.entries.summary, null);
+  assert.equal(item.feeds.id, "");
+  assert.equal(item.feeds.url, "");
+  assert.equal(item.subscriptions, undefined);
+  assert.deepEqual(item.settings, {});
 });
 
 test("Folo result classes validate required top-level fields", () => {

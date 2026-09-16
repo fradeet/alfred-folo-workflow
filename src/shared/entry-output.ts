@@ -5,16 +5,22 @@ export class FoloEntryOutput {
   constructor(
     readonly url: string,
     readonly entryId: string,
+    readonly entry?: unknown,
+    readonly feed?: unknown,
+    readonly subscriptions?: unknown,
   ) {
     if (!url.trim()) throw new TypeError("Entry URL is required");
     if (!entryId.trim()) throw new TypeError("Entry ID is required");
   }
 
   /** Converts the value to the stable JSON shape emitted by Script Filter items. */
-  toJSON(): { url: string; entryId: string } {
+  toJSON(): { url: string; entryId: string; entry?: unknown; feed?: unknown; subscriptions?: unknown } {
     return {
       url: this.url,
       entryId: this.entryId,
+      ...(this.entry === undefined ? {} : { entry: this.entry }),
+      ...(this.feed === undefined ? {} : { feed: this.feed }),
+      ...(this.subscriptions === undefined ? {} : { subscriptions: this.subscriptions }),
     };
   }
 

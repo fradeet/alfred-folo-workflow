@@ -37,7 +37,8 @@ export function timelineItems(data: unknown, query = "", iconFor?: IconResolver)
     const url = optionalString(entry.url) ?? optionalString(feed.siteUrl) ?? "https://app.folo.is";
     const entryId = optionalString(entry.id);
     if (!entryId) return [];
-    const entryOutput = new FoloEntryOutput(url, entryId);
+    const subscriptions = isRecord(item) && isRecord(item.subscriptions) ? item.subscriptions : undefined;
+    const entryOutput = new FoloEntryOutput(url, entryId, entry, feed, subscriptions);
     const searchable = [title, feedTitle, author, summary, url].join(" ").toLocaleLowerCase();
 
     return [new AlfredSFItem(title, {
@@ -82,12 +83,13 @@ export function subscriptionItems(data: unknown, query = "", iconFor?: IconResol
     const foloUrl = list
       ? `https://app.folo.is/share/lists/${encodeURIComponent(id)}`
       : `https://app.folo.is/share/feeds/${encodeURIComponent(id)}`;
+    const timelineParams = list ? { list: id } : { feed: id };
     const originalUrl = feed ? optionalString(feed.siteUrl) ?? optionalString(feed.url) : undefined;
     const searchable = [title, kind, category, description, id].join(" ").toLocaleLowerCase();
 
     return [new AlfredSFItem(title, {
       subtitle,
-      arg: foloUrl,
+      arg: JSON.stringify(timelineParams),
       icon: icon(target, iconFor),
       uid: `${kind.toLocaleLowerCase()}-${id}`,
       match: searchable,
@@ -127,22 +129,18 @@ export function unreadItems(data: unknown, query = "", iconFor?: IconResolver): 
     const timelineType = sourceType === "list" ? "lists" : "feeds";
     const timelineId = sourceType === "inbox" ? optionalString(source.feedId) ?? sourceId : sourceId;
     const foloUrl = `https://app.folo.is/share/${timelineType}/${encodeURIComponent(timelineId)}`;
+    const timelineParams = {
+      ...(sourceType === "list" ? { list: sourceId } : { feed: timelineId }),
+      unreadOnly: true,
+    };
     const searchable = [title, kind, category, unreadDetail, sourceId].join(" ").toLocaleLowerCase();
 
     return [new AlfredSFItem(title, {
       subtitle,
-      arg: foloUrl,
+      arg: JSON.stringify(timelineParams),
       icon: icon(source, iconFor),
       uid: `unread-${sourceType}-${sourceId}`,
       match: searchable,
-      variables: { FOLO_IS_UNREAD: "1" },
-      mods: {
-        alt: {
-          arg: foloUrl,
-          subtitle: "Open in Folo",
-          valid: true,
-        },
-      },
       quicklookurl: foloUrl,
       text: new AlfredSFItemText(foloUrl, `${title} · ${unreadDetail}`),
     })];
