@@ -6,28 +6,46 @@
  * titles, kinds, categories, descriptions, and IDs.
  *
  * Output:
- * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` is the raw
- *   subscription object as JSON, and quick look / copy text carry the Folo share
- *   URL. An empty result yields a non-valid placeholder item.
+ * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` is a
+ *   serialized resource selection. An empty result yields a non-valid item.
  * - On failure: an error item is emitted and the exit code is 1.
  */
-import { emptyItem, errorItem, output, subscriptionItems } from "../shared/alfred.js";
-import { runFolo } from "../shared/folo-cli.js";
-import { FoloSubscriptionsResult } from "../types/folo-types.js";
+import { emptyItem, errorItem, subscriptionItems } from "../shared/alfred.js";
 import { cacheIcons } from "../shared/icon-cache.js";
+import { SubscriptionsBlockInput, getSubscriptions } from "../block/folo/subscriptions.js";
+import { AlfredSF, AlfredSFCache, AlfredSFItem } from "../types/alfred-types.js";
 
-const query = process.argv.slice(2).join(" ");
+export class SubscriptionsAppInput {
+  constructor(readonly query: string) {}
+
+  static parse(value: string): SubscriptionsAppInput {
+    return new SubscriptionsAppInput(value.trim());
+  }
+}
+
+export class SubscriptionsAppOutput extends AlfredSF {
+  constructor(items: AlfredSFItem[], cache = true) {
+    super(items, { cache: cache ? new AlfredSFCache(60) : undefined });
+  }
+}
+
+export async function subscriptions(input: SubscriptionsAppInput): Promise<SubscriptionsAppOutput> {
+  const data = getSubscriptions(new SubscriptionsBlockInput());
+  const sources = data.subscriptions.flatMap((item) => item.lists ?? item.feeds ?? []);
+  const iconFor = await cacheIcons(sources);
+  const items = subscriptionItems(data, input.query, iconFor);
+  return new SubscriptionsAppOutput(
+    items.length ? items : [emptyItem("No Folo subscriptions", "Try another query")],
+  );
+}
 
 async function main(): Promise<void> {
   try {
-    const data = runFolo(["subscription", "list"], {}, FoloSubscriptionsResult.from);
-    const sources = data.subscriptions.flatMap((item) => item.lists ?? item.feeds ?? []);
-    const iconFor = await cacheIcons(sources);
-    const items = subscriptionItems(data, query, iconFor);
-    output(items.length ? items : [emptyItem("No Folo subscriptions", "Try another query")], 60);
+    const input = SubscriptionsAppInput.parse(process.argv.slice(2).join(" "));
+    process.stdout.write(JSON.stringify(await subscriptions(input)));
   } catch (error: unknown) {
     console.error(error);
-    output([errorItem(error)]);
+    process.stdout.write(JSON.stringify(new SubscriptionsAppOutput([errorItem(error)], false)));
     process.exitCode = 1;
   }
 }

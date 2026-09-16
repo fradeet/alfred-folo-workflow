@@ -6,34 +6,52 @@
  * categories, and unread counts.
  *
  * Output:
- * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` is the raw
- *   unread source object as JSON, and quick look / copy text carry the Folo share
- *   URL. An empty result yields a non-valid placeholder item.
+ * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` is a
+ *   serialized resource selection. An empty result yields a non-valid item.
  * - Side effect: when feed or list icons are missing from the cache, the
  *   cache-subscription-icons worker is spawned detached in the background.
  * - On failure: an error item is emitted and the exit code is 1.
  */
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { emptyItem, errorItem, output, unreadItems } from "../shared/alfred.js";
-import { runFolo } from "../shared/folo-cli.js";
-import { FoloUnreadResult } from "../types/folo-types.js";
+import { emptyItem, errorItem, unreadItems } from "../shared/alfred.js";
 import { loadCachedIcons } from "../shared/icon-cache.js";
+import { UnreadBlockInput, getUnread } from "../block/folo/unread.js";
+import { AlfredSF, AlfredSFCache, AlfredSFItem } from "../types/alfred-types.js";
 
-const query = process.argv.slice(2).join(" ");
+export class UnreadAppInput {
+  constructor(readonly query: string) {}
+
+  static parse(value: string): UnreadAppInput {
+    return new UnreadAppInput(value.trim());
+  }
+}
+
+export class UnreadAppOutput extends AlfredSF {
+  constructor(items: AlfredSFItem[], cache = true) {
+    super(items, { cache: cache ? new AlfredSFCache(60) : undefined });
+  }
+}
+
+export async function unread(input: UnreadAppInput): Promise<UnreadAppOutput> {
+  const data = getUnread(new UnreadBlockInput());
+  const iconFor = await loadCachedIcons(data.items);
+  const items = unreadItems(data, input.query, iconFor);
+  if (data.items.some((item) => (item.sourceType === "feed" || item.sourceType === "list") && !iconFor(item))) {
+    warmSubscriptionIcons();
+  }
+  return new UnreadAppOutput(
+    items.length ? items : [emptyItem("No unread subscriptions", "You're all caught up")],
+  );
+}
 
 async function main(): Promise<void> {
   try {
-    const data = runFolo(["unread", "list"], {}, FoloUnreadResult.from);
-    const iconFor = await loadCachedIcons(data.items);
-    const items = unreadItems(data, query, iconFor);
-    if (data.items.some((item) => (item.sourceType === "feed" || item.sourceType === "list") && !iconFor(item))) {
-      warmSubscriptionIcons();
-    }
-    output(items.length ? items : [emptyItem("No unread subscriptions", "You're all caught up")], 60);
+    const input = UnreadAppInput.parse(process.argv.slice(2).join(" "));
+    process.stdout.write(JSON.stringify(await unread(input)));
   } catch (error: unknown) {
     console.error(error);
-    output([errorItem(error)]);
+    process.stdout.write(JSON.stringify(new UnreadAppOutput([errorItem(error)], false)));
     process.exitCode = 1;
   }
 }
