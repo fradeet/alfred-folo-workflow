@@ -1,4 +1,20 @@
 #!/usr/bin/env node
+/**
+ * "Folo Timeline" Script Filter entry: renders timeline entries as Alfred items.
+ *
+ * Input (argv joined with spaces): either
+ * - a plain filter query matched against the fetched entries, or
+ * - a JSON object of {@link TimelineParams} produced by upstream workflow items
+ *   (e.g. timeline-params-converter). Malformed JSON falls back to a query.
+ *
+ * Environment: `FOLO_LIMIT` sets the default entry limit (digits only, otherwise 30).
+ *
+ * Output:
+ * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` carries a
+ *   serialized {@link FoloEntryOutput}; an empty result yields a non-valid
+ *   placeholder item.
+ * - On failure: an error item is emitted and the exit code is 1.
+ */
 import { pathToFileURL } from "node:url";
 import { emptyItem, errorItem, output, timelineItems } from "../shared/alfred.js";
 import { runFolo } from "../shared/folo-cli.js";
@@ -42,6 +58,7 @@ function timelineParams(value: Record<string, unknown>): TimelineParams {
   ) as TimelineParams;
 }
 
+/** Splits raw Alfred input into filter text and optional timeline parameters. */
 export function parseTimelineInput(value: string): TimelineInput {
   const query = value.trim();
   if (!query.startsWith("{")) return { query };
@@ -56,6 +73,7 @@ export function parseTimelineInput(value: string): TimelineInput {
   return { query };
 }
 
+/** Builds the `folo timeline` CLI arguments for the given parameters and limit. */
 export function timelineArguments(params: TimelineParams | undefined, defaultLimit: string): string[] {
   const args = ["timeline", "--limit", String(params?.limit ?? defaultLimit)];
   if (params?.view) args.push("--view", params.view);

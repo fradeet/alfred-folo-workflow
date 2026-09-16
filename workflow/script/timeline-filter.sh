@@ -1,3 +1,3 @@
 #!/bin/sh
 
-exec node dist/app/timeline.js "$FRR_TIMELINE_FILTER"
+exec node dist/app/timeline.js "$frr_timeline_filter"

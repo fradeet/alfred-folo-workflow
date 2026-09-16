@@ -1,4 +1,16 @@
 #!/usr/bin/env node
+/**
+ * `flogin` Script Filter entry: authenticates with Folo and stores the token.
+ *
+ * Input: no query arguments; the workflow must run inside Alfred, which provides
+ * `alfred_workflow_bundleid` in the environment.
+ *
+ * Output:
+ * - stdout: the authenticated user profile as JSON (`FoloLoginResult.user`).
+ * - Side effect: the token from the Folo CLI config file is saved as the
+ *   workflow's `FOLO_TOKEN` configuration variable via osascript.
+ * - On failure: the error message is written to stderr and the exit code is 1.
+ */
 import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { env } from "node:process";
@@ -7,6 +19,7 @@ import { runFolo } from "../shared/folo-cli.js";
 import { isRecord } from "../shared/guards.js";
 import { FoloLoginResult } from "../types/folo-types.js";
 
+/** Extracts the login token from the raw Folo CLI config file content. */
 export function readToken(configText: string): string {
   const config = JSON.parse(configText) as unknown;
 
@@ -17,6 +30,7 @@ export function readToken(configText: string): string {
   return config.token;
 }
 
+/** Saves the token as the `FOLO_TOKEN` configuration of the running Alfred workflow. */
 export function setWorkflowToken(token: string, environment: NodeJS.ProcessEnv = env): void {
   if (!token.trim()) {
     throw new Error("Folo token must not be empty.");
@@ -46,6 +60,7 @@ end tell`;
   }
 }
 
+/** Runs the Folo CLI login, persists its token, and prints the user profile. */
 async function login(): Promise<void> {
   const data = runFolo(["login"], { timeout: 190_000 }, FoloLoginResult.from);
 

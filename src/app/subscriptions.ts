@@ -1,4 +1,16 @@
 #!/usr/bin/env node
+/**
+ * "Folo Subscriptions" Script Filter entry: lists the feeds and lists the user follows.
+ *
+ * Input (argv joined with spaces): a filter query matched against subscription
+ * titles, kinds, categories, descriptions, and IDs.
+ *
+ * Output:
+ * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` is the raw
+ *   subscription object as JSON, and quick look / copy text carry the Folo share
+ *   URL. An empty result yields a non-valid placeholder item.
+ * - On failure: an error item is emitted and the exit code is 1.
+ */
 import { emptyItem, errorItem, output, subscriptionItems } from "../shared/alfred.js";
 import { runFolo } from "../shared/folo-cli.js";
 import { FoloSubscriptionsResult } from "../types/folo-types.js";

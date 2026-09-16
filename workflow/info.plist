@@ -526,7 +526,7 @@
 				<false/>
 				<key>variables</key>
 				<dict>
-					<key>FRR_TIMELINE_FILTER</key>
+					<key>frr_timeline_filter</key>
 					<string>{query}</string>
 				</dict>
 			</dict>

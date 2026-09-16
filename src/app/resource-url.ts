@@ -1,8 +1,18 @@
 #!/usr/bin/env node
+/**
+ * Transform entry: prints the Folo share URL for a subscription or unread item.
+ *
+ * Input (argv joined with spaces): a raw `subscription list` or `unread list`
+ * item as JSON, as emitted in the `arg` of the subscriptions / unread Script
+ * Filters.
+ *
+ * Output:
+ * - stdout: the Folo share URL on success.
+ * - On failure: a message is written to stderr and the exit code is 1.
+ */
 import { pathToFileURL } from "node:url";
 import { foloResourceUrl } from "../shared/folo-url.js";
 
-/** Prints the Folo resource URL for a subscription or unread item passed as JSON on argv. */
 function main(): void {
   const input = process.argv.slice(2).join(" ").trim();
   try {

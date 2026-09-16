@@ -1,4 +1,15 @@
 #!/usr/bin/env node
+/**
+ * Transform entry: converts a Folo share URL into timeline JSON parameters.
+ *
+ * Input (argv joined with spaces): a Folo share URL such as
+ * `https://app.folo.is/share/feeds/<id>` or `/share/lists/<id>`.
+ *
+ * Output:
+ * - stdout: `{"feed":"<id>"}` or `{"list":"<id>"}` JSON on success.
+ * - Pass-through: a value that is not a share URL is echoed trimmed to stdout
+ *   (with a note on stderr) so the timeline entry can treat it as filter text.
+ */
 import { pathToFileURL } from "node:url";
 import { parseFoloShareUrl } from "../shared/folo-url.js";
 import type { TimelineParams } from "./timeline.js";
