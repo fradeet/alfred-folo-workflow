@@ -19,6 +19,7 @@ for (const entryPoint of [
   "app/subscriptions.js",
   "app/timeline.js",
   "app/unread.js",
+  "app/resource-url.js",
 ]) {
   chmodSync(join(outputDirectory, entryPoint), 0o755);
 }
