@@ -119,6 +119,7 @@ export function unreadItems(data: FoloUnreadResult, query = "", iconFor?: IconRe
     const searchable = [title, kind, category, unreadDetail, sourceId].join(" ").toLocaleLowerCase();
 
     return [new AlfredSFItem(title, {
+      action: new AlfredSFItemAction(undefined, foloUrl),
       subtitle,
       icon: icon(source, iconFor),
       uid: `unread-${sourceType}-${sourceId}`,
