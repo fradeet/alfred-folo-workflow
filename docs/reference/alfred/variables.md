@@ -15,6 +15,3 @@ inspect the stored response of the list the user just acted on:
 ```bash
 cat "$alfred_workflow_cache/folo-requests/$frr_result_cache_key"
 ```
-
-Stored files are records only: the workflow never reads them back, and a fresh CLI call
-overwrites the file of the same request.
