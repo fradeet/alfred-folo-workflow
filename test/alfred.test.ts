@@ -21,9 +21,11 @@ import { TimelineBlockInput } from "../src/block/folo/timeline.js";
 import {
   FoloAttachment,
   FoloLoginResult,
+  FoloSubscription,
   FoloSubscriptionsResult,
   FoloTimelineItem,
   FoloTimelineResult,
+  FoloUnreadItem,
   FoloUnreadResult,
   FoloUser,
   FoloView,
@@ -32,8 +34,9 @@ import { readToken, setWorkflowToken } from "../src/app/login.js";
 import { TimelineDirectInput, parseTimelineAppInput } from "../src/app/timeline.js";
 import { parseFoloShareUrl } from "../src/shared/folo-url.js";
 import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/shared/icon-cache.js";
-import { FoloResourceSelection } from "../src/contracts/resource-selection.js";
+import { SubscriptionSelection } from "../src/contracts/subscription-selection.js";
 import { TimelineSelection } from "../src/contracts/timeline-selection.js";
+import { UnreadSelection } from "../src/contracts/unread-selection.js";
 import { resourceUrl } from "../src/app/resource-url.js";
 
 test("feedIconUrl prefers an official image and falls back to Folo's domain icon", () => {
@@ -123,17 +126,14 @@ test("subscriptionItems maps every subscription target and filters locally", () 
   assert.equal(items[0]?.title, "Daily Reads");
   assert.match(items[0]?.subtitle ?? "", /List.*Tech.*2 feeds.*useful bundle/);
   assert.equal(items[0]?.arg, undefined);
-  assert.deepEqual(FoloResourceSelection.parse(String(items[0]?.variables?.frr_timeline_filter)), new FoloResourceSelection(
-    "list",
-    "list-1",
-    "https://app.folo.is/share/lists/list-1",
-  ));
-  assert.deepEqual(FoloResourceSelection.parse(String(items[1]?.variables?.frr_timeline_filter)), new FoloResourceSelection(
-    "feed",
-    "feed-1",
-    "https://app.folo.is/share/feeds/feed-1",
-    "https://example.com",
-  ));
+  assert.deepEqual(
+    SubscriptionSelection.parse(String(items[0]?.variables?.frr_timeline_filter)).subscription,
+    data.subscriptions[0],
+  );
+  assert.deepEqual(
+    SubscriptionSelection.parse(String(items[1]?.variables?.frr_timeline_filter)).subscription,
+    data.subscriptions[1],
+  );
   assert.equal(items[1]?.mods?.alt?.arg, items[1]?.variables?.frr_timeline_filter);
   assert.equal(subscriptionItems(data, "useful").length, 1);
   assert.equal(subscriptionItems(data, "missing").length, 0);
@@ -153,9 +153,12 @@ test("unreadItems maps unread sources and filters locally", () => {
   assert.equal(items.length, 3);
   assert.match(items[0]?.subtitle ?? "", /12 unread.*Feed.*Tech/);
   assert.equal(items[0]?.arg, undefined);
-  assert.equal(FoloResourceSelection.parse(String(items[0]?.variables?.frr_timeline_filter)).resourceId, "feed-1");
-  assert.equal(FoloResourceSelection.parse(String(items[1]?.variables?.frr_timeline_filter)).resourceType, "list");
-  assert.equal(FoloResourceSelection.parse(String(items[2]?.variables?.frr_timeline_filter)).resourceId, "inbox-inbox-1");
+  assert.deepEqual(
+    UnreadSelection.parse(String(items[0]?.variables?.frr_timeline_filter)).item,
+    data.items[0],
+  );
+  assert.equal(UnreadSelection.parse(String(items[1]?.variables?.frr_timeline_filter)).resourceType, "list");
+  assert.equal(UnreadSelection.parse(String(items[2]?.variables?.frr_timeline_filter)).resourceId, "inbox-inbox-1");
   assert.equal(items[0]?.mods?.alt?.arg, items[0]?.variables?.frr_timeline_filter);
   assert.equal(unreadItems(data, "newsletters").length, 1);
   assert.equal(unreadItems(data, "missing").length, 0);
@@ -187,20 +190,18 @@ test("parseFoloShareUrl parses feed and list share URLs", () => {
   assert.equal(parseFoloShareUrl("Alfred Blog"), undefined);
 });
 
-test("resourceUrl consumes a complete resource selection", () => {
-  const feed = new FoloResourceSelection(
-    "feed",
-    "feed-1",
-    "https://app.folo.is/share/feeds/feed-1",
-    "https://example.com",
-  );
-  const list = new FoloResourceSelection(
-    "list",
-    "list-1",
-    "https://app.folo.is/share/lists/list-1",
-  );
-  assert.equal(resourceUrl(FoloResourceSelection.parse(feed.serialize())).serialize(), "https://example.com");
-  assert.equal(resourceUrl(FoloResourceSelection.parse(list.serialize())).serialize(), list.shareUrl);
+test("resourceUrl consumes complete upstream selections", () => {
+  const subscription = new SubscriptionSelection(new FoloSubscription({
+    feedId: "feed-1",
+    feeds: { id: "feed-1", siteUrl: "https://example.com" },
+  }));
+  const unread = new UnreadSelection(new FoloUnreadItem({
+    sourceType: "list",
+    sourceId: "list-1",
+    unreadCount: 2,
+  }));
+  assert.equal(resourceUrl(SubscriptionSelection.parse(subscription.serialize())).serialize(), "https://example.com");
+  assert.equal(resourceUrl(UnreadSelection.parse(unread.serialize())).serialize(), unread.shareUrl);
 });
 
 test("timeline app input converts share URLs into typed direct input", () => {
@@ -243,13 +244,18 @@ test("TimelineBlockInput maps its fields onto Folo CLI flags", () => {
   assert.deepEqual(new TimelineBlockInput().withDefaultLimit(50).toArguments(), ["timeline", "--limit", "50"]);
 });
 
-test("timeline app input preserves the upstream resource selection", () => {
-  const selection = new FoloResourceSelection(
-    "list",
-    "list-1",
-    "https://app.folo.is/share/lists/list-1",
-  );
-  assert.deepEqual(parseTimelineAppInput(selection.serialize()), selection);
+test("timeline app input preserves subscription and unread selections", () => {
+  const subscription = new SubscriptionSelection(new FoloSubscription({
+    listId: "list-1",
+    lists: { id: "list-1" },
+  }));
+  const unread = new UnreadSelection(new FoloUnreadItem({
+    sourceType: "feed",
+    sourceId: "feed-1",
+    unreadCount: 3,
+  }));
+  assert.deepEqual(parseTimelineAppInput(subscription.serialize()), subscription);
+  assert.deepEqual(parseTimelineAppInput(unread.serialize()), unread);
 });
 
 test("FoloSubscriptionsResult keeps feed, list, and inbox subscriptions", () => {

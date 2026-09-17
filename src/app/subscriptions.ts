@@ -7,7 +7,7 @@
  *
  * Output:
  * - stdout: Alfred Script Filter JSON cached for 60s. Each item's
- *   `frr_timeline_filter` variable is a serialized resource selection. An empty
+ *   `frr_timeline_filter` variable is a serialized subscription selection. An empty
  *   result yields a non-valid item.
  * - On failure: an error item is emitted and the exit code is 1.
  */

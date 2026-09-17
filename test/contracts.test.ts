@@ -2,26 +2,55 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { TimelineDirectInput, parseTimelineAppInput } from "../src/app/timeline.js";
 import { TimelineBlockInput } from "../src/block/folo/timeline.js";
-import { FoloResourceSelection } from "../src/contracts/resource-selection.js";
+import { SubscriptionSelection } from "../src/contracts/subscription-selection.js";
 import { TimelineSelection } from "../src/contracts/timeline-selection.js";
-import { FoloEntry, FoloFeed, FoloTimelineSubscription } from "../src/types/folo-types.js";
+import { UnreadSelection } from "../src/contracts/unread-selection.js";
+import {
+  FoloEntry,
+  FoloFeed,
+  FoloSubscription,
+  FoloTimelineSubscription,
+  FoloUnreadItem,
+} from "../src/types/folo-types.js";
 import { parseResourceUrlInput, resourceUrl } from "../src/app/resource-url.js";
 
-test("resource selections retain their complete cross-app contract", () => {
-  const value = new FoloResourceSelection(
-    "feed",
-    "feed-1",
-    "https://app.folo.is/share/feeds/feed-1",
-    "https://example.com",
-  );
-  assert.deepEqual(FoloResourceSelection.parse(value.serialize()), value);
-  assert.equal(FoloResourceSelection.parse(value.serialize()).openUrl, "https://example.com");
-  assert.ok(parseResourceUrlInput(value.serialize()) instanceof FoloResourceSelection);
+test("subscription selections retain and rehydrate their complete upstream item", () => {
+  const value = new SubscriptionSelection(new FoloSubscription({
+    feedId: "feed-1",
+    category: "Tech",
+    feeds: { id: "feed-1", title: "Example", siteUrl: "https://example.com" },
+  }));
+  const parsed = SubscriptionSelection.parse(value.serialize());
+  assert.deepEqual(parsed, value);
+  assert.ok(parsed.subscription instanceof FoloSubscription);
+  assert.ok(parsed.subscription.feeds instanceof FoloFeed);
+  assert.equal(parsed.openUrl, "https://example.com");
+  assert.ok(parseResourceUrlInput(value.serialize()) instanceof SubscriptionSelection);
   assert.equal(resourceUrl(value).url, "https://example.com");
   assert.deepEqual(parseTimelineAppInput(value.serialize()), value);
   assert.throws(
-    () => parseTimelineAppInput('{"kind":"folo-resource"}'),
-    /resource type|incomplete/i,
+    () => parseTimelineAppInput('{"kind":"subscription-selection"}'),
+    /feed or list/i,
+  );
+});
+
+test("unread selections retain and rehydrate their complete upstream item", () => {
+  const value = new UnreadSelection(new FoloUnreadItem({
+    sourceType: "inbox",
+    sourceId: "inbox-1",
+    feedId: "inbox-feed-1",
+    title: "Newsletters",
+    unreadCount: 4,
+  }));
+  const parsed = UnreadSelection.parse(value.serialize());
+  assert.deepEqual(parsed, value);
+  assert.ok(parsed.item instanceof FoloUnreadItem);
+  assert.equal(parsed.resourceId, "inbox-feed-1");
+  assert.ok(parseResourceUrlInput(value.serialize()) instanceof UnreadSelection);
+  assert.deepEqual(parseTimelineAppInput(value.serialize()), value);
+  assert.throws(
+    () => parseTimelineAppInput('{"kind":"unread-selection"}'),
+    /unread item/i,
   );
 });
 

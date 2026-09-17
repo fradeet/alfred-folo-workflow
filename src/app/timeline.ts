@@ -4,8 +4,7 @@
  *
  * Input (argv joined with spaces): either
  * - a plain filter query matched against the fetched entries, or
- * - a serialized {@link FoloResourceSelection} from the subscriptions or
- *   unread Script Filter, or
+ * - a serialized {@link SubscriptionSelection} or {@link UnreadSelection}, or
  * - a serialized {@link TimelineDirectInput}. Malformed JSON falls back to a query.
  *
  * Environment: `FOLO_LIMIT` sets the default entry limit (digits only, otherwise 30).
@@ -21,11 +20,12 @@ import { emptyItem, errorItem, timelineItems } from "../shared/alfred.js";
 import { cacheIcons } from "../shared/icon-cache.js";
 import { parseFoloShareUrl } from "../shared/folo-url.js";
 import { TimelineBlockInput, getTimeline } from "../block/folo/timeline.js";
-import { FoloResourceSelection } from "../contracts/resource-selection.js";
 import { SerializedValue, parseRecord } from "../contracts/serialized-value.js";
+import { SubscriptionSelection } from "../contracts/subscription-selection.js";
+import { UnreadSelection } from "../contracts/unread-selection.js";
 import { AlfredSF, AlfredSFCache, AlfredSFItem } from "../types/alfred-types.js";
 
-export type TimelineAppInput = TimelineDirectInput | FoloResourceSelection;
+export type TimelineAppInput = TimelineDirectInput | SubscriptionSelection | UnreadSelection;
 
 export class TimelineDirectInput extends SerializedValue {
   readonly kind = "timeline-input";
@@ -72,21 +72,21 @@ export function parseTimelineAppInput(value: string): TimelineAppInput {
     return new TimelineDirectInput(query);
   }
   if (data.kind === "timeline-input") return TimelineDirectInput.from(data);
-  if (data.kind === "folo-resource") return FoloResourceSelection.from(data);
+  if (data.kind === "subscription-selection") return SubscriptionSelection.from(data);
+  if (data.kind === "unread-selection") return UnreadSelection.from(data);
   return new TimelineDirectInput(query);
 }
 
 function resolveTimelineInput(input: TimelineAppInput): TimelineDirectInput {
-  return input instanceof FoloResourceSelection
-    ? new TimelineDirectInput(
-        "",
-        new TimelineBlockInput(
-          input.resourceType === "list"
-            ? { list: input.resourceId }
-            : { feed: input.resourceId },
-        ),
-      )
-    : input;
+  if (input instanceof TimelineDirectInput) return input;
+  return new TimelineDirectInput(
+    "",
+    new TimelineBlockInput(
+      input.resourceType === "list"
+        ? { list: input.resourceId }
+        : { feed: input.resourceId },
+    ),
+  );
 }
 
 export class TimelineAppOutput extends AlfredSF {

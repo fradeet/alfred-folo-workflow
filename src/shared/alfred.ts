@@ -1,8 +1,9 @@
 import { isRecord } from "./guards.js";
 import { AlfredSFItem, AlfredSFItemIcon, AlfredSFItemText } from "../types/alfred-types.js";
 import { IconResolver } from "./icon-cache.js";
+import { SubscriptionSelection } from "../contracts/subscription-selection.js";
 import { TimelineSelection } from "../contracts/timeline-selection.js";
-import { FoloResourceSelection } from "../contracts/resource-selection.js";
+import { UnreadSelection } from "../contracts/unread-selection.js";
 import {
   FoloSubscriptionsResult,
   FoloTimelineResult,
@@ -67,9 +68,9 @@ export function subscriptionItems(data: FoloSubscriptionsResult, query = "", ico
     const target = list ?? feed;
     if (!target) return [];
 
-    const kind = list ? "List" : "Feed";
-    const id = subscription.listId ?? subscription.feedId ?? target.id;
-    if (!id) return [];
+    const selection = new SubscriptionSelection(subscription);
+    const kind = selection.resourceType === "list" ? "List" : "Feed";
+    const id = selection.resourceId;
 
     const title = text(optionalString(subscription.title) ?? target.title, `Untitled ${kind.toLowerCase()}`);
     const description = text(target.description);
@@ -79,15 +80,7 @@ export function subscriptionItems(data: FoloSubscriptionsResult, query = "", ico
     const subtitle = [kind, category, detail, description]
       .filter(Boolean)
       .join(" · ");
-    const foloUrl = list
-      ? `https://app.folo.is/share/lists/${encodeURIComponent(id)}`
-      : `https://app.folo.is/share/feeds/${encodeURIComponent(id)}`;
-    const selection = new FoloResourceSelection(
-      list ? "list" : "feed",
-      id,
-      foloUrl,
-      feed?.siteUrl,
-    );
+    const foloUrl = selection.shareUrl;
     const serializedSelection = selection.serialize();
     const searchable = [title, kind, category, description, id].join(" ").toLocaleLowerCase();
 
@@ -112,6 +105,7 @@ export function unreadItems(data: FoloUnreadResult, query = "", iconFor?: IconRe
   const items = data.items.flatMap((source): AlfredSFItem[] => {
     const sourceType = source.sourceType;
     const sourceId = source.sourceId;
+    const selection = new UnreadSelection(source);
 
     const kind = sourceType[0]!.toUpperCase() + sourceType.slice(1);
     const title = text(source.title, `Untitled ${sourceType}`);
@@ -119,14 +113,7 @@ export function unreadItems(data: FoloUnreadResult, query = "", iconFor?: IconRe
     const unreadCount = source.unreadCount;
     const unreadDetail = `${unreadCount} unread`;
     const subtitle = [unreadDetail, kind, category].filter(Boolean).join(" · ");
-    const timelineType = sourceType === "list" ? "lists" : "feeds";
-    const timelineId = sourceType === "inbox" ? source.feedId ?? sourceId : sourceId;
-    const foloUrl = `https://app.folo.is/share/${timelineType}/${encodeURIComponent(timelineId)}`;
-    const selection = new FoloResourceSelection(
-      sourceType === "list" ? "list" : "feed",
-      timelineId,
-      foloUrl,
-    );
+    const foloUrl = selection.shareUrl;
     const serializedSelection = selection.serialize();
     const searchable = [title, kind, category, unreadDetail, sourceId].join(" ").toLocaleLowerCase();
 

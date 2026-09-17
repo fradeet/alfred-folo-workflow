@@ -10,9 +10,9 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
 - `flists [query]` — list and locally filter Feed/List subscriptions; Inbox subscriptions are hidden.
 - `funread [query]` — list and locally filter subscriptions that contain unread entries.
 - `flogin` — open the browser, save the token through Alfred, and notify on successful login.
-- Subscription and unread results put a complete `FoloResourceSelection` JSON value in the
-  `frr_timeline_filter` workflow variable for the timeline app; hold Option to open a Feed's
-  original site URL or the Folo share URL.
+- Subscription and unread results put a complete `SubscriptionSelection` or `UnreadSelection`
+  JSON value in the `frr_timeline_filter` workflow variable for the timeline app; hold Option to
+  open a Feed's original site URL or the Folo share URL.
 - Timeline results pass a complete `TimelineSelection` JSON value downstream. Both the URL
   action and mark-read action parse the same value without intermediate field extraction.
 - Feed and list icons use Folo's `image` field. Feeds without one fall back to
