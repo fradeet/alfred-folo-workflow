@@ -12,5 +12,5 @@ export class UnreadBlockInput {
 }
 
 export function getUnread(input: UnreadBlockInput): FoloUnreadResult {
-  return runFolo(input.toArguments(), {}, FoloUnreadResult.from);
+  return runFolo(input.toArguments(), { cache: true }, FoloUnreadResult.from);
 }

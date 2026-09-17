@@ -16,5 +16,5 @@ export class SubscriptionsBlockInput {
 }
 
 export function getSubscriptions(input: SubscriptionsBlockInput): FoloSubscriptionsResult {
-  return runFolo(input.toArguments(), {}, FoloSubscriptionsResult.from);
+  return runFolo(input.toArguments(), { cache: true }, FoloSubscriptionsResult.from);
 }

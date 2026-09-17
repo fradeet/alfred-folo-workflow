@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isRecord } from "../../shared/guards.js";
+import { readResponseCache, writeResponseCache } from "../../shared/response-cache.js";
 
 const CLI_RELATIVE_ENTRY = join("node_modules", "folocli", "dist", "index.js");
 
@@ -21,6 +22,9 @@ const cliEntry = resolveCliEntry();
 
 export interface RunFoloOptions {
   timeout?: number;
+
+  /** Serve the response from, and store it in, the request cache in Alfred's cache folder. */
+  cache?: boolean;
 }
 
 export type FoloDecoder<T> = (value: unknown) => T;
@@ -68,6 +72,11 @@ export function runFolo<T>(
   options: RunFoloOptions,
   decode: FoloDecoder<T>,
 ): T {
+  if (options.cache) {
+    const cached = readResponseCache(arguments_);
+    if (cached !== undefined) return decode(cached);
+  }
+
   const result = spawnSync(process.execPath, [cliEntry, "--format", "json", ...arguments_], {
     encoding: "utf8",
     env: process.env,
@@ -81,5 +90,7 @@ export function runFolo<T>(
 
   const rawOutput = result.status === 0 ? result.stdout : result.stderr;
   const fallbackMessage = (result.stderr || result.stdout || "Folo CLI returned no output").trim();
-  return decode(parseFoloEnvelope(rawOutput, fallbackMessage));
+  const data = parseFoloEnvelope(rawOutput, fallbackMessage);
+  if (options.cache) writeResponseCache(arguments_, data);
+  return decode(data);
 }

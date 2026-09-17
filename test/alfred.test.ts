@@ -556,12 +556,14 @@ test("Alfred Script Filter classes serialize nested values and omit empty option
     new AlfredSFItem("Example", {
       arg: "https://example.com",
       text: new AlfredSFItemText("copy", "large"),
+      variables: { frr_timeline_filter: "{}" },
       valid: false,
     }),
   ], {
     cache: new AlfredSFCache(60, false),
     rerun: 0,
     skipknowledge: false,
+    variables: { frr_result_cache_key: "timeline-abc.json" },
   });
 
   assert.deepEqual(JSON.parse(JSON.stringify(response)), {
@@ -569,11 +571,13 @@ test("Alfred Script Filter classes serialize nested values and omit empty option
       title: "Example",
       arg: "https://example.com",
       text: { copy: "copy", largetype: "large" },
+      variables: { frr_timeline_filter: "{}" },
       valid: false,
     }],
     rerun: 0,
     cache: { seconds: 60, loosereload: false },
     skipknowledge: false,
+    variables: { frr_result_cache_key: "timeline-abc.json" },
   });
 });
 

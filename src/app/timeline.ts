@@ -12,18 +12,20 @@
  * Output:
  * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` carries a
  *   serialized timeline selection; an empty result yields a non-valid
- *   placeholder item.
+ *   placeholder item. The response's `frr_result_cache_key` variable names the cached
+ *   Folo CLI response file backing the list.
  * - On failure: an error item is emitted and the exit code is 1.
  */
 import { pathToFileURL } from "node:url";
 import { emptyItem, errorItem, timelineItems } from "../shared/alfred.js";
 import { cacheIcons } from "../shared/icon-cache.js";
 import { parseFoloShareUrl } from "../shared/folo-url.js";
+import { responseCacheFilename } from "../shared/response-cache.js";
 import { TimelineBlockInput, getTimeline } from "../block/folo/timeline.js";
 import { SerializedValue, parseRecord } from "../contracts/serialized-value.js";
 import { SubscriptionSelection } from "../contracts/subscription-selection.js";
 import { UnreadSelection } from "../contracts/unread-selection.js";
-import { AlfredSF, AlfredSFCache, AlfredSFItem } from "../types/alfred-types.js";
+import { AlfredSF, AlfredSFCache, AlfredSFItem, AlfredVariables } from "../types/alfred-types.js";
 
 export type TimelineAppInput = TimelineDirectInput | SubscriptionSelection | UnreadSelection;
 
@@ -90,24 +92,27 @@ function resolveTimelineInput(input: TimelineAppInput): TimelineDirectInput {
 }
 
 export class TimelineAppOutput extends AlfredSF {
-  constructor(items: AlfredSFItem[], cache = false) {
-    super(items, { cache: cache ? new AlfredSFCache(60) : undefined });
+  constructor(items: AlfredSFItem[], cache = false, variables?: AlfredVariables) {
+    super(items, { cache: cache ? new AlfredSFCache(60) : undefined, variables });
   }
 }
 
 export async function timeline(input: TimelineAppInput): Promise<TimelineAppOutput> {
   const directInput = resolveTimelineInput(input);
   const limit = /^\d+$/.test(process.env.FOLO_LIMIT ?? "") ? Number(process.env.FOLO_LIMIT) : 30;
-  const data = getTimeline(directInput.request.withDefaultLimit(limit));
+  const request = directInput.request.withDefaultLimit(limit);
+  const data = getTimeline(request);
   const iconFor = await cacheIcons(data.entries.map((item) => item.feeds));
   const items = timelineItems(data, directInput.query, iconFor);
-  const emptySubtitle = directInput.request.unreadOnly
+  const emptySubtitle = request.unreadOnly
     ? "This subscription has no unread entries"
-    : directInput.request.feed || directInput.request.list
+    : request.feed || request.list
       ? "This subscription has no entries"
       : "Try another query";
   return new TimelineAppOutput(
     items.length ? items : [emptyItem("No Folo entries", emptySubtitle)],
+    true,
+    { frr_result_cache_key: responseCacheFilename(request.toArguments()) },
   );
 }
 
