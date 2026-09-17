@@ -740,18 +740,28 @@
 			<key>variable</key>
 			<string>FOLO_LIMIT</string>
 		</dict>
-	</array>
-	<key>variables</key>
-	<dict>
-		<key>NODE_USE_ENV_PROXY</key>
-		<string>1</string>
-	</dict>
-	<key>variablesdontexport</key>
-	<array>
-		<string>NODE_USE_ENV_PROXY</string>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Use system proxy</string>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Proxy</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>NODE_USE_ENV_PROXY</string>
+		</dict>
 	</array>
 	<key>version</key>
-	<string>0.3.11</string>
+	<string>0.3.12</string>
 	<key>webaddress</key>
 	<string>https://github.com/fradeet/alfred-folo-workflow</string>
 </dict>
