@@ -1,15 +1,10 @@
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { isRecord } from "./guards.js";
-
-const DEFAULT_MAX_AGE = 5 * 60 * 1_000;
 
 export interface ResponseCacheOptions {
   cacheDirectory?: string;
-  maxAge?: number;
-  now?: number;
 }
 
 /** Resolves the directory holding cached Folo CLI responses. */
@@ -29,47 +24,25 @@ export function responseCacheFilename(command: string[]): string {
   return `${responseCacheKey(command)}.json`;
 }
 
-/** Returns a fresh cached CLI payload, or undefined on a miss, stale record, or damaged file. */
+/** Returns the cached CLI payload, or undefined on a miss or damaged file. */
 export function readResponseCache(command: string[], options: ResponseCacheOptions = {}): unknown {
-  const path = join(responseCacheDirectory(options), responseCacheFilename(command));
-  let record: unknown;
   try {
-    record = JSON.parse(readFileSync(path, "utf8"));
+    return JSON.parse(readFileSync(join(responseCacheDirectory(options), responseCacheFilename(command)), "utf8"));
   } catch {
     return undefined;
   }
-  if (!isRecord(record) || typeof record.storedAt !== "number" || !("data" in record)) return undefined;
-
-  const now = options.now ?? Date.now();
-  const maxAge = options.maxAge ?? DEFAULT_MAX_AGE;
-  return now - record.storedAt <= maxAge ? record.data : undefined;
 }
 
-/** Persists a CLI payload as an atomic JSON record; cache failures never fail the request. */
+/** Persists a CLI payload as an atomic JSON file; cache failures never fail the request. */
 export function writeResponseCache(command: string[], data: unknown, options: ResponseCacheOptions = {}): void {
   const directory = responseCacheDirectory(options);
   const path = join(directory, responseCacheFilename(command));
   try {
     mkdirSync(directory, { recursive: true });
     const temporaryPath = `${path}.${process.pid}.tmp`;
-    writeFileSync(temporaryPath, JSON.stringify({ storedAt: options.now ?? Date.now(), data }));
+    writeFileSync(temporaryPath, JSON.stringify(data));
     renameSync(temporaryPath, path);
   } catch {
     // A cache write is best-effort; the live CLI result is already in hand.
-  }
-}
-
-/** Removes every cached CLI response, such as after a mark-read mutation. */
-export function clearResponseCache(options: ResponseCacheOptions = {}): void {
-  const directory = responseCacheDirectory(options);
-  let entries: string[];
-  try {
-    entries = readdirSync(directory);
-  } catch {
-    return;
-  }
-  for (const entry of entries) {
-    if (!entry.endsWith(".json") && !entry.endsWith(".tmp")) continue;
-    rmSync(join(directory, entry), { force: true });
   }
 }

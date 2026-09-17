@@ -7,15 +7,12 @@
  *
  * Output:
  * - stdout: a serialized {@link MarkReadAppOutput} on success.
- * - Side effect: cached Folo CLI responses are cleared so list results no
- *   longer show the entry as unread.
  * - On failure: the error message is written to stderr and the exit code is 1.
  */
 import { pathToFileURL } from "node:url";
 import { MarkReadBlockInput, MarkReadBlockOutput, markEntryRead } from "../block/folo/mark-read.js";
 import { TimelineSelection } from "../contracts/timeline-selection.js";
 import { SerializedValue } from "../contracts/serialized-value.js";
-import { clearResponseCache } from "../shared/response-cache.js";
 
 export class MarkReadAppOutput extends SerializedValue {
   readonly kind = "mark-read-result";
@@ -29,10 +26,9 @@ export class MarkReadAppOutput extends SerializedValue {
   }
 }
 
-/** Marks the selected Folo entry as read and invalidates cached list responses. */
+/** Marks the selected Folo entry as read. */
 export function markRead(input: TimelineSelection): MarkReadAppOutput {
   const result: MarkReadBlockOutput = markEntryRead(new MarkReadBlockInput(input.entryId));
-  clearResponseCache();
   return new MarkReadAppOutput(result.entryId);
 }
 

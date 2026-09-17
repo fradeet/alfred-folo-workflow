@@ -91,6 +91,8 @@ export function runFolo<T>(
   const rawOutput = result.status === 0 ? result.stdout : result.stderr;
   const fallbackMessage = (result.stderr || result.stdout || "Folo CLI returned no output").trim();
   const data = parseFoloEnvelope(rawOutput, fallbackMessage);
+  // Decoding validates the payload; only validated data is cached below.
+  const decoded = decode(data);
   if (options.cache) writeResponseCache(arguments_, data);
-  return decode(data);
+  return decoded;
 }
