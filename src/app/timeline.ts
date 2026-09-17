@@ -92,7 +92,7 @@ function resolveTimelineInput(input: TimelineAppInput): TimelineDirectInput {
 }
 
 export class TimelineAppOutput extends AlfredSF {
-  constructor(items: AlfredSFItem[], cache = false, variables?: AlfredVariables) {
+  constructor(items: AlfredSFItem[], cache = true, variables?: AlfredVariables) {
     super(items, { cache: cache ? new AlfredSFCache(60) : undefined, variables });
   }
 }
@@ -111,7 +111,7 @@ export async function timeline(input: TimelineAppInput): Promise<TimelineAppOutp
       : "Try another query";
   return new TimelineAppOutput(
     items.length ? items : [emptyItem("No Folo entries", emptySubtitle)],
-    true,
+    false,
     { frr_result_cache_key: responseCacheFilename(request.toArguments()) },
   );
 }

@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { mkdirSync, renameSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -22,15 +22,6 @@ export function responseCacheKey(command: string[]): string {
 /** Returns the cache filename reported to Alfred as the `frr_result_cache_key` variable. */
 export function responseCacheFilename(command: string[]): string {
   return `${responseCacheKey(command)}.json`;
-}
-
-/** Returns the cached CLI payload, or undefined on a miss or damaged file. */
-export function readResponseCache(command: string[], options: ResponseCacheOptions = {}): unknown {
-  try {
-    return JSON.parse(readFileSync(join(responseCacheDirectory(options), responseCacheFilename(command)), "utf8"));
-  } catch {
-    return undefined;
-  }
 }
 
 /** Persists a CLI payload as an atomic JSON file; cache failures never fail the request. */

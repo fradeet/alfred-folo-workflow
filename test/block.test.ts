@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -9,11 +9,7 @@ import { MarkReadBlockInput } from "../src/block/folo/mark-read.js";
 import { SubscriptionsBlockInput } from "../src/block/folo/subscriptions.js";
 import { TimelineBlockInput } from "../src/block/folo/timeline.js";
 import { UnreadBlockInput } from "../src/block/folo/unread.js";
-import {
-  readResponseCache,
-  responseCacheFilename,
-  writeResponseCache,
-} from "../src/shared/response-cache.js";
+import { responseCacheFilename, writeResponseCache } from "../src/shared/response-cache.js";
 
 test("Folo block inputs own their complete CLI argument mapping", () => {
   assert.deepEqual(
@@ -48,24 +44,20 @@ test("response cache filenames derive a stable key from the CLI arguments", () =
   );
 });
 
-test("response cache stores and serves CLI payloads", async () => {
+test("response cache stores CLI payloads as JSON files", async () => {
   const directory = await mkdtemp(join(tmpdir(), "alfred-folo-cache-"));
   try {
     const command = ["timeline", "--limit", "30"];
-    assert.equal(readResponseCache(command, { cacheDirectory: directory }), undefined);
-
     writeResponseCache(command, { entries: ["entry-1"] }, { cacheDirectory: directory });
-    assert.deepEqual(readResponseCache(command, { cacheDirectory: directory }), { entries: ["entry-1"] });
+    const stored = JSON.parse(await readFile(join(directory, responseCacheFilename(command)), "utf8"));
+    assert.deepEqual(stored, { entries: ["entry-1"] });
 
-    await writeFile(join(directory, responseCacheFilename(command)), "not json", "utf8");
-    assert.equal(readResponseCache(command, { cacheDirectory: directory }), undefined);
+    writeResponseCache(command, { entries: ["entry-2"] }, { cacheDirectory: directory });
+    const replaced = JSON.parse(await readFile(join(directory, responseCacheFilename(command)), "utf8"));
+    assert.deepEqual(replaced, { entries: ["entry-2"] });
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
-});
-
-test("response cache reads tolerate a missing cache directory", () => {
-  assert.equal(readResponseCache(["timeline"], { cacheDirectory: join(tmpdir(), "alfred-folo-missing") }), undefined);
 });
 
 test("FoloError keeps its code and name", () => {

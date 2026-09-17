@@ -15,10 +15,10 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
   open a Feed's original site URL or the Folo share URL.
 - Timeline results pass a complete `TimelineSelection` JSON value downstream. Both the URL
   action and mark-read action parse the same value without intermediate field extraction.
-- Read-only Folo CLI responses (timeline, subscriptions, unread list) are cached as JSON
-  files in Alfred's workflow cache (`folo-requests/`). The filename is a stable hash of the
-  CLI arguments, and each Script Filter response reports it in the `frr_result_cache_key`
-  workflow variable. Cached responses are served until Alfred's cache is cleared.
+- Every Folo CLI request made by a Script Filter stores its response as a JSON file in
+  Alfred's workflow cache (`folo-requests/`). The filename is a stable hash of the CLI
+  arguments, and each Script Filter response reports it in the `frr_result_cache_key`
+  workflow variable. Stored responses are records only; the workflow never reads them back.
 - Feed and list icons use Folo's `image` field. Feeds without one fall back to
   `icons.folo.is/<site-domain>` and are cached by feed/list ID in Alfred's
   workflow cache. Folo fallback icons follow the service's 30-day cache policy;
