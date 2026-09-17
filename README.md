@@ -6,7 +6,8 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
 
 - `folo [query]` — browse the latest timeline entries, optionally filtered by a local query.
   Its `TimelineBlockInput` maps onto the Folo CLI options (`view`, `limit`, `unreadOnly`,
-  `cursor`, `feed`, `list`, and `category`).
+  `cursor`, `feed`, `list`, and `category`). Entries keep the timeline's own order; the
+  response sets `skipknowledge` so Alfred does not reorder the learned ranking.
 - `flists [query]` — list and locally filter Feed/List subscriptions; Inbox subscriptions are hidden.
 - `funread [query]` — list and locally filter subscriptions that contain unread entries.
 - `flogin` — open the browser, save the token through Alfred, and notify on successful login.
@@ -15,10 +16,13 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
   open a Feed's original site URL or the Folo share URL.
 - Timeline results pass a complete `TimelineSelection` JSON value downstream. Both the URL
   action and mark-read action parse the same value without intermediate field extraction.
+  Hold Command and press Enter to mark the selected entry and every unread entry above it
+  in the rendered list as read.
 - Every Folo CLI request made by a Script Filter stores its response as a JSON file in
   Alfred's workflow cache (`folo-requests/`). The filename is a stable hash of the CLI
   arguments, and each Script Filter response reports it in the `frr_result_cache_key`
-  workflow variable. Stored responses are records only; the workflow never reads them back.
+  workflow variable. The mark-read-above action reads the stored timeline response named
+  by this variable so it marks exactly the entries the user saw above the selection.
 - Feed and list icons use Folo's `image` field. Feeds without one fall back to
   `icons.folo.is/<site-domain>` and are cached by feed/list ID in Alfred's
   workflow cache. Folo fallback icons follow the service's 30-day cache policy;
@@ -70,6 +74,14 @@ serialized mark-read result after a successful update:
 
 ```bash
 node workflow/dist/app/mark-read.js "$TIMELINE_SELECTION_JSON"
+```
+
+The mark-read-above action takes the same selection plus the `frr_result_cache_key`
+variable naming the stored timeline response, and reports every entry it marked:
+
+```bash
+frr_result_cache_key="$RESULT_CACHE_KEY" \
+  node workflow/dist/app/mark-read-above.js "$TIMELINE_SELECTION_JSON"
 ```
 
 The timeline app accepts Folo share URLs and serialized resource selections directly:

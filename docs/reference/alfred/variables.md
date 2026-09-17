@@ -15,3 +15,8 @@ inspect the stored response of the list the user just acted on:
 ```bash
 cat "$alfred_workflow_cache/folo-requests/$frr_result_cache_key"
 ```
+
+The mark-read-above action reads the stored timeline response through this variable: it
+locates the selected entry in the recorded list and marks every unread entry above it,
+so the action follows the list the user saw instead of a freshly fetched timeline. A
+fresh CLI call overwrites the file of the same request.

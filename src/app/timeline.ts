@@ -13,7 +13,8 @@
  * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` carries a
  *   serialized timeline selection; an empty result yields a non-valid
  *   placeholder item. The response's `frr_result_cache_key` variable names the cached
- *   Folo CLI response file backing the list.
+ *   Folo CLI response file backing the list, and `skipknowledge` keeps Alfred from
+ *   reordering the timeline's own entry order.
  * - On failure: an error item is emitted and the exit code is 1.
  */
 import { pathToFileURL } from "node:url";
@@ -93,7 +94,11 @@ function resolveTimelineInput(input: TimelineAppInput): TimelineDirectInput {
 
 export class TimelineAppOutput extends AlfredSF {
   constructor(items: AlfredSFItem[], cache = true, variables?: AlfredVariables) {
-    super(items, { cache: cache ? new AlfredSFCache(60) : undefined, variables });
+    super(items, {
+      cache: cache ? new AlfredSFCache(60) : undefined,
+      variables,
+      skipknowledge: true,
+    });
   }
 }
 

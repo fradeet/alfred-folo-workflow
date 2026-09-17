@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdirSync, renameSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -35,5 +35,26 @@ export function writeResponseCache(command: string[], data: unknown, options: Re
     renameSync(temporaryPath, path);
   } catch {
     // A cache write is best-effort; the live CLI result is already in hand.
+  }
+}
+
+/** Shape of filenames written by {@link writeResponseCache}. */
+const cacheFilenamePattern = /^[a-zA-Z0-9_-]{1,32}-[0-9a-f]{64}\.json$/;
+
+/** Reads the CLI payload stored under a `frr_result_cache_key` filename. */
+export function readResponseCache(filename: string, options: ResponseCacheOptions = {}): unknown {
+  if (!cacheFilenamePattern.test(filename)) {
+    throw new TypeError("Response cache key must be a filename reported by this workflow");
+  }
+  let raw: string;
+  try {
+    raw = readFileSync(join(responseCacheDirectory(options), filename), "utf8");
+  } catch {
+    throw new Error(`Cached Folo response is unavailable: ${filename}`);
+  }
+  try {
+    return JSON.parse(raw) as unknown;
+  } catch {
+    throw new TypeError(`Cached Folo response is not valid JSON: ${filename}`);
   }
 }

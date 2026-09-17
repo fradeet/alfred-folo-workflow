@@ -31,7 +31,8 @@ import {
   FoloView,
 } from "../src/types/folo-types.js";
 import { readToken, setWorkflowToken } from "../src/app/login.js";
-import { TimelineDirectInput, parseTimelineAppInput } from "../src/app/timeline.js";
+import { MarkReadAboveAppOutput, unreadEntryIdsAbove } from "../src/app/mark-read-above.js";
+import { TimelineAppOutput, TimelineDirectInput, parseTimelineAppInput } from "../src/app/timeline.js";
 import { parseFoloShareUrl } from "../src/shared/folo-url.js";
 import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/shared/icon-cache.js";
 import { SubscriptionSelection } from "../src/contracts/subscription-selection.js";
@@ -345,6 +346,34 @@ test("MarkReadBlockInput rejects a missing entry ID before calling Folo", () => 
   assert.throws(() => new MarkReadBlockInput("  "), /Entry ID is required/);
 });
 
+test("unreadEntryIdsAbove keeps unread entries up to and including the anchor", () => {
+  const timeline = FoloTimelineResult.from({
+    entries: [
+      { read: true, entries: { id: "entry-1" }, feeds: {} },
+      { read: false, entries: { id: "entry-2" }, feeds: {} },
+      { read: true, entries: { id: "entry-3" }, feeds: {} },
+      { read: false, entries: { id: "entry-4" }, feeds: {} },
+      { read: false, entries: { id: "entry-5" }, feeds: {} },
+    ],
+    nextCursor: null,
+    hasNext: false,
+  });
+
+  assert.deepEqual(unreadEntryIdsAbove(timeline, "entry-4"), ["entry-2", "entry-4"]);
+  assert.deepEqual(unreadEntryIdsAbove(timeline, "entry-1"), []);
+  assert.deepEqual(unreadEntryIdsAbove(timeline, "entry-5"), ["entry-2", "entry-4", "entry-5"]);
+  assert.throws(() => unreadEntryIdsAbove(timeline, "missing"), /not in the cached timeline list/);
+});
+
+test("MarkReadAboveAppOutput reports the anchor and every marked entry", () => {
+  const output = new MarkReadAboveAppOutput("entry-4", ["entry-2", "entry-4"]);
+  assert.deepEqual(JSON.parse(output.serialize()), {
+    kind: "mark-read-above-result",
+    anchorEntryId: "entry-4",
+    markedEntryIds: ["entry-2", "entry-4"],
+  });
+});
+
 test("TimelineSelection serializes and restores every nested class", () => {
   const serialized = new TimelineSelection(
     "https://example.com/post",
@@ -549,6 +578,15 @@ test("parseFoloEnvelope rejects invalid JSON and malformed envelopes", () => {
   assert.throws(() => parseFoloEnvelope("not json", "bad output"), /bad output/);
   assert.throws(() => parseFoloEnvelope("{}"), /invalid response envelope/);
   assert.throws(() => parseFoloEnvelope('{"ok":true}'), /did not contain data/);
+});
+
+test("TimelineAppOutput skips Alfred's learned ordering and keeps the cache window", () => {
+  const response = new TimelineAppOutput([new AlfredSFItem("Post")]);
+  assert.deepEqual(JSON.parse(JSON.stringify(response)), {
+    items: [{ title: "Post" }],
+    cache: { seconds: 60 },
+    skipknowledge: true,
+  });
 });
 
 test("Alfred Script Filter classes serialize nested values and omit empty options", () => {

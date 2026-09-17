@@ -30,6 +30,16 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Mark above as read</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
 		</array>
 		<key>318AF45B-B2CB-4A05-B082-F4C436780C09</key>
 		<array>
@@ -523,6 +533,29 @@
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>dist/app/mark-read-above.js</string>
+				<key>type</key>
+				<integer>8</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string>Use `flogin` to authenticate, `folo` to browse your timeline, and `flists` to browse all subscriptions.</string>
@@ -543,6 +576,15 @@
 			<real>475</real>
 			<key>ypos</key>
 			<real>345</real>
+		</dict>
+		<key>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</key>
+		<dict>
+			<key>note</key>
+			<string>Mark above as read</string>
+			<key>xpos</key>
+			<real>690</real>
+			<key>ypos</key>
+			<real>495</real>
 		</dict>
 		<key>318AF45B-B2CB-4A05-B082-F4C436780C09</key>
 		<dict>
