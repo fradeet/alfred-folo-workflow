@@ -577,7 +577,10 @@ test("parseFoloEnvelope preserves CLI errors", () => {
 test("parseFoloEnvelope rejects invalid JSON and malformed envelopes", () => {
   assert.throws(() => parseFoloEnvelope("not json", "bad output"), /bad output/);
   assert.throws(() => parseFoloEnvelope("{}"), /invalid response envelope/);
-  assert.throws(() => parseFoloEnvelope('{"ok":true}'), /did not contain data/);
+});
+
+test("parseFoloEnvelope accepts a successful mutation envelope without data", () => {
+  assert.equal(parseFoloEnvelope('{"ok":true,"error":null}'), undefined);
 });
 
 test("TimelineAppOutput skips Alfred's learned ordering and keeps the cache window", () => {

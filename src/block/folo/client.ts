@@ -39,6 +39,12 @@ export class FoloError extends Error {
   }
 }
 
+/**
+ * Returns the envelope's `data` payload, or `undefined` when a successful
+ * command returns none: mutation commands such as `entry mark-read` respond
+ * with `{"ok":true,"error":null}`. Decoders that require a payload validate
+ * its absence themselves.
+ */
 export function parseFoloEnvelope(rawOutput: string, fallbackMessage?: string): unknown {
   let envelope: unknown;
 
@@ -58,10 +64,6 @@ export function parseFoloEnvelope(rawOutput: string, fallbackMessage?: string): 
       typeof error.code === "string" ? error.code : "FOLO_ERROR",
       typeof error.message === "string" ? error.message : "Folo request failed",
     );
-  }
-
-  if (!("data" in envelope)) {
-    throw new FoloError("INVALID_RESPONSE", "Folo CLI response did not contain data");
   }
 
   return envelope.data;
