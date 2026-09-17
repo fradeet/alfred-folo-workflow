@@ -1,4 +1,4 @@
-import { FoloError, runFolo } from "./client.js";
+import { FoloError, runFoloAsync } from "./client.js";
 
 export class MarkReadBlockInput {
   readonly entryId: string;
@@ -17,7 +17,8 @@ export class MarkReadBlockOutput {
   constructor(readonly entryId: string) {}
 }
 
-export function markEntryRead(input: MarkReadBlockInput): MarkReadBlockOutput {
-  runFolo(input.toArguments(), {}, (data) => data);
+/** Marks one entry as read; async so apps can mark several entries concurrently. */
+export async function markEntryRead(input: MarkReadBlockInput): Promise<MarkReadBlockOutput> {
+  await runFoloAsync(input.toArguments(), {}, (data) => data);
   return new MarkReadBlockOutput(input.entryId);
 }

@@ -18,8 +18,12 @@ import { pathToFileURL } from "node:url";
 import { MarkReadBlockInput, markEntryRead } from "../block/folo/mark-read.js";
 import { TimelineSelection } from "../contracts/timeline-selection.js";
 import { SerializedValue } from "../contracts/serialized-value.js";
+import { mapWithConcurrency } from "../shared/concurrency.js";
 import { readResponseCache } from "../shared/response-cache.js";
 import { FoloTimelineResult } from "../types/folo-types.js";
+
+/** CLI mark requests run concurrently, bounded like the icon cache pool. */
+const MARK_CONCURRENCY = 6;
 
 export class MarkReadAboveAppOutput extends SerializedValue {
   readonly kind = "mark-read-above-result";
@@ -56,28 +60,45 @@ export function unreadEntryIdsAbove(result: FoloTimelineResult, anchorEntryId: s
     .map((item) => item.entries.id);
 }
 
-/** Marks the selected Folo entry and the unread entries above it as read. */
-export function markReadAbove(input: TimelineSelection, cacheKey: string): MarkReadAboveAppOutput {
+/**
+ * Marks the selected Folo entry and the unread entries above it as read. The
+ * CLI requests run concurrently; every entry is attempted even when some fail,
+ * because marking an entry as read is idempotent, and the output lists the
+ * successfully marked IDs in list order.
+ */
+export async function markReadAbove(
+  input: TimelineSelection,
+  cacheKey: string,
+): Promise<MarkReadAboveAppOutput> {
   const timeline = FoloTimelineResult.from(readResponseCache(cacheKey));
   const entryIds = unreadEntryIdsAbove(timeline, input.entryId);
 
-  const marked: string[] = [];
-  for (const entryId of entryIds) {
+  const failures: string[] = [];
+  const results = await mapWithConcurrency(entryIds, MARK_CONCURRENCY, async (entryId) => {
     try {
-      markEntryRead(new MarkReadBlockInput(entryId));
+      await markEntryRead(new MarkReadBlockInput(entryId));
+      return true;
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
-      throw new Error(`Marked ${marked.length} of ${entryIds.length} entries; then: ${message}`);
+      failures.push(`${entryId}: ${message}`);
+      return false;
     }
-    marked.push(entryId);
+  });
+
+  const marked = entryIds.filter((_entryId, index) => results[index]);
+  if (failures.length > 0) {
+    throw new Error(
+      `Marked ${marked.length} of ${entryIds.length} entries; failed: ${failures.join("; ")}`,
+    );
   }
   return new MarkReadAboveAppOutput(input.entryId, marked);
 }
 
-function main(): void {
+async function main(): Promise<void> {
   try {
     const input = TimelineSelection.parse(process.argv.slice(2).join(" "));
-    process.stdout.write(markReadAbove(input, process.env.frr_result_cache_key ?? "").serialize());
+    const output = await markReadAbove(input, process.env.frr_result_cache_key ?? "");
+    process.stdout.write(output.serialize());
   } catch (error: unknown) {
     console.error(error instanceof Error ? error.message : String(error));
     process.exitCode = 1;

@@ -77,7 +77,8 @@ node workflow/dist/app/mark-read.js "$TIMELINE_SELECTION_JSON"
 ```
 
 The mark-read-above action takes the same selection plus the `frr_result_cache_key`
-variable naming the stored timeline response, and reports every entry it marked:
+variable naming the stored timeline response, and reports every entry it marked.
+Entries are marked through concurrent CLI requests, bounded at six in flight:
 
 ```bash
 frr_result_cache_key="$RESULT_CACHE_KEY" \

@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { mkdir, readdir, rename, stat, unlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { extname, join } from "node:path";
+import { mapWithConcurrency } from "./concurrency.js";
 import { isRecord } from "./guards.js";
 
 const DEFAULT_MAX_AGE = 7 * 24 * 60 * 60 * 1_000;
@@ -196,19 +197,4 @@ function imageExtension(contentType: string, url: string): string {
   if (byType[contentType]) return byType[contentType];
   const extension = extname(new URL(url).pathname).toLowerCase();
   return /^\.[a-z0-9]{1,5}$/.test(extension) ? extension : ".img";
-}
-
-async function mapWithConcurrency<T>(
-  values: T[],
-  limit: number,
-  operation: (value: T) => Promise<void>,
-): Promise<void> {
-  let index = 0;
-  const worker = async (): Promise<void> => {
-    while (index < values.length) {
-      const value = values[index++];
-      if (value !== undefined) await operation(value);
-    }
-  };
-  await Promise.all(Array.from({ length: Math.min(limit, values.length) }, worker));
 }

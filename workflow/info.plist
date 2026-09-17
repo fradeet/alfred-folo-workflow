@@ -41,6 +41,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>4C57F8FA-E18F-4536-A99C-B1C64D707A7A</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>318AF45B-B2CB-4A05-B082-F4C436780C09</key>
 		<array>
 			<dict>
@@ -237,6 +250,8 @@
 				<integer>2</integer>
 				<key>keyword</key>
 				<string>flogin</string>
+				<key>skipuniversalaction</key>
+				<true/>
 				<key>subtext</key>
 				<string>Open the browser and authenticate with Folo</string>
 				<key>text</key>
@@ -383,7 +398,7 @@
 				<key>alfredfiltersresults</key>
 				<true/>
 				<key>alfredfiltersresultsmatchmode</key>
-				<integer>2</integer>
+				<integer>0</integer>
 				<key>argumenttreatemptyqueryasnil</key>
 				<true/>
 				<key>argumenttrimmode</key>
@@ -460,7 +475,7 @@
 				<key>alfredfiltersresults</key>
 				<true/>
 				<key>alfredfiltersresultsmatchmode</key>
-				<integer>2</integer>
+				<integer>0</integer>
 				<key>argumenttreatemptyqueryasnil</key>
 				<true/>
 				<key>argumenttrimmode</key>
@@ -556,6 +571,27 @@
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>Task finish: Mark above as read</string>
+				<key>title</key>
+				<string>{const:alfred_workflow_name}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>4C57F8FA-E18F-4536-A99C-B1C64D707A7A</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string>Use `flogin` to authenticate, `folo` to browse your timeline, and `flists` to browse all subscriptions.</string>
@@ -564,27 +600,29 @@
 		<key>047B6A17-139C-42B0-9653-D90335C28209</key>
 		<dict>
 			<key>xpos</key>
-			<real>930</real>
+			<real>920</real>
 			<key>ypos</key>
-			<real>190</real>
+			<real>175</real>
 		</dict>
 		<key>0A1506F8-7EB3-4938-90AE-509944E38B25</key>
 		<dict>
 			<key>colorindex</key>
 			<integer>3</integer>
+			<key>note</key>
+			<string>View Timeline</string>
 			<key>xpos</key>
-			<real>475</real>
+			<real>480</real>
 			<key>ypos</key>
-			<real>345</real>
+			<real>325</real>
 		</dict>
 		<key>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</key>
 		<dict>
 			<key>note</key>
 			<string>Mark above as read</string>
 			<key>xpos</key>
-			<real>690</real>
+			<real>700</real>
 			<key>ypos</key>
-			<real>495</real>
+			<real>475</real>
 		</dict>
 		<key>318AF45B-B2CB-4A05-B082-F4C436780C09</key>
 		<dict>
@@ -593,32 +631,41 @@
 			<key>xpos</key>
 			<real>40</real>
 			<key>ypos</key>
-			<real>190</real>
+			<real>175</real>
 		</dict>
 		<key>3E28080B-9C52-443E-AE10-5A8AEF99BC57</key>
 		<dict>
 			<key>xpos</key>
-			<real>690</real>
+			<real>700</real>
 			<key>ypos</key>
-			<real>190</real>
+			<real>175</real>
+		</dict>
+		<key>4C57F8FA-E18F-4536-A99C-B1C64D707A7A</key>
+		<dict>
+			<key>xpos</key>
+			<real>920</real>
+			<key>ypos</key>
+			<real>475</real>
 		</dict>
 		<key>528EBBE4-AC53-41B4-BE91-D87A4C9BFB74</key>
 		<dict>
 			<key>colorindex</key>
 			<integer>4</integer>
+			<key>note</key>
+			<string>View Subscription</string>
 			<key>xpos</key>
-			<real>255</real>
+			<real>260</real>
 			<key>ypos</key>
-			<real>190</real>
+			<real>175</real>
 		</dict>
 		<key>63E2EF96-CB1A-4E6C-8062-D487A9BDDB9A</key>
 		<dict>
 			<key>colorindex</key>
 			<integer>3</integer>
 			<key>note</key>
-			<string>Login Success.</string>
+			<string>Login Success</string>
 			<key>xpos</key>
-			<real>690</real>
+			<real>700</real>
 			<key>ypos</key>
 			<real>25</real>
 		</dict>
@@ -626,6 +673,8 @@
 		<dict>
 			<key>colorindex</key>
 			<integer>3</integer>
+			<key>note</key>
+			<string>Login via CLI</string>
 			<key>xpos</key>
 			<real>40</real>
 			<key>ypos</key>
@@ -638,23 +687,23 @@
 			<key>xpos</key>
 			<real>40</real>
 			<key>ypos</key>
-			<real>345</real>
+			<real>325</real>
 		</dict>
 		<key>9FCCC6CA-5715-44A6-88E7-113666703284</key>
 		<dict>
 			<key>note</key>
 			<string>Mark Read</string>
 			<key>xpos</key>
-			<real>925</real>
+			<real>920</real>
 			<key>ypos</key>
-			<real>345</real>
+			<real>325</real>
 		</dict>
 		<key>C1A3E00B-AB1B-40D0-A288-30D4B9443D65</key>
 		<dict>
 			<key>colorindex</key>
 			<integer>3</integer>
 			<key>xpos</key>
-			<real>255</real>
+			<real>260</real>
 			<key>ypos</key>
 			<real>25</real>
 		</dict>
@@ -663,14 +712,14 @@
 			<key>colorindex</key>
 			<integer>6</integer>
 			<key>xpos</key>
-			<real>255</real>
+			<real>260</real>
 			<key>ypos</key>
-			<real>345</real>
+			<real>325</real>
 		</dict>
 		<key>F2D25FAA-6A4D-4ACB-96F5-AEA036D44D38</key>
 		<dict>
 			<key>xpos</key>
-			<real>475</real>
+			<real>480</real>
 			<key>ypos</key>
 			<real>25</real>
 		</dict>
@@ -786,16 +835,16 @@
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<false/>
+				<true/>
 				<key>required</key>
 				<false/>
 				<key>text</key>
 				<string>Use system proxy</string>
 			</dict>
 			<key>description</key>
-			<string></string>
+			<string>Node.js doesn't use the proxy env var by default; This option ensures consistent proxy behaviour like other Alfred workflows.</string>
 			<key>label</key>
-			<string>Proxy</string>
+			<string>Network</string>
 			<key>type</key>
 			<string>checkbox</string>
 			<key>variable</key>
@@ -803,7 +852,7 @@
 		</dict>
 	</array>
 	<key>version</key>
-	<string>0.4.1</string>
+	<string>0.4.2</string>
 	<key>webaddress</key>
 	<string>https://github.com/fradeet/alfred-folo-workflow</string>
 </dict>
