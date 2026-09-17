@@ -12,7 +12,7 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
 - `funread [query]` — list and locally filter subscriptions that contain unread entries.
 - `flogin` — open the browser, save the token through Alfred, and notify on successful login.
 - Subscription and unread results put a complete `SubscriptionSelection` or `UnreadSelection`
-  JSON value in the `frr_timeline_filter` workflow variable for the timeline app; hold Option to
+  JSON value in the `frrTimelineFilter` workflow variable for the timeline app; hold Option to
   open a Feed's original site URL or the Folo share URL.
 - Timeline results pass a complete `TimelineSelection` JSON value downstream. Both the URL
   action and mark-read action parse the same value without intermediate field extraction.
@@ -20,7 +20,7 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
   in the rendered list as read.
 - Every Folo CLI request made by a Script Filter stores its response as a JSON file in
   Alfred's workflow cache (`folo-requests/`). The filename is a stable hash of the CLI
-  arguments, and each Script Filter response reports it in the `frr_result_cache_key`
+  arguments, and each Script Filter response reports it in the `frrResultCacheKey`
   workflow variable. The mark-read-above action reads the stored timeline response named
   by this variable so it marks exactly the entries the user saw above the selection.
 - Feed and list icons use Folo's `image` field. Feeds without one fall back to
@@ -76,12 +76,12 @@ serialized mark-read result after a successful update:
 node workflow/dist/app/mark-read.js "$TIMELINE_SELECTION_JSON"
 ```
 
-The mark-read-above action takes the same selection plus the `frr_result_cache_key`
+The mark-read-above action takes the same selection plus the `frrResultCacheKey`
 variable naming the stored timeline response, and reports every entry it marked.
 Entries are marked through concurrent CLI requests, bounded at six in flight:
 
 ```bash
-frr_result_cache_key="$RESULT_CACHE_KEY" \
+frrResultCacheKey="$RESULT_CACHE_KEY" \
   node workflow/dist/app/mark-read-above.js "$TIMELINE_SELECTION_JSON"
 ```
 

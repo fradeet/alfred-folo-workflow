@@ -7,12 +7,12 @@
  * - a serialized {@link SubscriptionSelection} or {@link UnreadSelection}, or
  * - a serialized {@link TimelineDirectInput}. Malformed JSON falls back to a query.
  *
- * Environment: `FOLO_LIMIT` sets the default entry limit (digits only, otherwise 30).
+ * Environment: `FRR_TIMELINE_LIMIT` sets the default entry limit (digits only, otherwise 30).
  *
  * Output:
  * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` carries a
  *   serialized timeline selection; an empty result yields a non-valid
- *   placeholder item. The response's `frr_result_cache_key` variable names the cached
+ *   placeholder item. The response's `frrResultCacheKey` variable names the cached
  *   Folo CLI response file backing the list, and `skipknowledge` keeps Alfred from
  *   reordering the timeline's own entry order.
  * - On failure: an error item is emitted and the exit code is 1.
@@ -104,7 +104,7 @@ export class TimelineAppOutput extends AlfredSF {
 
 export async function timeline(input: TimelineAppInput): Promise<TimelineAppOutput> {
   const directInput = resolveTimelineInput(input);
-  const limit = /^\d+$/.test(process.env.FOLO_LIMIT ?? "") ? Number(process.env.FOLO_LIMIT) : 30;
+  const limit = /^\d+$/.test(process.env.FRR_TIMELINE_LIMIT ?? "") ? Number(process.env.FRR_TIMELINE_LIMIT) : 30;
   const request = directInput.request.withDefaultLimit(limit);
   const data = getTimeline(request);
   const iconFor = await cacheIcons(data.entries.map((item) => item.feeds));
@@ -117,7 +117,7 @@ export async function timeline(input: TimelineAppInput): Promise<TimelineAppOutp
   return new TimelineAppOutput(
     items.length ? items : [emptyItem("No Folo entries", emptySubtitle)],
     false,
-    { frr_result_cache_key: responseCacheFilename(request.toArguments()) },
+    { frrResultCacheKey: responseCacheFilename(request.toArguments()) },
   );
 }
 

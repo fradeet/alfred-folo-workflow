@@ -92,7 +92,7 @@ export function subscriptionItems(data: FoloSubscriptionsResult, query = "", ico
       mods: { alt: { arg: serializedSelection } },
       quicklookurl: foloUrl,
       text: new AlfredSFItemText(foloUrl, description || title),
-      variables: { frr_timeline_filter: serializedSelection },
+      variables: { frrTimelineFilter: serializedSelection },
     })];
   });
 
@@ -125,7 +125,7 @@ export function unreadItems(data: FoloUnreadResult, query = "", iconFor?: IconRe
       mods: { alt: { arg: serializedSelection } },
       quicklookurl: foloUrl,
       text: new AlfredSFItemText(foloUrl, `${title} · ${unreadDetail}`),
-      variables: { frr_timeline_filter: serializedSelection },
+      variables: { frrTimelineFilter: serializedSelection },
     })];
   });
 

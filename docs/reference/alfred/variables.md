@@ -1,6 +1,6 @@
 # Variables
 
-## `frr_result_cache_key`
+## `frrResultCacheKey`
 
 Whenever a Script Filter requests data from the Folo CLI, the response is stored as a JSON
 file in `folo-requests/` inside the workflow's cache directory (`alfred_workflow_cache`).
@@ -13,7 +13,7 @@ Use it in a connected Run Script by joining it with the cache directory, for exa
 inspect the stored response of the list the user just acted on:
 
 ```bash
-cat "$alfred_workflow_cache/folo-requests/$frr_result_cache_key"
+cat "$alfred_workflow_cache/folo-requests/$frrResultCacheKey"
 ```
 
 The mark-read-above action reads the stored timeline response through this variable: it

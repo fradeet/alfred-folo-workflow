@@ -128,14 +128,14 @@ test("subscriptionItems maps every subscription target and filters locally", () 
   assert.match(items[0]?.subtitle ?? "", /List.*Tech.*2 feeds.*useful bundle/);
   assert.equal(items[0]?.arg, undefined);
   assert.deepEqual(
-    SubscriptionSelection.parse(String(items[0]?.variables?.frr_timeline_filter)).subscription,
+    SubscriptionSelection.parse(String(items[0]?.variables?.frrTimelineFilter)).subscription,
     data.subscriptions[0],
   );
   assert.deepEqual(
-    SubscriptionSelection.parse(String(items[1]?.variables?.frr_timeline_filter)).subscription,
+    SubscriptionSelection.parse(String(items[1]?.variables?.frrTimelineFilter)).subscription,
     data.subscriptions[1],
   );
-  assert.equal(items[1]?.mods?.alt?.arg, items[1]?.variables?.frr_timeline_filter);
+  assert.equal(items[1]?.mods?.alt?.arg, items[1]?.variables?.frrTimelineFilter);
   assert.equal(subscriptionItems(data, "useful").length, 1);
   assert.equal(subscriptionItems(data, "missing").length, 0);
 });
@@ -155,12 +155,12 @@ test("unreadItems maps unread sources and filters locally", () => {
   assert.match(items[0]?.subtitle ?? "", /12 unread.*Feed.*Tech/);
   assert.equal(items[0]?.arg, undefined);
   assert.deepEqual(
-    UnreadSelection.parse(String(items[0]?.variables?.frr_timeline_filter)).item,
+    UnreadSelection.parse(String(items[0]?.variables?.frrTimelineFilter)).item,
     data.items[0],
   );
-  assert.equal(UnreadSelection.parse(String(items[1]?.variables?.frr_timeline_filter)).resourceType, "list");
-  assert.equal(UnreadSelection.parse(String(items[2]?.variables?.frr_timeline_filter)).resourceId, "inbox-inbox-1");
-  assert.equal(items[0]?.mods?.alt?.arg, items[0]?.variables?.frr_timeline_filter);
+  assert.equal(UnreadSelection.parse(String(items[1]?.variables?.frrTimelineFilter)).resourceType, "list");
+  assert.equal(UnreadSelection.parse(String(items[2]?.variables?.frrTimelineFilter)).resourceId, "inbox-inbox-1");
+  assert.equal(items[0]?.mods?.alt?.arg, items[0]?.variables?.frrTimelineFilter);
   assert.equal(unreadItems(data, "newsletters").length, 1);
   assert.equal(unreadItems(data, "missing").length, 0);
 });
@@ -597,14 +597,14 @@ test("Alfred Script Filter classes serialize nested values and omit empty option
     new AlfredSFItem("Example", {
       arg: "https://example.com",
       text: new AlfredSFItemText("copy", "large"),
-      variables: { frr_timeline_filter: "{}" },
+      variables: { frrTimelineFilter: "{}" },
       valid: false,
     }),
   ], {
     cache: new AlfredSFCache(60, false),
     rerun: 0,
     skipknowledge: false,
-    variables: { frr_result_cache_key: "timeline-abc.json" },
+    variables: { frrResultCacheKey: "timeline-abc.json" },
   });
 
   assert.deepEqual(JSON.parse(JSON.stringify(response)), {
@@ -612,13 +612,13 @@ test("Alfred Script Filter classes serialize nested values and omit empty option
       title: "Example",
       arg: "https://example.com",
       text: { copy: "copy", largetype: "large" },
-      variables: { frr_timeline_filter: "{}" },
+      variables: { frrTimelineFilter: "{}" },
       valid: false,
     }],
     rerun: 0,
     cache: { seconds: 60, loosereload: false },
     skipknowledge: false,
-    variables: { frr_result_cache_key: "timeline-abc.json" },
+    variables: { frrResultCacheKey: "timeline-abc.json" },
   });
 });
 

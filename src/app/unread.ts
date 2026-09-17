@@ -7,8 +7,8 @@
  *
  * Output:
  * - stdout: Alfred Script Filter JSON cached for 60s. Each item's
- *   `frr_timeline_filter` variable is a serialized unread selection; the
- *   response's `frr_result_cache_key` variable names the cached Folo CLI response file
+ *   `frrTimelineFilter` variable is a serialized unread selection; the
+ *   response's `frrResultCacheKey` variable names the cached Folo CLI response file
  *   backing the list. An empty result yields a non-valid item.
  * - Side effect: when feed or list icons are missing from the cache, the
  *   cache-subscription-icons worker is spawned detached in the background.
@@ -47,7 +47,7 @@ export async function unread(input: UnreadAppInput): Promise<UnreadAppOutput> {
   return new UnreadAppOutput(
     items.length ? items : [emptyItem("No unread subscriptions", "You're all caught up")],
     true,
-    { frr_result_cache_key: responseCacheFilename(blockInput.toArguments()) },
+    { frrResultCacheKey: responseCacheFilename(blockInput.toArguments()) },
   );
 }
 
