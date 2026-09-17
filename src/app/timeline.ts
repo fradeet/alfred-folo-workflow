@@ -6,7 +6,7 @@
  * - a plain filter query matched against the fetched entries, or
  * - a serialized {@link FoloResourceSelection} from the subscriptions or
  *   unread Script Filter, or
- * - a serialized {@link TimelineAppInput}. Malformed JSON falls back to a query.
+ * - a serialized {@link TimelineDirectInput}. Malformed JSON falls back to a query.
  *
  * Environment: `FOLO_LIMIT` sets the default entry limit (digits only, otherwise 30).
  *
@@ -25,7 +25,9 @@ import { FoloResourceSelection } from "../contracts/resource-selection.js";
 import { SerializedValue, parseRecord } from "../contracts/serialized-value.js";
 import { AlfredSF, AlfredSFCache, AlfredSFItem } from "../types/alfred-types.js";
 
-export class TimelineAppInput extends SerializedValue {
+export type TimelineAppInput = TimelineDirectInput | FoloResourceSelection;
+
+export class TimelineDirectInput extends SerializedValue {
   readonly kind = "timeline-input";
 
   constructor(
@@ -39,65 +41,69 @@ export class TimelineAppInput extends SerializedValue {
     return { kind: this.kind, query: this.query, request: this.request };
   }
 
-  static from(value: unknown): TimelineAppInput {
+  static from(value: unknown): TimelineDirectInput {
     if (typeof value !== "object" || value === null || Array.isArray(value)) {
       throw new TypeError("Timeline app input must be an object");
     }
     const data = value as Record<string, unknown>;
     if (data.kind !== "timeline-input") throw new TypeError("Invalid timeline app input kind");
-    return new TimelineAppInput(
+    return new TimelineDirectInput(
       typeof data.query === "string" ? data.query : "",
       TimelineBlockInput.from(data.request ?? {}),
     );
   }
+}
 
-  static parse(value: string): TimelineAppInput {
-    const query = value.trim();
-    if (!query.startsWith("{")) {
-      const target = parseFoloShareUrl(query);
-      return target
-        ? new TimelineAppInput(
-            "",
-            new TimelineBlockInput(target.type === "list" ? { list: target.id } : { feed: target.id }),
-          )
-        : new TimelineAppInput(query);
-    }
-    let data: Record<string, unknown>;
-    try {
-      data = parseRecord(query, "Timeline app input");
-    } catch {
-      return new TimelineAppInput(query);
-    }
-    if (data.kind === "timeline-input") return TimelineAppInput.from(data);
-    if (data.kind === "folo-resource") {
-      const resource = FoloResourceSelection.from(data);
-      return new TimelineAppInput(
+export function parseTimelineAppInput(value: string): TimelineAppInput {
+  const query = value.trim();
+  if (!query.startsWith("{")) {
+    const target = parseFoloShareUrl(query);
+    return target
+      ? new TimelineDirectInput(
+          "",
+          new TimelineBlockInput(target.type === "list" ? { list: target.id } : { feed: target.id }),
+        )
+      : new TimelineDirectInput(query);
+  }
+  let data: Record<string, unknown>;
+  try {
+    data = parseRecord(query, "Timeline app input");
+  } catch {
+    return new TimelineDirectInput(query);
+  }
+  if (data.kind === "timeline-input") return TimelineDirectInput.from(data);
+  if (data.kind === "folo-resource") return FoloResourceSelection.from(data);
+  return new TimelineDirectInput(query);
+}
+
+function resolveTimelineInput(input: TimelineAppInput): TimelineDirectInput {
+  return input instanceof FoloResourceSelection
+    ? new TimelineDirectInput(
         "",
         new TimelineBlockInput(
-          resource.resourceType === "list"
-            ? { list: resource.resourceId }
-            : { feed: resource.resourceId },
+          input.resourceType === "list"
+            ? { list: input.resourceId }
+            : { feed: input.resourceId },
         ),
-      );
-    }
-    return new TimelineAppInput(query);
-  }
+      )
+    : input;
 }
 
 export class TimelineAppOutput extends AlfredSF {
-  constructor(items: AlfredSFItem[], cache = true) {
+  constructor(items: AlfredSFItem[], cache = false) {
     super(items, { cache: cache ? new AlfredSFCache(60) : undefined });
   }
 }
 
 export async function timeline(input: TimelineAppInput): Promise<TimelineAppOutput> {
+  const directInput = resolveTimelineInput(input);
   const limit = /^\d+$/.test(process.env.FOLO_LIMIT ?? "") ? Number(process.env.FOLO_LIMIT) : 30;
-  const data = getTimeline(input.request.withDefaultLimit(limit));
+  const data = getTimeline(directInput.request.withDefaultLimit(limit));
   const iconFor = await cacheIcons(data.entries.map((item) => item.feeds));
-  const items = timelineItems(data, input.query, iconFor);
-  const emptySubtitle = input.request.unreadOnly
+  const items = timelineItems(data, directInput.query, iconFor);
+  const emptySubtitle = directInput.request.unreadOnly
     ? "This subscription has no unread entries"
-    : input.request.feed || input.request.list
+    : directInput.request.feed || directInput.request.list
       ? "This subscription has no entries"
       : "Try another query";
   return new TimelineAppOutput(
@@ -107,7 +113,7 @@ export async function timeline(input: TimelineAppInput): Promise<TimelineAppOutp
 
 async function main(): Promise<void> {
   try {
-    const input = TimelineAppInput.parse(process.argv.slice(2).join(" "));
+    const input = parseTimelineAppInput(process.argv.slice(2).join(" "));
     process.stdout.write(JSON.stringify(await timeline(input)));
   } catch (error: unknown) {
     console.error(error);

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { TimelineAppInput } from "../src/app/timeline.js";
+import { TimelineDirectInput, parseTimelineAppInput } from "../src/app/timeline.js";
 import { TimelineBlockInput } from "../src/block/folo/timeline.js";
 import { FoloResourceSelection } from "../src/contracts/resource-selection.js";
 import { TimelineSelection } from "../src/contracts/timeline-selection.js";
@@ -18,9 +18,9 @@ test("resource selections retain their complete cross-app contract", () => {
   assert.equal(FoloResourceSelection.parse(value.serialize()).openUrl, "https://example.com");
   assert.ok(parseResourceUrlInput(value.serialize()) instanceof FoloResourceSelection);
   assert.equal(resourceUrl(value).url, "https://example.com");
-  assert.equal(TimelineAppInput.parse(value.serialize()).request.feed, "feed-1");
+  assert.deepEqual(parseTimelineAppInput(value.serialize()), value);
   assert.throws(
-    () => TimelineAppInput.parse('{"kind":"folo-resource"}'),
+    () => parseTimelineAppInput('{"kind":"folo-resource"}'),
     /resource type|incomplete/i,
   );
 });
@@ -42,12 +42,14 @@ test("timeline selections rehydrate nested Folo classes", () => {
 });
 
 test("timeline app input rehydrates its block input", () => {
-  const value = new TimelineAppInput("", new TimelineBlockInput({ list: "list-1" }));
-  const parsed = TimelineAppInput.parse(value.serialize());
+  const value = new TimelineDirectInput("", new TimelineBlockInput({ list: "list-1" }));
+  const parsed = parseTimelineAppInput(value.serialize());
+  assert.ok(parsed instanceof TimelineDirectInput);
+  if (!(parsed instanceof TimelineDirectInput)) throw new TypeError("Expected direct timeline input");
   assert.ok(parsed.request instanceof TimelineBlockInput);
   assert.equal(parsed.request.list, "list-1");
   assert.throws(
-    () => TimelineAppInput.parse('{"kind":"timeline-input","request":"invalid"}'),
+    () => parseTimelineAppInput('{"kind":"timeline-input","request":"invalid"}'),
     /block input/i,
   );
 });
