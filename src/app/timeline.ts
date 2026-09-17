@@ -11,7 +11,8 @@
  *
  * Output:
  * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` carries a
- *   serialized timeline selection; an empty result yields a non-valid
+ *   serialized timeline selection and its `action` exposes the entry URL to
+ *   Universal Actions; an empty result yields a non-valid
  *   placeholder item. The response's `frrResultCacheKey` variable names the cached
  *   Folo CLI response file backing the list, and `skipknowledge` keeps Alfred from
  *   reordering the timeline's own entry order.

@@ -8,6 +8,7 @@ import {
   AlfredSF,
   AlfredSFCache,
   AlfredSFItem,
+  AlfredSFItemAction,
   AlfredSFItemText,
   AlfredTV,
   AlfredTVBehaviour,
@@ -332,6 +333,9 @@ test("timelineItems maps and filters Folo entry envelopes", () => {
   const items = timelineItems(data, "useful");
   assert.equal(items.length, 1);
   assert.equal(items[0]?.title, "Hello & Folo");
+  const action = items[0]?.action;
+  assert.ok(action instanceof AlfredSFItemAction);
+  assert.equal(action.url, "https://example.com/post");
   const selection = TimelineSelection.parse(String(items[0]?.arg));
   assert.equal(selection.url, "https://example.com/post");
   assert.equal(selection.entryId, "entry-1");

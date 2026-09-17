@@ -1,5 +1,5 @@
 import { isRecord } from "./guards.js";
-import { AlfredSFItem, AlfredSFItemIcon, AlfredSFItemText } from "../types/alfred-types.js";
+import { AlfredSFItem, AlfredSFItemAction, AlfredSFItemIcon, AlfredSFItemText } from "../types/alfred-types.js";
 import { IconResolver } from "./icon-cache.js";
 import { SubscriptionSelection } from "../contracts/subscription-selection.js";
 import { TimelineSelection } from "../contracts/timeline-selection.js";
@@ -46,6 +46,7 @@ export function timelineItems(data: FoloTimelineResult, query = "", iconFor?: Ic
     const searchable = [title, feedTitle, author, summary, url].join(" ").toLocaleLowerCase();
 
     return [new AlfredSFItem(title, {
+      action: new AlfredSFItemAction(undefined, url),
       subtitle,
       arg: entryOutput.serialize(),
       icon: icon(feed, iconFor),
