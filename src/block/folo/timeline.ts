@@ -48,6 +48,12 @@ export class TimelineBlockInput {
       : this;
   }
 
+  withDefaultUnreadOnly(unreadOnly: boolean): TimelineBlockInput {
+    return this.unreadOnly !== true && unreadOnly
+      ? new TimelineBlockInput({ ...this, unreadOnly: true })
+      : this;
+  }
+
   toArguments(): string[] {
     const args = ["timeline", "--limit", String(this.limit ?? 30)];
     if (this.view) args.push("--view", this.view);

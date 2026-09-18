@@ -8,6 +8,7 @@
  * - a serialized {@link TimelineDirectInput}. Malformed JSON falls back to a query.
  *
  * Environment: `FRR_TIMELINE_LIMIT` sets the default entry limit (digits only, otherwise 30).
+ * `frrTimelineUnreadOnly` set to `1` adds the unread-only flag to the request.
  *
  * Output:
  * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` carries a
@@ -106,7 +107,9 @@ export class TimelineAppOutput extends AlfredSF {
 export async function timeline(input: TimelineAppInput): Promise<TimelineAppOutput> {
   const directInput = resolveTimelineInput(input);
   const limit = /^\d+$/.test(process.env.FRR_TIMELINE_LIMIT ?? "") ? Number(process.env.FRR_TIMELINE_LIMIT) : 30;
-  const request = directInput.request.withDefaultLimit(limit);
+  const request = directInput.request
+    .withDefaultLimit(limit)
+    .withDefaultUnreadOnly(process.env.frrTimelineUnreadOnly === "1");
   const data = getTimeline(request);
   const iconFor = await cacheIcons(data.entries.map((item) => item.feeds));
   const items = timelineItems(data, directInput.query, iconFor);

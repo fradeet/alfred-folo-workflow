@@ -12,33 +12,23 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>D0B940A1-75B0-456F-8CBF-D86FF7772231</string>
+				<string>EBE91E1E-8216-4C2F-8D73-7E5539C7A1B4</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
 				<key>vitoclose</key>
-				<false/>
+				<true/>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
-				<string>9FCCC6CA-5715-44A6-88E7-113666703284</string>
+				<string>85EFCDBC-EC08-4BB4-9ECF-03C273BB8FD7</string>
 				<key>modifiers</key>
-				<integer>0</integer>
+				<integer>524288</integer>
 				<key>modifiersubtext</key>
-				<string></string>
+				<string>View all entry (include already read)</string>
 				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</string>
-				<key>modifiers</key>
-				<integer>1048576</integer>
-				<key>modifiersubtext</key>
-				<string>Mark above as read</string>
-				<key>vitoclose</key>
-				<false/>
+				<true/>
 			</dict>
 		</array>
 		<key>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</key>
@@ -89,6 +79,39 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>85EFCDBC-EC08-4BB4-9ECF-03C273BB8FD7</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>D0B940A1-75B0-456F-8CBF-D86FF7772231</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>9FCCC6CA-5715-44A6-88E7-113666703284</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Mark above as read</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -158,6 +181,19 @@
 				<string></string>
 				<key>vitoclose</key>
 				<true/>
+			</dict>
+		</array>
+		<key>EBE91E1E-8216-4C2F-8D73-7E5539C7A1B4</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>85EFCDBC-EC08-4BB4-9ECF-03C273BB8FD7</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>F2D25FAA-6A4D-4ACB-96F5-AEA036D44D38</key>
@@ -277,6 +313,73 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<true/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Loading......</string>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>script/timeline-filter.sh</string>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Folo Timeline</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>85EFCDBC-EC08-4BB4-9ECF-03C273BB8FD7</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>{query}</string>
+				<key>passthroughargument</key>
+				<true/>
+				<key>variables</key>
+				<dict>
+					<key>frrTimelineUnreadOnly</key>
+					<string>1</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>EBE91E1E-8216-4C2F-8D73-7E5539C7A1B4</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>tasksettings</key>
 				<dict>
 					<key>key_path</key>
@@ -316,44 +419,14 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>alfredfiltersresults</key>
-				<true/>
-				<key>alfredfiltersresultsmatchmode</key>
-				<integer>0</integer>
-				<key>argumenttreatemptyqueryasnil</key>
-				<true/>
-				<key>argumenttrimmode</key>
-				<integer>0</integer>
 				<key>argumenttype</key>
 				<integer>2</integer>
-				<key>escaping</key>
-				<integer>0</integer>
 				<key>keyword</key>
 				<string>{var:FRR_TIMELINE_KEYWORD}</string>
-				<key>queuedelaycustom</key>
-				<integer>1</integer>
-				<key>queuedelayimmediatelyinitially</key>
-				<true/>
-				<key>queuedelaymode</key>
-				<integer>0</integer>
-				<key>queuemode</key>
-				<integer>1</integer>
-				<key>runningsubtext</key>
-				<string>Loading Folo timeline…</string>
-				<key>script</key>
-				<string></string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string>script/timeline-filter.sh</string>
-				<key>skipuniversalaction</key>
-				<true/>
 				<key>subtext</key>
-				<string>Search recent entries</string>
-				<key>title</key>
+				<string></string>
+				<key>text</key>
 				<string>Folo Timeline</string>
-				<key>type</key>
-				<integer>8</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -363,11 +436,11 @@
 				<string>folo-timeline</string>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
+			<string>alfred.workflow.input.keyword</string>
 			<key>uid</key>
 			<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
 			<key>version</key>
-			<integer>3</integer>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>type</key>
@@ -457,9 +530,9 @@
 				<key>skipuniversalaction</key>
 				<true/>
 				<key>subtext</key>
-				<string>Search all your subscriptions</string>
+				<string></string>
 				<key>title</key>
-				<string>Folo Subscriptions</string>
+				<string>Folo Subscriptions List</string>
 				<key>type</key>
 				<integer>8</integer>
 				<key>withspace</key>
@@ -515,7 +588,7 @@
 				<key>subtext</key>
 				<string>Retrieve unread feed</string>
 				<key>title</key>
-				<string>Folo unread</string>
+				<string>Folo Unread Feed</string>
 				<key>type</key>
 				<integer>8</integer>
 				<key>withspace</key>
@@ -619,14 +692,14 @@
 			<key>note</key>
 			<string>Mark above as read</string>
 			<key>xpos</key>
-			<real>1020</real>
+			<real>1240</real>
 			<key>ypos</key>
 			<real>475</real>
 		</dict>
 		<key>1BCA8E54-D2B6-49CE-B1C0-40CFD5AF05C0</key>
 		<dict>
 			<key>xpos</key>
-			<real>1240</real>
+			<real>1460</real>
 			<key>ypos</key>
 			<real>175</real>
 		</dict>
@@ -642,7 +715,7 @@
 		<key>4C57F8FA-E18F-4536-A99C-B1C64D707A7A</key>
 		<dict>
 			<key>xpos</key>
-			<real>1240</real>
+			<real>1460</real>
 			<key>ypos</key>
 			<real>475</real>
 		</dict>
@@ -675,6 +748,15 @@
 			<key>ypos</key>
 			<real>205</real>
 		</dict>
+		<key>85EFCDBC-EC08-4BB4-9ECF-03C273BB8FD7</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
+			<key>xpos</key>
+			<real>1020</real>
+			<key>ypos</key>
+			<real>175</real>
+		</dict>
 		<key>8EB5D4EF-BC4F-46B0-93F4-9045C8885F8C</key>
 		<dict>
 			<key>colorindex</key>
@@ -700,7 +782,7 @@
 			<key>note</key>
 			<string>Mark Read</string>
 			<key>xpos</key>
-			<real>1020</real>
+			<real>1240</real>
 			<key>ypos</key>
 			<real>325</real>
 		</dict>
@@ -716,7 +798,7 @@
 		<key>D0B940A1-75B0-456F-8CBF-D86FF7772231</key>
 		<dict>
 			<key>xpos</key>
-			<real>1020</real>
+			<real>1240</real>
 			<key>ypos</key>
 			<real>175</real>
 		</dict>
@@ -728,6 +810,15 @@
 			<real>260</real>
 			<key>ypos</key>
 			<real>475</real>
+		</dict>
+		<key>EBE91E1E-8216-4C2F-8D73-7E5539C7A1B4</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
+			<key>xpos</key>
+			<real>900</real>
+			<key>ypos</key>
+			<real>175</real>
 		</dict>
 		<key>F2D25FAA-6A4D-4ACB-96F5-AEA036D44D38</key>
 		<dict>

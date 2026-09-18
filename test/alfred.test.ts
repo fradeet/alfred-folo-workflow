@@ -235,6 +235,21 @@ test("TimelineBlockInput maps its fields onto Folo CLI flags", () => {
   ]);
 
   assert.deepEqual(new TimelineBlockInput().withDefaultLimit(50).toArguments(), ["timeline", "--limit", "50"]);
+
+  assert.deepEqual(new TimelineBlockInput().withDefaultUnreadOnly(true).toArguments(), [
+    "timeline",
+    "--limit",
+    "30",
+    "--unread-only",
+  ]);
+  assert.deepEqual(
+    new TimelineBlockInput({ unreadOnly: true }).withDefaultUnreadOnly(false).toArguments(),
+    ["timeline", "--limit", "30", "--unread-only"],
+  );
+  assert.deepEqual(
+    new TimelineBlockInput().withDefaultUnreadOnly(false).toArguments(),
+    ["timeline", "--limit", "30"],
+  );
 });
 
 test("timeline app input preserves subscription and unread selections", () => {
