@@ -10,6 +10,10 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
   response sets `skipknowledge` so Alfred does not reorder the learned ranking.
 - `flists [query]` — list and locally filter Feed/List subscriptions; Inbox subscriptions are hidden.
 - `funread [query]` — list and locally filter subscriptions that contain unread entries.
+- `fv` — pick a Folo view (articles, social, pictures, audio, notifications) and open the
+  timeline in it. The selected view reaches the timeline app as a `TimelineViewInput` JSON
+  value such as `{"view": "articles"}` through the `frrTimelineFilter` workflow variable;
+  hold Option to include already-read entries.
 - `flogin` — open the browser, save the token through Alfred, and notify on successful login.
 - Subscription and unread results put a complete `SubscriptionSelection` or `UnreadSelection`
   JSON value in the `frrTimelineFilter` workflow variable for the timeline app; hold Option to
@@ -85,10 +89,12 @@ frrResultCacheKey="$RESULT_CACHE_KEY" \
   node workflow/dist/app/mark-read-above.js "$TIMELINE_SELECTION_JSON"
 ```
 
-The timeline app accepts Folo share URLs and serialized resource selections directly:
+The timeline app accepts Folo share URLs, serialized resource selections, and Alfred
+node configuration JSON directly:
 
 ```bash
 node workflow/dist/app/timeline.js "https://app.folo.is/share/feeds/<id>"
+node workflow/dist/app/timeline.js '{"view": "articles"}'
 ```
 
 Then open `Folo.alfredworkflow` to install it in Alfred.

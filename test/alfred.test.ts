@@ -16,6 +16,7 @@ import {
   AlfredTVBehaviourResponse,
   AlfredTVBehaviourScroll,
 } from "../src/types/alfred-types.js";
+import { TimelineViewInput } from "../src/types/alfred-node-types.js";
 import { FoloError, parseFoloEnvelope } from "../src/block/folo/client.js";
 import { MarkReadBlockInput } from "../src/block/folo/mark-read.js";
 import { TimelineBlockInput } from "../src/block/folo/timeline.js";
@@ -33,7 +34,7 @@ import {
 } from "../src/types/folo-types.js";
 import { readToken, setWorkflowToken } from "../src/app/login.js";
 import { MarkReadAboveAppOutput, unreadEntryIdsAbove } from "../src/app/mark-read-above.js";
-import { TimelineAppOutput, TimelineDirectInput, parseTimelineAppInput } from "../src/app/timeline.js";
+import { resolveTimelineInput, TimelineAppOutput, TimelineDirectInput, parseTimelineAppInput } from "../src/app/timeline.js";
 import { parseFoloShareUrl } from "../src/shared/folo-url.js";
 import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/shared/icon-cache.js";
 import { SubscriptionSelection } from "../src/contracts/subscription-selection.js";
@@ -264,6 +265,20 @@ test("timeline app input preserves subscription and unread selections", () => {
   }));
   assert.deepEqual(parseTimelineAppInput(subscription.serialize()), subscription);
   assert.deepEqual(parseTimelineAppInput(unread.serialize()), unread);
+});
+
+test("timeline app input resolves an Alfred node config into a view request", () => {
+  const parsed = parseTimelineAppInput('{"view": "articles"}');
+  assert.ok(parsed instanceof TimelineViewInput);
+  assert.deepEqual(parsed, new TimelineViewInput("articles"));
+  assert.deepEqual(resolveTimelineInput(parsed), new TimelineDirectInput(
+    "",
+    new TimelineBlockInput({ view: "articles" }),
+  ));
+  assert.deepEqual(resolveTimelineInput(new TimelineViewInput()), new TimelineDirectInput(
+    "",
+    new TimelineBlockInput(),
+  ));
 });
 
 test("FoloSubscriptionsResult keeps feed, list, and inbox subscriptions", () => {
@@ -647,4 +662,13 @@ test("Alfred Text View classes serialize behaviour values", () => {
     actionoutput: false,
     behaviour: { response: "append", scroll: "end", inputfield: "clear" },
   });
+});
+
+test("TimelineViewInput restores a node's view and rejects malformed payloads", () => {
+  assert.deepEqual(TimelineViewInput.from({ view: "articles" }), new TimelineViewInput("articles"));
+  assert.equal(TimelineViewInput.from({}).view, undefined);
+  assert.equal(TimelineViewInput.from({ view: "  " }).view, undefined);
+  assert.equal(TimelineViewInput.from({ view: 0 }).view, undefined);
+  assert.throws(() => TimelineViewInput.from("articles"), TypeError);
+  assert.throws(() => TimelineViewInput.from(null), TypeError);
 });
