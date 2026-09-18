@@ -28,10 +28,6 @@ export class SubscriptionSelection extends SerializedValue {
     return `https://app.folo.is/share/${path}/${encodeURIComponent(this.resourceId)}`;
   }
 
-  get openUrl(): string {
-    return this.subscription.feeds?.siteUrl || this.shareUrl;
-  }
-
   toJSON(): Record<string, unknown> {
     return { kind: this.kind, subscription: this.subscription };
   }

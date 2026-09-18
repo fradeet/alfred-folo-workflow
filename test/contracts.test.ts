@@ -12,7 +12,6 @@ import {
   FoloTimelineSubscription,
   FoloUnreadItem,
 } from "../src/types/folo-types.js";
-import { parseResourceUrlInput, resourceUrl } from "../src/app/resource-url.js";
 
 test("subscription selections retain and rehydrate their complete upstream item", () => {
   const value = new SubscriptionSelection(new FoloSubscription({
@@ -24,9 +23,6 @@ test("subscription selections retain and rehydrate their complete upstream item"
   assert.deepEqual(parsed, value);
   assert.ok(parsed.subscription instanceof FoloSubscription);
   assert.ok(parsed.subscription.feeds instanceof FoloFeed);
-  assert.equal(parsed.openUrl, "https://example.com");
-  assert.ok(parseResourceUrlInput(value.serialize()) instanceof SubscriptionSelection);
-  assert.equal(resourceUrl(value).url, "https://example.com");
   assert.deepEqual(parseTimelineAppInput(value.serialize()), value);
   assert.throws(
     () => parseTimelineAppInput('{"kind":"subscription-selection"}'),
@@ -46,7 +42,6 @@ test("unread selections retain and rehydrate their complete upstream item", () =
   assert.deepEqual(parsed, value);
   assert.ok(parsed.item instanceof FoloUnreadItem);
   assert.equal(parsed.resourceId, "inbox-feed-1");
-  assert.ok(parseResourceUrlInput(value.serialize()) instanceof UnreadSelection);
   assert.deepEqual(parseTimelineAppInput(value.serialize()), value);
   assert.throws(
     () => parseTimelineAppInput('{"kind":"unread-selection"}'),
@@ -66,8 +61,6 @@ test("timeline selections rehydrate nested Folo classes", () => {
   assert.ok(parsed.entry instanceof FoloEntry);
   assert.ok(parsed.feed instanceof FoloFeed);
   assert.ok(parsed.subscription instanceof FoloTimelineSubscription);
-  assert.ok(parseResourceUrlInput(value.serialize()) instanceof TimelineSelection);
-  assert.equal(resourceUrl(value).url, "https://example.com/post");
 });
 
 test("timeline app input rehydrates its block input", () => {

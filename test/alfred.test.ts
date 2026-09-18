@@ -39,7 +39,6 @@ import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../s
 import { SubscriptionSelection } from "../src/contracts/subscription-selection.js";
 import { TimelineSelection } from "../src/contracts/timeline-selection.js";
 import { UnreadSelection } from "../src/contracts/unread-selection.js";
-import { resourceUrl } from "../src/app/resource-url.js";
 
 test("feedIconUrl prefers an official image and falls back to Folo's domain icon", () => {
   assert.equal(feedIconUrl({
@@ -196,20 +195,6 @@ test("parseFoloShareUrl parses feed and list share URLs", () => {
     id: "list-1",
   });
   assert.equal(parseFoloShareUrl("Alfred Blog"), undefined);
-});
-
-test("resourceUrl consumes complete upstream selections", () => {
-  const subscription = new SubscriptionSelection(new FoloSubscription({
-    feedId: "feed-1",
-    feeds: { id: "feed-1", siteUrl: "https://example.com" },
-  }));
-  const unread = new UnreadSelection(new FoloUnreadItem({
-    sourceType: "list",
-    sourceId: "list-1",
-    unreadCount: 2,
-  }));
-  assert.equal(resourceUrl(SubscriptionSelection.parse(subscription.serialize())).serialize(), "https://example.com");
-  assert.equal(resourceUrl(UnreadSelection.parse(unread.serialize())).serialize(), unread.shareUrl);
 });
 
 test("timeline app input converts share URLs into typed direct input", () => {

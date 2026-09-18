@@ -23,10 +23,6 @@ export class UnreadSelection extends SerializedValue {
     return `https://app.folo.is/share/${path}/${encodeURIComponent(this.resourceId)}`;
   }
 
-  get openUrl(): string {
-    return this.shareUrl;
-  }
-
   toJSON(): Record<string, unknown> {
     return { kind: this.kind, item: this.item };
   }
