@@ -1,6 +1,6 @@
 {
-  "name": "alfred-folo",
-  "version": "0.1.0",
+  "name": "folo-workflow",
+  "version": "0.4.2",
   "private": true,
   "packageManager": "pnpm@10.34.5",
   "type": "module",
