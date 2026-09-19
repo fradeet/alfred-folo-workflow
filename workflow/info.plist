@@ -988,7 +988,7 @@
 		</dict>
 	</array>
 	<key>readme</key>
-	<string>Use `folologin` to authenticate, `folo` to browse your timeline, and `flists` to browse all subscriptions.</string>
+	<string></string>
 	<key>uidata</key>
 	<dict>
 		<key>04BE983A-1F0F-4BAE-8855-76D1A3DAB698</key>
