@@ -42,7 +42,7 @@ export function timelineItems(data: FoloTimelineResult, iconFor?: IconResolver):
     const entryOutput = new TimelineSelection(url, entryId, entry, feed, item.subscriptions);
 
     return [new AlfredSFItem(title, {
-      action: new AlfredSFItemAction(undefined, url),
+      action: url,
       subtitle,
       arg: entryOutput.serialize(),
       icon: icon(feed, iconFor),
@@ -76,6 +76,7 @@ export function subscriptionItems(data: FoloSubscriptionsResult, iconFor?: IconR
     const serializedSelection = selection.serialize();
 
     return [new AlfredSFItem(title, {
+      action: foloUrl,
       subtitle,
       arg: serializedSelection,
       icon: icon(target, iconFor),
@@ -102,7 +103,7 @@ export function unreadItems(data: FoloUnreadResult, iconFor?: IconResolver): Alf
     const serializedSelection = selection.serialize();
 
     return [new AlfredSFItem(title, {
-      action: new AlfredSFItemAction(undefined, foloUrl),
+      action: foloUrl,
       subtitle,
       arg: serializedSelection,
       icon: icon(source, iconFor),
