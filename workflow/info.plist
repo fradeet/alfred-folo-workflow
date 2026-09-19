@@ -209,7 +209,7 @@
 				<key>modifiers</key>
 				<integer>1048576</integer>
 				<key>modifiersubtext</key>
-				<string>Mark above as read</string>
+				<string>Mark above items as read</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -219,6 +219,19 @@
 			<dict>
 				<key>destinationuid</key>
 				<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>8B9D6849-B366-4A77-8AC4-BECCA5ED31A5</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>27D1DE3E-80FD-4FCB-ABF0-3E6129EEA781</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -435,7 +448,7 @@
 			<key>inboundconfig</key>
 			<dict>
 				<key>externalid</key>
-				<string>folo-login</string>
+				<string>login</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.keyword</string>
@@ -452,7 +465,7 @@
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>triggerid</key>
-				<string>frr-timeline</string>
+				<string>timeline</string>
 				<key>triggername</key>
 				<string>Timeline</string>
 				<key>workflowonly</key>
@@ -588,6 +601,27 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>argument</key>
+				<string></string>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>triggerid</key>
+				<string>timeline_view</string>
+				<key>triggername</key>
+				<string>Timeline View</string>
+				<key>workflowonly</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.remote</string>
+			<key>uid</key>
+			<string>8B9D6849-B366-4A77-8AC4-BECCA5ED31A5</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<true/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -597,7 +631,7 @@
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
-				<integer>2</integer>
+				<integer>1</integer>
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>keyword</key>
@@ -618,6 +652,8 @@
 				<integer>1</integer>
 				<key>scriptfile</key>
 				<string>script/timeline-filter.sh</string>
+				<key>skipuniversalaction</key>
+				<true/>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
@@ -625,7 +661,7 @@
 				<key>type</key>
 				<integer>8</integer>
 				<key>withspace</key>
-				<false/>
+				<true/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.scriptfilter</string>
@@ -679,7 +715,7 @@
 			<key>inboundconfig</key>
 			<dict>
 				<key>externalid</key>
-				<string>frr-view</string>
+				<string>timeline_view</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.listfilter</string>
@@ -710,6 +746,11 @@
 			<integer>1</integer>
 		</dict>
 		<dict>
+			<key>inboundconfig</key>
+			<dict>
+				<key>externalid</key>
+				<string>timeline_unread</string>
+			</dict>
 			<key>type</key>
 			<string>alfred.workflow.utility.junction</string>
 			<key>uid</key>
@@ -745,7 +786,7 @@
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>triggerid</key>
-				<string>folo-subscribed-unread-lists</string>
+				<string>subscribed_unread_lists</string>
 				<key>triggername</key>
 				<string>Unread Sub</string>
 				<key>workflowonly</key>
@@ -805,7 +846,7 @@
 			<key>inboundconfig</key>
 			<dict>
 				<key>externalid</key>
-				<string>frr-subscribed-unread-lists</string>
+				<string>subscribed_unread_lists</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.scriptfilter</string>
@@ -858,6 +899,11 @@
 			<integer>1</integer>
 		</dict>
 		<dict>
+			<key>inboundconfig</key>
+			<dict>
+				<key>externalid</key>
+				<string>timeline_all</string>
+			</dict>
 			<key>type</key>
 			<string>alfred.workflow.utility.junction</string>
 			<key>uid</key>
@@ -935,7 +981,7 @@
 			<key>inboundconfig</key>
 			<dict>
 				<key>externalid</key>
-				<string>frr-subscribed-lists</string>
+				<string>subscribed_lists</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.scriptfilter</string>
@@ -952,7 +998,7 @@
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>triggerid</key>
-				<string>folo-subscribed-lists</string>
+				<string>subscribed_lists</string>
 				<key>triggername</key>
 				<string>Sub List</string>
 				<key>workflowonly</key>
@@ -1138,6 +1184,15 @@
 			<real>40</real>
 			<key>ypos</key>
 			<real>175</real>
+		</dict>
+		<key>8B9D6849-B366-4A77-8AC4-BECCA5ED31A5</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>7</integer>
+			<key>xpos</key>
+			<real>40</real>
+			<key>ypos</key>
+			<real>325</real>
 		</dict>
 		<key>8EB5D4EF-BC4F-46B0-93F4-9045C8885F8C</key>
 		<dict>
