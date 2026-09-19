@@ -122,7 +122,7 @@ export function errorItem(error: unknown): AlfredSFItem {
 
   return new AlfredSFItem(unauthorized ? "Folo authentication required" : "Unable to load Folo", {
     subtitle: unauthorized
-      ? "Run flogin to authenticate"
+      ? "Run folologin to authenticate"
       : timedOut
         ? "The Folo request timed out; check your network and try again"
         : text(message, "Open Alfred's debugger for details"),

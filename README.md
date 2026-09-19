@@ -14,7 +14,7 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
   timeline in it. The selected view reaches the timeline app as a `TimelineViewInput` JSON
   value such as `{"kind": "view-input", "view": "articles"}` in the item's `arg`;
   hold Option to include already-read entries.
-- `flogin` — open the browser, save the token through Alfred, and notify on successful login.
+- `folologin` — open the browser, save the token through Alfred, and notify on successful login.
 - Subscription and unread results put a complete `SubscriptionSelection` or `UnreadSelection`
   JSON value in each item's `arg` for the timeline app.
 - Timeline results pass a complete `TimelineSelection` JSON value downstream. Both the URL
