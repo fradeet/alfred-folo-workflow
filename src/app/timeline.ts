@@ -6,7 +6,7 @@
  * - a plain filter query matched against the fetched entries, or
  * - a serialized {@link SubscriptionSelection} or {@link UnreadSelection}, or
  * - an {@link TimelineViewInput} JSON value emitted by an Alfred node, such as
- *   `{"view": "articles"}`, or
+ *   `{"kind": "view-input", "view": "articles"}`, or
  * - a serialized {@link TimelineDirectInput}. Malformed JSON falls back to a query.
  *
  * Environment: `FRR_TIMELINE_LIMIT` sets the default entry limit (digits only, otherwise 30).
@@ -86,7 +86,7 @@ export function parseTimelineAppInput(value: string): TimelineAppInput {
   if (data.kind === "timeline-input") return TimelineDirectInput.from(data);
   if (data.kind === "subscription-selection") return SubscriptionSelection.from(data);
   if (data.kind === "unread-selection") return UnreadSelection.from(data);
-  if (typeof data.view === "string") return TimelineViewInput.from(data);
+  if (data.kind === "view-input") return TimelineViewInput.from(data);
   return new TimelineDirectInput(query);
 }
 

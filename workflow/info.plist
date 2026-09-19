@@ -703,7 +703,7 @@
 				<key>fixedorder</key>
 				<false/>
 				<key>items</key>
-				<string>[{"title":"Articles","arg":"{\"view\": \"articles\"}","subtitle":"View Folo timeline with articles view"},{"title":"Social","arg":"{\"view\": \"social\"}","subtitle":"View Folo timeline with social view"},{"title":"Pictures","arg":"{\"view\": \"pictures\"}","subtitle":"View Folo timeline with pictures view"},{"title":"Audio","arg":"{\"view\": \"audio\"}","subtitle":"View Folo timeline with audio view"},{"title":"Notifications","arg":"{\"view\": \"notifications\"}","subtitle":"View Folo timeline with notifications view"}]</string>
+				<string>[{"title":"Articles","arg":"{\"kind\": \"view-input\", \"view\": \"articles\"}","subtitle":"View Folo timeline with articles view"},{"title":"Social","arg":"{\"kind\": \"view-input\", \"view\": \"social\"}","subtitle":"View Folo timeline with social view"},{"title":"Pictures","arg":"{\"kind\": \"view-input\", \"view\": \"pictures\"}","subtitle":"View Folo timeline with pictures view"},{"title":"Audio","arg":"{\"kind\": \"view-input\", \"view\": \"audio\"}","subtitle":"View Folo timeline with audio view"},{"title":"Notifications","arg":"{\"kind\": \"view-input\", \"view\": \"notifications\"}","subtitle":"View Folo timeline with notifications view"}]</string>
 				<key>keyword</key>
 				<string>fv</string>
 				<key>matchmode</key>

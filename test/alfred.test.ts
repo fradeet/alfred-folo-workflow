@@ -268,16 +268,15 @@ test("timeline app input preserves subscription and unread selections", () => {
 });
 
 test("timeline app input resolves an Alfred node config into a view request", () => {
-  const parsed = parseTimelineAppInput('{"view": "articles"}');
+  const parsed = parseTimelineAppInput('{"kind": "view-input", "view": "articles"}');
   assert.ok(parsed instanceof TimelineViewInput);
   assert.deepEqual(parsed, new TimelineViewInput("articles"));
+  assert.deepEqual(parseTimelineAppInput('{"view": "articles"}'), new TimelineDirectInput(
+    '{"view": "articles"}',
+  ));
   assert.deepEqual(resolveTimelineInput(parsed), new TimelineDirectInput(
     "",
     new TimelineBlockInput({ view: "articles" }),
-  ));
-  assert.deepEqual(resolveTimelineInput(new TimelineViewInput()), new TimelineDirectInput(
-    "",
-    new TimelineBlockInput(),
   ));
 });
 
@@ -665,10 +664,12 @@ test("Alfred Text View classes serialize behaviour values", () => {
 });
 
 test("TimelineViewInput restores a node's view and rejects malformed payloads", () => {
-  assert.deepEqual(TimelineViewInput.from({ view: "articles" }), new TimelineViewInput("articles"));
-  assert.equal(TimelineViewInput.from({}).view, undefined);
-  assert.equal(TimelineViewInput.from({ view: "  " }).view, undefined);
-  assert.equal(TimelineViewInput.from({ view: 0 }).view, undefined);
+  assert.deepEqual(TimelineViewInput.from({ kind: "view-input", view: "articles" }), new TimelineViewInput("articles"));
+  assert.equal(TimelineViewInput.from({ kind: "view-input", view: " articles " }).view, "articles");
+  assert.throws(() => TimelineViewInput.from({ kind: "view-input" }), TypeError);
+  assert.throws(() => TimelineViewInput.from({ kind: "view-input", view: "  " }), TypeError);
+  assert.throws(() => TimelineViewInput.from({ kind: "view-input", view: 0 }), TypeError);
+  assert.throws(() => TimelineViewInput.from({ view: "articles" }), TypeError);
   assert.throws(() => TimelineViewInput.from("articles"), TypeError);
   assert.throws(() => TimelineViewInput.from(null), TypeError);
 });
