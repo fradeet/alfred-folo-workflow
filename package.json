@@ -6,7 +6,7 @@
   "type": "module",
   "description": "An Alfred workflow for browsing and managing Folo feeds.",
   "engines": {
-    "node": ">=18"
+    "node": ">=24"
   },
   "scripts": {
     "install:workflow": "npm install --prefix workflow",
@@ -17,7 +17,7 @@
     "package": "./workflow-packager"
   },
   "devDependencies": {
-    "@types/node": "^18.19.0",
+    "@types/node": "^24.0.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }

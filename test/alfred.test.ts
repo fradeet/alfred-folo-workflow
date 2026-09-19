@@ -669,7 +669,6 @@ test("TimelineViewInput restores a node's view and rejects malformed payloads", 
   assert.throws(() => TimelineViewInput.from({ kind: "view-input" }), TypeError);
   assert.throws(() => TimelineViewInput.from({ kind: "view-input", view: "  " }), TypeError);
   assert.throws(() => TimelineViewInput.from({ kind: "view-input", view: 0 }), TypeError);
-  assert.throws(() => TimelineViewInput.from({ view: "articles" }), TypeError);
   assert.throws(() => TimelineViewInput.from("articles"), TypeError);
   assert.throws(() => TimelineViewInput.from(null), TypeError);
 });

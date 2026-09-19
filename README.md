@@ -40,7 +40,9 @@ workflow configuration.
 ## Requirements
 
 - macOS with Alfred 5 and the Powerpack
-- Node.js 18 or later
+- Node.js 24 or later. Icon downloads use the built-in `fetch`, which honors
+  `HTTP_PROXY`/`HTTPS_PROXY`/`NO_PROXY` through Node 24's `NODE_USE_ENV_PROXY`
+  support in proxied environments.
 - A Folo account
 
 ## Development setup
