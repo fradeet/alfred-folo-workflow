@@ -136,7 +136,7 @@ test("subscriptionItems maps every subscription target and filters locally", () 
     SubscriptionSelection.parse(String(items[1]?.variables?.frrTimelineFilter)).subscription,
     data.subscriptions[1],
   );
-  assert.equal(items[1]?.mods?.alt?.arg, items[1]?.variables?.frrTimelineFilter);
+  assert.equal(items[1]?.mods?.alt, undefined);
   assert.equal(subscriptionItems(data, "useful").length, 1);
   assert.equal(subscriptionItems(data, "missing").length, 0);
 });

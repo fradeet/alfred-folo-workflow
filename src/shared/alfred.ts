@@ -91,7 +91,6 @@ export function subscriptionItems(data: FoloSubscriptionsResult, query = "", ico
       icon: icon(target, iconFor),
       uid: `${kind.toLocaleLowerCase()}-${id}`,
       match: searchable,
-      mods: { alt: { arg: serializedSelection } },
       quicklookurl: foloUrl,
       text: new AlfredSFItemText(foloUrl, description || title),
       variables: { frrTimelineFilter: serializedSelection },
