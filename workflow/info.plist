@@ -141,9 +141,9 @@
 				<key>destinationuid</key>
 				<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
 				<key>modifiers</key>
-				<integer>0</integer>
+				<integer>524288</integer>
 				<key>modifiersubtext</key>
-				<string></string>
+				<string>View unread only</string>
 				<key>vitoclose</key>
 				<true/>
 			</dict>
@@ -151,9 +151,9 @@
 				<key>destinationuid</key>
 				<string>3C69F4F0-BE10-4441-9249-06D93D843E69</string>
 				<key>modifiers</key>
-				<integer>524288</integer>
+				<integer>0</integer>
 				<key>modifiersubtext</key>
-				<string>View all entry (include already read)</string>
+				<string></string>
 				<key>vitoclose</key>
 				<true/>
 			</dict>
@@ -926,7 +926,7 @@
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
-				<string>Folo Subscriptions List</string>
+				<string>List Folo Subscriptions</string>
 				<key>type</key>
 				<integer>8</integer>
 				<key>withspace</key>
@@ -996,7 +996,7 @@
 			<key>colorindex</key>
 			<integer>3</integer>
 			<key>xpos</key>
-			<real>785</real>
+			<real>565</real>
 			<key>ypos</key>
 			<real>505</real>
 		</dict>
@@ -1007,7 +1007,7 @@
 			<key>note</key>
 			<string>Unread</string>
 			<key>xpos</key>
-			<real>740</real>
+			<real>520</real>
 			<key>ypos</key>
 			<real>355</real>
 		</dict>
@@ -1070,7 +1070,7 @@
 			<key>note</key>
 			<string>All</string>
 			<key>xpos</key>
-			<real>740</real>
+			<real>520</real>
 			<key>ypos</key>
 			<real>505</real>
 		</dict>
@@ -1362,7 +1362,7 @@
 		</dict>
 	</array>
 	<key>version</key>
-	<string>0.5.2</string>
+	<string>0.5.3</string>
 	<key>webaddress</key>
 	<string>https://github.com/fradeet/alfred-folo-workflow</string>
 </dict>
