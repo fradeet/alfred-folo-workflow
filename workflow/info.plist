@@ -1304,7 +1304,7 @@
 				<true/>
 			</dict>
 			<key>description</key>
-			<string>Use 'folologin' to login in Folo with fill this field, or manually input the user token.</string>
+			<string>Use the keyword 'folologin' to log in Folo with fill this field, or refer 'Get Token Manually' section in README to fill in the user token.</string>
 			<key>label</key>
 			<string>Folo Auth Token</string>
 			<key>type</key>
@@ -1337,9 +1337,9 @@
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>50</string>
+				<string>20</string>
 				<key>placeholder</key>
-				<string>50</string>
+				<string>20</string>
 				<key>required</key>
 				<true/>
 				<key>trim</key>
@@ -1348,7 +1348,7 @@
 			<key>description</key>
 			<string></string>
 			<key>label</key>
-			<string>Timeline Limit</string>
+			<string>Timeline Result Limit</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
@@ -1404,7 +1404,7 @@
 				<key>required</key>
 				<false/>
 				<key>text</key>
-				<string>Use system proxy</string>
+				<string>Follow Alfred's proxy settings</string>
 			</dict>
 			<key>description</key>
 			<string>Node.js doesn't use the proxy env var by default; This option ensures consistent proxy behaviour like other Alfred workflows.</string>
