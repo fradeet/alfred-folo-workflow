@@ -8,7 +8,6 @@ import {
   AlfredSF,
   AlfredSFCache,
   AlfredSFItem,
-  AlfredSFItemAction,
   AlfredSFItemText,
   AlfredTV,
   AlfredTVBehaviour,
@@ -155,11 +154,9 @@ test("unreadItems maps unread sources", () => {
   assert.match(items[0]?.subtitle ?? "", /12 unread.*Feed.*Tech/);
   assert.equal(items[0]?.variables, undefined);
   const feedAction = items[0]?.action;
-  assert.ok(feedAction instanceof AlfredSFItemAction);
-  assert.equal(feedAction.url, "https://app.folo.is/share/feeds/feed-1");
+  assert.equal(feedAction, "https://app.folo.is/share/feeds/feed-1");
   const inboxAction = items[2]?.action;
-  assert.ok(inboxAction instanceof AlfredSFItemAction);
-  assert.equal(inboxAction.url, "https://app.folo.is/share/feeds/inbox-inbox-1");
+  assert.equal(inboxAction, "https://app.folo.is/share/feeds/inbox-inbox-1");
   assert.deepEqual(
     UnreadSelection.parse(String(items[0]?.arg)).item,
     data.items[0],
@@ -351,9 +348,7 @@ test("timelineItems maps Folo entry envelopes", () => {
   const items = timelineItems(data);
   assert.equal(items.length, 1);
   assert.equal(items[0]?.title, "Hello & Folo");
-  const action = items[0]?.action;
-  assert.ok(action instanceof AlfredSFItemAction);
-  assert.equal(action.url, "https://example.com/post");
+  assert.equal(items[0]?.action, "https://example.com/post");
   const selection = TimelineSelection.parse(String(items[0]?.arg));
   assert.equal(selection.url, "https://example.com/post");
   assert.equal(selection.entryId, "entry-1");
