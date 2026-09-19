@@ -127,7 +127,7 @@ test("subscriptionItems maps every subscription target and filters locally", () 
   assert.equal(items.length, 2);
   assert.equal(items[0]?.title, "Daily Reads");
   assert.match(items[0]?.subtitle ?? "", /List.*Tech.*2 feeds.*useful bundle/);
-  assert.equal(items[0]?.arg, undefined);
+  assert.equal(items[0]?.arg, items[0]?.variables?.frrTimelineFilter);
   assert.deepEqual(
     SubscriptionSelection.parse(String(items[0]?.variables?.frrTimelineFilter)).subscription,
     data.subscriptions[0],
@@ -154,7 +154,7 @@ test("unreadItems maps unread sources and filters locally", () => {
   const items = unreadItems(data);
   assert.equal(items.length, 3);
   assert.match(items[0]?.subtitle ?? "", /12 unread.*Feed.*Tech/);
-  assert.equal(items[0]?.arg, undefined);
+  assert.equal(items[0]?.arg, items[0]?.variables?.frrTimelineFilter);
   const feedAction = items[0]?.action;
   assert.ok(feedAction instanceof AlfredSFItemAction);
   assert.equal(feedAction.url, "https://app.folo.is/share/feeds/feed-1");
@@ -167,7 +167,7 @@ test("unreadItems maps unread sources and filters locally", () => {
   );
   assert.equal(UnreadSelection.parse(String(items[1]?.variables?.frrTimelineFilter)).resourceType, "list");
   assert.equal(UnreadSelection.parse(String(items[2]?.variables?.frrTimelineFilter)).resourceId, "inbox-inbox-1");
-  assert.equal(items[0]?.mods?.alt?.arg, items[0]?.variables?.frrTimelineFilter);
+  assert.equal(items[0]?.mods?.alt, undefined);
   assert.equal(unreadItems(data, "newsletters").length, 1);
   assert.equal(unreadItems(data, "missing").length, 0);
 });

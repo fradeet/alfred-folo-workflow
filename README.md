@@ -16,8 +16,9 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
   hold Option to include already-read entries.
 - `flogin` — open the browser, save the token through Alfred, and notify on successful login.
 - Subscription and unread results put a complete `SubscriptionSelection` or `UnreadSelection`
-  JSON value in the `frrTimelineFilter` workflow variable for the timeline app; hold Option to
-  open a Feed's original site URL or the Folo share URL.
+  JSON value in each item's `arg` and in the `frrTimelineFilter` workflow variable for the
+  timeline app; for subscriptions, hold Option to open a Feed's original site URL or the
+  Folo share URL.
 - Timeline results pass a complete `TimelineSelection` JSON value downstream. Both the URL
   action and mark-read action parse the same value without intermediate field extraction.
   Hold Command and press Enter to mark the selected entry and every unread entry above it

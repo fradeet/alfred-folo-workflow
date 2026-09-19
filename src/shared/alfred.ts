@@ -87,6 +87,7 @@ export function subscriptionItems(data: FoloSubscriptionsResult, query = "", ico
 
     return [new AlfredSFItem(title, {
       subtitle,
+      arg: serializedSelection,
       icon: icon(target, iconFor),
       uid: `${kind.toLocaleLowerCase()}-${id}`,
       match: searchable,
@@ -121,10 +122,10 @@ export function unreadItems(data: FoloUnreadResult, query = "", iconFor?: IconRe
     return [new AlfredSFItem(title, {
       action: new AlfredSFItemAction(undefined, foloUrl),
       subtitle,
+      arg: serializedSelection,
       icon: icon(source, iconFor),
       uid: `unread-${sourceType}-${sourceId}`,
       match: searchable,
-      mods: { alt: { arg: serializedSelection } },
       quicklookurl: foloUrl,
       text: new AlfredSFItemText(foloUrl, `${title} · ${unreadDetail}`),
       variables: { frrTimelineFilter: serializedSelection },

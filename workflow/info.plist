@@ -77,7 +77,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>B311980F-E900-4F1F-B1F0-8B48AC9EDE5D</string>
+				<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -255,19 +255,6 @@
 		</array>
 		<key>9FCCC6CA-5715-44A6-88E7-113666703284</key>
 		<array/>
-		<key>B311980F-E900-4F1F-B1F0-8B48AC9EDE5D</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
 		<key>C1A3E00B-AB1B-40D0-A288-30D4B9443D65</key>
 		<array>
 			<dict>
@@ -690,11 +677,14 @@
 			<key>config</key>
 			<dict>
 				<key>argument</key>
-				<string>{query}</string>
+				<string></string>
 				<key>passthroughargument</key>
-				<true/>
+				<false/>
 				<key>variables</key>
-				<dict/>
+				<dict>
+					<key>frrTimelineFilter</key>
+					<string>{query}</string>
+				</dict>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.utility.argument</string>
@@ -726,6 +716,11 @@
 				<string>Folo Timeline with View</string>
 				<key>withspace</key>
 				<true/>
+			</dict>
+			<key>inboundconfig</key>
+			<dict>
+				<key>externalid</key>
+				<string>frr-view</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.listfilter</string>
@@ -762,26 +757,6 @@
 			<string>alfred.workflow.utility.junction</string>
 			<key>uid</key>
 			<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argument</key>
-				<string></string>
-				<key>passthroughargument</key>
-				<false/>
-				<key>variables</key>
-				<dict>
-					<key>frrTimelineFilter</key>
-					<string>{query}</string>
-				</dict>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.argument</string>
-			<key>uid</key>
-			<string>B311980F-E900-4F1F-B1F0-8B48AC9EDE5D</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -1194,15 +1169,6 @@
 			<real>1140</real>
 			<key>ypos</key>
 			<real>325</real>
-		</dict>
-		<key>B311980F-E900-4F1F-B1F0-8B48AC9EDE5D</key>
-		<dict>
-			<key>colorindex</key>
-			<integer>7</integer>
-			<key>xpos</key>
-			<real>520</real>
-			<key>ypos</key>
-			<real>355</real>
 		</dict>
 		<key>B85A7A0C-97A4-424D-8310-CC557C79032B</key>
 		<dict>
