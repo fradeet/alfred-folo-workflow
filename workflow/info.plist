@@ -404,24 +404,6 @@
 				<key>tasksettings</key>
 				<dict>
 					<key>key_path</key>
-					<string>feed.id</string>
-				</dict>
-				<key>taskuid</key>
-				<string>com.alfredapp.automation.core/json-processing/json.key-value</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.automation.task</string>
-			<key>uid</key>
-			<string>0FB5FEFB-8E29-4BFA-B232-973DD25330F6</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>tasksettings</key>
-				<dict>
-					<key>key_path</key>
 					<string>name</string>
 				</dict>
 				<key>taskuid</key>
@@ -465,6 +447,45 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>argument</key>
+				<string></string>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>triggerid</key>
+				<string>frr-timeline</string>
+				<key>triggername</key>
+				<string>Timeline</string>
+				<key>workflowonly</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.remote</string>
+			<key>uid</key>
+			<string>8AAD2354-8F94-409A-A7FF-D0E8D77D9781</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>tasksettings</key>
+				<dict>
+					<key>key_path</key>
+					<string>feed.id</string>
+				</dict>
+				<key>taskuid</key>
+				<string>com.alfredapp.automation.core/json-processing/json.key-value</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.automation.task</string>
+			<key>uid</key>
+			<string>0FB5FEFB-8E29-4BFA-B232-973DD25330F6</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>tasksettings</key>
 				<dict>
 					<key>key_path</key>
@@ -477,6 +498,29 @@
 			<string>alfred.workflow.automation.task</string>
 			<key>uid</key>
 			<string>E3FDCD1D-BC7D-412E-8B33-DDB13C2ACEF5</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>keyword</key>
+				<string>{var:FRR_TIMELINE_KEYWORD}a</string>
+				<key>skipuniversalaction</key>
+				<true/>
+				<key>subtext</key>
+				<string>View all entry (include already read)</string>
+				<key>text</key>
+				<string>Folo Timeline (All)</string>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>5C6540E6-36D7-4C19-87E6-863F155F29C0</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -593,27 +637,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>argument</key>
-				<string></string>
-				<key>argumenttype</key>
-				<integer>0</integer>
-				<key>triggerid</key>
-				<string>frr-timeline</string>
-				<key>triggername</key>
-				<string>Timeline</string>
-				<key>workflowonly</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.trigger.remote</string>
-			<key>uid</key>
-			<string>8AAD2354-8F94-409A-A7FF-D0E8D77D9781</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>tasksettings</key>
 				<dict>
 					<key>key_path</key>
@@ -626,70 +649,6 @@
 			<string>alfred.workflow.automation.task</string>
 			<key>uid</key>
 			<string>D0B940A1-75B0-456F-8CBF-D86FF7772231</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argumenttype</key>
-				<integer>2</integer>
-				<key>keyword</key>
-				<string>{var:FRR_TIMELINE_KEYWORD}a</string>
-				<key>skipuniversalaction</key>
-				<true/>
-				<key>subtext</key>
-				<string>View all entry (include already read)</string>
-				<key>text</key>
-				<string>Folo Timeline (All)</string>
-				<key>withspace</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.keyword</string>
-			<key>uid</key>
-			<string>5C6540E6-36D7-4C19-87E6-863F155F29C0</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>browser</key>
-				<string></string>
-				<key>skipqueryencode</key>
-				<false/>
-				<key>skipvarencode</key>
-				<false/>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string></string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
-			<key>uid</key>
-			<string>1BCA8E54-D2B6-49CE-B1C0-40CFD5AF05C0</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argument</key>
-				<string></string>
-				<key>passthroughargument</key>
-				<false/>
-				<key>variables</key>
-				<dict>
-					<key>frrTimelineFilter</key>
-					<string>{query}</string>
-				</dict>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.argument</string>
-			<key>uid</key>
-			<string>F1C0B4DD-5662-43BE-8CFA-636D79CCF30F</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -732,25 +691,23 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>0</integer>
-				<key>script</key>
+				<key>browser</key>
 				<string></string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string>dist/app/mark-read.js</string>
-				<key>type</key>
-				<integer>8</integer>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string></string>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.action.script</string>
+			<string>alfred.workflow.action.openurl</string>
 			<key>uid</key>
-			<string>9FCCC6CA-5715-44A6-88E7-113666703284</string>
+			<string>1BCA8E54-D2B6-49CE-B1C0-40CFD5AF05C0</string>
 			<key>version</key>
-			<integer>2</integer>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>type</key>
@@ -763,44 +720,20 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>0</integer>
-				<key>script</key>
+				<key>argument</key>
 				<string></string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string>dist/app/mark-read-above.js</string>
-				<key>type</key>
-				<integer>8</integer>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict>
+					<key>frrTimelineFilter</key>
+					<string>{query}</string>
+				</dict>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.action.script</string>
+			<string>alfred.workflow.utility.argument</string>
 			<key>uid</key>
-			<string>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>lastpathcomponent</key>
-				<false/>
-				<key>onlyshowifquerypopulated</key>
-				<true/>
-				<key>removeextension</key>
-				<false/>
-				<key>text</key>
-				<string>Task finish: Mark above as read</string>
-				<key>title</key>
-				<string>{const:alfred_workflow_name}</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.notification</string>
-			<key>uid</key>
-			<string>4C57F8FA-E18F-4536-A99C-B1C64D707A7A</string>
+			<string>F1C0B4DD-5662-43BE-8CFA-636D79CCF30F</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -884,6 +817,29 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>dist/app/mark-read.js</string>
+				<key>type</key>
+				<integer>8</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>9FCCC6CA-5715-44A6-88E7-113666703284</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>argument</key>
 				<string>{query}</string>
 				<key>passthroughargument</key>
@@ -908,6 +864,29 @@
 			<string>3C69F4F0-BE10-4441-9249-06D93D843E69</string>
 			<key>version</key>
 			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>dist/app/mark-read-above.js</string>
+				<key>type</key>
+				<integer>8</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</string>
+			<key>version</key>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -986,6 +965,27 @@
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>Task finish: Mark above as read</string>
+				<key>title</key>
+				<string>{const:alfred_workflow_name}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>4C57F8FA-E18F-4536-A99C-B1C64D707A7A</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string>Use `flogin` to authenticate, `folo` to browse your timeline, and `flists` to browse all subscriptions.</string>
@@ -1018,21 +1018,21 @@
 			<key>xpos</key>
 			<real>1140</real>
 			<key>ypos</key>
-			<real>475</real>
+			<real>625</real>
 		</dict>
 		<key>0FB5FEFB-8E29-4BFA-B232-973DD25330F6</key>
 		<dict>
 			<key>xpos</key>
 			<real>1140</real>
 			<key>ypos</key>
-			<real>25</real>
+			<real>175</real>
 		</dict>
 		<key>1A66D79F-C777-4559-BEF6-19BD667DFFC8</key>
 		<dict>
 			<key>xpos</key>
 			<real>1090</real>
 			<key>ypos</key>
-			<real>55</real>
+			<real>205</real>
 		</dict>
 		<key>1BCA8E54-D2B6-49CE-B1C0-40CFD5AF05C0</key>
 		<dict>
@@ -1041,7 +1041,7 @@
 			<key>xpos</key>
 			<real>1360</real>
 			<key>ypos</key>
-			<real>175</real>
+			<real>325</real>
 		</dict>
 		<key>27D1DE3E-80FD-4FCB-ABF0-3E6129EEA781</key>
 		<dict>
@@ -1079,14 +1079,14 @@
 			<key>xpos</key>
 			<real>1310</real>
 			<key>ypos</key>
-			<real>55</real>
+			<real>205</real>
 		</dict>
 		<key>4C57F8FA-E18F-4536-A99C-B1C64D707A7A</key>
 		<dict>
 			<key>xpos</key>
 			<real>1360</real>
 			<key>ypos</key>
-			<real>475</real>
+			<real>625</real>
 		</dict>
 		<key>528EBBE4-AC53-41B4-BE91-D87A4C9BFB74</key>
 		<dict>
@@ -1128,7 +1128,7 @@
 			<key>xpos</key>
 			<real>920</real>
 			<key>ypos</key>
-			<real>175</real>
+			<real>325</real>
 		</dict>
 		<key>8AAD2354-8F94-409A-A7FF-D0E8D77D9781</key>
 		<dict>
@@ -1168,7 +1168,7 @@
 			<key>xpos</key>
 			<real>1140</real>
 			<key>ypos</key>
-			<real>325</real>
+			<real>475</real>
 		</dict>
 		<key>B85A7A0C-97A4-424D-8310-CC557C79032B</key>
 		<dict>
@@ -1177,7 +1177,7 @@
 			<key>xpos</key>
 			<real>1580</real>
 			<key>ypos</key>
-			<real>25</real>
+			<real>175</real>
 		</dict>
 		<key>C1A3E00B-AB1B-40D0-A288-30D4B9443D65</key>
 		<dict>
@@ -1195,7 +1195,7 @@
 			<key>xpos</key>
 			<real>1140</real>
 			<key>ypos</key>
-			<real>175</real>
+			<real>325</real>
 		</dict>
 		<key>D59678E1-D29B-4725-B5E3-1E2EEDC90E47</key>
 		<dict>
@@ -1213,7 +1213,7 @@
 			<key>xpos</key>
 			<real>1360</real>
 			<key>ypos</key>
-			<real>25</real>
+			<real>175</real>
 		</dict>
 		<key>F1C0B4DD-5662-43BE-8CFA-636D79CCF30F</key>
 		<dict>
@@ -1222,7 +1222,7 @@
 			<key>xpos</key>
 			<real>870</real>
 			<key>ypos</key>
-			<real>205</real>
+			<real>355</real>
 		</dict>
 		<key>F2D25FAA-6A4D-4ACB-96F5-AEA036D44D38</key>
 		<dict>
