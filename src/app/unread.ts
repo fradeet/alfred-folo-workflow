@@ -32,7 +32,7 @@ export class UnreadAppInput {
 
 export class UnreadAppOutput extends AlfredSF {
   constructor(items: AlfredSFItem[], cache = true, variables?: AlfredVariables) {
-    super(items, { cache: cache ? new AlfredSFCache(60) : undefined, variables });
+    super(items, { cache: cache ? new AlfredSFCache(300) : undefined, variables });
   }
 }
 
