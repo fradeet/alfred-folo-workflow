@@ -422,7 +422,7 @@
 				<key>argumenttype</key>
 				<integer>2</integer>
 				<key>keyword</key>
-				<string>flogin</string>
+				<string>folologin</string>
 				<key>skipuniversalaction</key>
 				<true/>
 				<key>subtext</key>
@@ -988,7 +988,7 @@
 		</dict>
 	</array>
 	<key>readme</key>
-	<string>Use `flogin` to authenticate, `folo` to browse your timeline, and `flists` to browse all subscriptions.</string>
+	<string>Use `folologin` to authenticate, `folo` to browse your timeline, and `flists` to browse all subscriptions.</string>
 	<key>uidata</key>
 	<dict>
 		<key>04BE983A-1F0F-4BAE-8855-76D1A3DAB698</key>
@@ -1249,7 +1249,7 @@
 				<true/>
 			</dict>
 			<key>description</key>
-			<string>Use 'flogin' to login in Folo with fill this field, or manually input the user token.</string>
+			<string>Use 'folologin' to login in Folo with fill this field, or manually input the user token.</string>
 			<key>label</key>
 			<string>Folo Auth Token</string>
 			<key>type</key>
@@ -1362,7 +1362,7 @@
 		</dict>
 	</array>
 	<key>version</key>
-	<string>0.5.1</string>
+	<string>0.5.2</string>
 	<key>webaddress</key>
 	<string>https://github.com/fradeet/alfred-folo-workflow</string>
 </dict>
