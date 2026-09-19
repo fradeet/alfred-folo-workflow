@@ -6,9 +6,9 @@
  * categories, and unread counts.
  *
  * Output:
- * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` and
- *   `frrTimelineFilter` variable carry a serialized unread selection; the
- *   response's `frrResultCacheKey` variable names the cached Folo CLI response file
+ * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` carries a
+ *   serialized unread selection for the timeline app; the response's
+ *   `frrResultCacheKey` variable names the cached Folo CLI response file
  *   backing the list. An empty result yields a non-valid item.
  * - Side effect: when feed or list icons are missing from the cache, the
  *   cache-subscription-icons worker is spawned detached in the background.
