@@ -86,21 +86,21 @@ test("cacheIcons downloads each icon once and reuses its local path", async () =
     const unread = unreadItems(FoloUnreadResult.from({
       total: 1,
       items: [{ sourceType: "list", sourceId: "feed-1", title: "List", unreadCount: 1 }],
-    }), "", cachedOnly);
+    }), cachedOnly);
     assert.equal(unread[0]?.icon?.path, firstPath);
 
     const items = timelineItems(FoloTimelineResult.from({
       entries: [{ entries: { id: "entry-1", title: "Post" }, feeds: source }],
       nextCursor: null,
       hasNext: false,
-    }), "", second);
+    }), second);
     assert.equal(items[0]?.icon?.path, firstPath);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
 });
 
-test("subscriptionItems maps every subscription target and filters locally", () => {
+test("subscriptionItems maps every subscription target", () => {
   const raw = {
     subscriptions: [
       {
@@ -128,6 +128,7 @@ test("subscriptionItems maps every subscription target and filters locally", () 
   assert.equal(items[0]?.title, "Daily Reads");
   assert.match(items[0]?.subtitle ?? "", /List.*Tech.*2 feeds.*useful bundle/);
   assert.equal(items[0]?.variables, undefined);
+  assert.equal(items[0]?.text?.largetype, "Daily Reads");
   assert.deepEqual(
     SubscriptionSelection.parse(String(items[0]?.arg)).subscription,
     data.subscriptions[0],
@@ -137,11 +138,9 @@ test("subscriptionItems maps every subscription target and filters locally", () 
     data.subscriptions[1],
   );
   assert.equal(items[1]?.mods?.alt, undefined);
-  assert.equal(subscriptionItems(data, "useful").length, 1);
-  assert.equal(subscriptionItems(data, "missing").length, 0);
 });
 
-test("unreadItems maps unread sources and filters locally", () => {
+test("unreadItems maps unread sources", () => {
   const data = FoloUnreadResult.from({
     total: 15,
     items: [
@@ -168,8 +167,7 @@ test("unreadItems maps unread sources and filters locally", () => {
   assert.equal(UnreadSelection.parse(String(items[1]?.arg)).resourceType, "list");
   assert.equal(UnreadSelection.parse(String(items[2]?.arg)).resourceId, "inbox-inbox-1");
   assert.equal(items[0]?.mods?.alt, undefined);
-  assert.equal(unreadItems(data, "newsletters").length, 1);
-  assert.equal(unreadItems(data, "missing").length, 0);
+  assert.equal(items[0]?.text?.largetype, "Example Feed");
 });
 
 test("timeline app input restores its nested block input and treats other JSON as a query", () => {
@@ -330,7 +328,7 @@ test("FoloUnreadResult validates and converts unread subscriptions", () => {
   assert.throws(() => FoloUnreadResult.from({ items: "invalid" }), /items array/i);
 });
 
-test("timelineItems maps and filters Folo entry envelopes", () => {
+test("timelineItems maps Folo entry envelopes", () => {
   const raw = {
     entries: [{
       read: false,
@@ -350,7 +348,7 @@ test("timelineItems maps and filters Folo entry envelopes", () => {
   };
 
   const data = FoloTimelineResult.from(raw);
-  const items = timelineItems(data, "useful");
+  const items = timelineItems(data);
   assert.equal(items.length, 1);
   assert.equal(items[0]?.title, "Hello & Folo");
   const action = items[0]?.action;
@@ -363,7 +361,8 @@ test("timelineItems maps and filters Folo entry envelopes", () => {
   assert.equal(selection.feed.title, "Example Feed");
   assert.equal(selection.subscription?.category, "Tech");
   assert.equal(items[0]?.variables, undefined);
-  assert.equal(timelineItems(data, "missing").length, 0);
+  assert.equal(items[0]?.text?.largetype, "Hello & Folo");
+  assert.equal(items[0]?.match, undefined);
 });
 
 test("MarkReadBlockInput rejects a missing entry ID before calling Folo", () => {

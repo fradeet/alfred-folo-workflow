@@ -123,7 +123,7 @@ export async function timeline(input: TimelineAppInput): Promise<TimelineAppOutp
     .withDefaultUnreadOnly(process.env.frrTimelineUnreadOnly === "1");
   const data = getTimeline(request);
   const iconFor = await cacheIcons(data.entries.map((item) => item.feeds));
-  const items = timelineItems(data, directInput.query, iconFor);
+  const items = timelineItems(data, iconFor);
   const emptySubtitle = request.unreadOnly
     ? "This subscription has no unread entries"
     : request.feed || request.list

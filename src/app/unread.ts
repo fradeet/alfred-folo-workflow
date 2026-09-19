@@ -40,7 +40,7 @@ export async function unread(input: UnreadAppInput): Promise<UnreadAppOutput> {
   const blockInput = new UnreadBlockInput();
   const data = getUnread(blockInput);
   const iconFor = await loadCachedIcons(data.items);
-  const items = unreadItems(data, input.query, iconFor);
+  const items = unreadItems(data, iconFor);
   if (data.items.some((item) => (item.sourceType === "feed" || item.sourceType === "list") && !iconFor(item))) {
     warmSubscriptionIcons();
   }

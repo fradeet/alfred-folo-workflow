@@ -37,7 +37,7 @@ export async function subscriptions(input: SubscriptionsAppInput): Promise<Subsc
   const data = getSubscriptions(blockInput);
   const sources = data.subscriptions.flatMap((item) => item.lists ?? item.feeds ?? []);
   const iconFor = await cacheIcons(sources);
-  const items = subscriptionItems(data, input.query, iconFor);
+  const items = subscriptionItems(data, iconFor);
   return new SubscriptionsAppOutput(
     items.length ? items : [emptyItem("No Folo subscriptions", "Try another query")],
     true,
