@@ -1487,6 +1487,8 @@
 			<string>NODE_USE_ENV_PROXY</string>
 		</dict>
 	</array>
+	<key>variablesdontexport</key>
+	<array/>
 	<key>version</key>
 	<string>0.5.5</string>
 	<key>webaddress</key>
