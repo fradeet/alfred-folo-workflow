@@ -1000,8 +1000,6 @@
 				<integer>1</integer>
 				<key>scriptfile</key>
 				<string>dist/app/subscriptions.js</string>
-				<key>skipuniversalaction</key>
-				<true/>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
