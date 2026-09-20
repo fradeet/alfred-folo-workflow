@@ -733,7 +733,7 @@
 				<key>items</key>
 				<string>[{"title":"Articles","arg":"{\"kind\": \"view-input\", \"view\": \"articles\"}","subtitle":"View Folo timeline with articles view"},{"title":"Social","arg":"{\"kind\": \"view-input\", \"view\": \"social\"}","subtitle":"View Folo timeline with social view"},{"title":"Pictures","arg":"{\"kind\": \"view-input\", \"view\": \"pictures\"}","subtitle":"View Folo timeline with pictures view"},{"title":"Audio","arg":"{\"kind\": \"view-input\", \"view\": \"audio\"}","subtitle":"View Folo timeline with audio view"},{"title":"Notifications","arg":"{\"kind\": \"view-input\", \"view\": \"notifications\"}","subtitle":"View Folo timeline with notifications view"}]</string>
 				<key>keyword</key>
-				<string>fv</string>
+				<string>{var:FRR_TIMELINE_VIEW_KEYWORD}</string>
 				<key>matchmode</key>
 				<integer>0</integer>
 				<key>runningsubtext</key>
@@ -1366,9 +1366,9 @@
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>ft</string>
+				<string>ftl</string>
 				<key>placeholder</key>
-				<string>ft</string>
+				<string>ftl</string>
 				<key>required</key>
 				<true/>
 				<key>trim</key>
@@ -1382,6 +1382,27 @@
 			<string>textfield</string>
 			<key>variable</key>
 			<string>FRR_TIMELINE_KEYWORD</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>ftlv</string>
+				<key>placeholder</key>
+				<string>ftlv</string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Timeline View Keyword</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>FRR_TIMELINE_VIEW_KEYWORD</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -1408,9 +1429,9 @@
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>fu</string>
+				<string>fun</string>
 				<key>placeholder</key>
-				<string>fu</string>
+				<string>fun</string>
 				<key>required</key>
 				<true/>
 				<key>trim</key>
