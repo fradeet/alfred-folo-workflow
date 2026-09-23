@@ -5,11 +5,11 @@
  * Input (argv joined with spaces): either
  * - a serialized timeline selection passed down unchanged from the timeline
  *   Script Filter, or
- * - a standard input JSON object marked with `kind: "standard"` or
- *   `isStandardInput: 1` (see docs/reference/standard-input.md).
+ * - a standard input JSON object marked with `kind: "standard"` (see
+ *   docs/reference/standard-input.md).
  *
- * Standard environment variables: `frrMarkReadKind` or
- * `frrMarkReadIsStandardInput` enable standard input when argv is empty;
+ * Standard environment variable: `frrMarkReadIsStandardInput=1` enables
+ * standard input when argv is empty;
  * `frrMarkReadEntryId` then provides the entry ID. A timeline selection is
  * never overridden by these variables.
  *
@@ -30,7 +30,6 @@ import {
 /** Standard input declaration for the mark-read app. */
 const markReadStandardSpec: StandardInputSpec = {
   appId: "mark-read",
-  kindEnv: "frrMarkReadKind",
   isStandardEnv: "frrMarkReadIsStandardInput",
   fields: [{ field: "entryId", env: "frrMarkReadEntryId", type: "string" }],
 };

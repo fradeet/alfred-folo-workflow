@@ -103,14 +103,14 @@ node workflow/dist/app/timeline.js '{"view": "articles"}'
 Every app entry point Alfred calls directly (`timeline`, `subscriptions`,
 `unread`, `mark-read`, `mark-read-above`, `login`) also accepts a uniform
 external calling convention: one JSON object as argv marked with
-`kind: "standard"` or `isStandardInput: 1`, the app's `frr<AppId>…`
-environment variables, or both — argv always wins:
+`kind: "standard"`, the app's `frr<AppId>…` environment variables, or both —
+argv always wins:
 
 ```bash
 node workflow/dist/app/mark-read.js \
   '{"kind":"standard","version":1,"entryId":"entry-1"}'
 
-frrMarkReadKind=standard frrMarkReadEntryId=entry-1 \
+frrMarkReadIsStandardInput=1 frrMarkReadEntryId=entry-1 \
   node workflow/dist/app/mark-read.js
 ```
 

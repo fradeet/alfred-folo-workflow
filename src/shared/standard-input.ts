@@ -3,8 +3,8 @@
  *
  * Standard input is the public calling convention for external callers: one
  * JSON object passed as the complete argv argument (marked by `kind:
- * "standard"` or `isStandardInput: 1`), or the app's `frr<AppId>…` environment
- * variables, or both. It does not replace the workflow's internal contracts,
+ * "standard"`), or the app's `frr<AppId>…` environment variables, or both. It
+ * does not replace the workflow's internal contracts,
  * which keep their existing parsing path and never merge these variables.
  *
  * This module knows nothing about individual apps. Each app declares a
@@ -32,8 +32,6 @@ export interface StandardInputFieldSpec {
 export interface StandardInputSpec {
   /** Stable app ID used for documentation, such as `mark-read`. */
   readonly appId: string;
-  /** App marker variable that must equal `standard` to opt in from the environment. */
-  readonly kindEnv: string;
   /** App marker variable that must equal `1` to opt in from the environment. */
   readonly isStandardEnv: string;
   readonly fields: readonly StandardInputFieldSpec[];
@@ -66,22 +64,21 @@ export function resolveStandardInput(
   const argvData = parseArgvObject(argvText);
 
   if (argvText.trim() !== "") {
-    if (argvData === undefined || !argvMarked(argvData)) return undefined;
+    if (argvData === undefined) return undefined;
+    if ("isStandardInput" in argvData) {
+      throw new StandardInputError('argv field "isStandardInput" is not supported; use kind: "standard"');
+    }
+    if (argvData.kind !== "standard") return undefined;
     if (isKnownContract(argvData)) {
       throw new StandardInputError(
         "argv matches a known workflow contract and carries standard input markers; pass either the contract or a standard input, not both",
       );
     }
-    checkArgvMarkers(argvData);
     return mergeStandardValues(argvData, env, spec);
   }
 
-  const kindMarker = env[spec.kindEnv];
   const isMarker = env[spec.isStandardEnv];
-  if (kindMarker === undefined && isMarker === undefined) return undefined;
-  if (kindMarker !== undefined && kindMarker !== "standard") {
-    throw new StandardInputError(`${spec.kindEnv} must be exactly "standard" when standard input is enabled`);
-  }
+  if (isMarker === undefined) return undefined;
   if (isMarker !== undefined && isMarker !== "1") {
     throw new StandardInputError(`${spec.isStandardEnv} must be exactly "1" when standard input is enabled`);
   }
@@ -99,26 +96,6 @@ function parseArgvObject(argvText: string): Record<string, unknown> | undefined 
   }
   if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) return undefined;
   return parsed as Record<string, unknown>;
-}
-
-/**
- * Reports standard input intent in argv without judging marker values: either
- * `kind` is `standard`, or `isStandardInput` is present at all (its value is
- * validated by {@link checkArgvMarkers} so typos fail loudly). Any other
- * `kind` belongs to another contract and is none of this protocol's business.
- */
-function argvMarked(data: Record<string, unknown>): boolean {
-  return data.kind === "standard" || "isStandardInput" in data;
-}
-
-/** Validates marker consistency inside a marked argv JSON object. */
-function checkArgvMarkers(data: Record<string, unknown>): void {
-  if ("isStandardInput" in data && data.isStandardInput !== 1) {
-    throw new StandardInputError("isStandardInput must be the number 1");
-  }
-  if ("kind" in data && data.kind !== "standard") {
-    throw new StandardInputError('kind must be "standard" when isStandardInput is present');
-  }
 }
 
 /**
@@ -143,7 +120,7 @@ function mergeStandardValues(
       );
     }
   }
-  const knownFields = new Set(["kind", "isStandardInput", "version", ...spec.fields.map((field) => field.field)]);
+  const knownFields = new Set(["kind", "version", ...spec.fields.map((field) => field.field)]);
   for (const key of Object.keys(argvData)) {
     if (!knownFields.has(key)) {
       throw new StandardInputError(`Unknown standard input field "${key}"`);

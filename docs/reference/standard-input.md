@@ -11,7 +11,7 @@ read the standard input variables described here.
 ## JSON format
 
 Pass one JSON object as the complete argv argument, marked as standard input by
-`kind` or `isStandardInput`:
+`kind`:
 
 ```json
 {
@@ -24,25 +24,22 @@ Pass one JSON object as the complete argv argument, marked as standard input by
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `kind` | `"standard"` | one of the two markers | Recognized when exactly `"standard"` |
-| `isStandardInput` | `1` | one of the two markers | Number `1` in JSON, string `"1"` in the environment |
+| `kind` | `"standard"` | yes | Recognized when exactly `"standard"` |
 | `version` | positive integer | no | Defaults to `1`; any other version is an error |
 | business fields | per app | per app | Top level of the same object; unknown fields are errors |
 
 The target app is the executable you invoke, so the JSON never names an app.
-If both markers appear, `kind` must be `"standard"` and `isStandardInput` must
-be `1`. An argv value that is both a known workflow contract and a standard
-input is rejected as a conflict.
+The former argv field `isStandardInput` is not supported; use
+`kind: "standard"`. An argv value that is both a known workflow contract and a
+standard input is rejected as a conflict.
 
 ## Detection and merging
 
 A call enters standard input mode when:
 
-1. argv is a JSON object carrying `kind: "standard"` or `isStandardInput: 1`
-   (a call that matches a known workflow contract is never treated as
-   standard input), or
-2. argv is empty and the app's `frr<AppId>Kind` is exactly `standard` or its
-   `frr<AppId>IsStandardInput` is exactly `1`.
+1. argv is a JSON object carrying `kind: "standard"` (a call that matches a
+   known workflow contract is never treated as standard input), or
+2. argv is empty and the app's `frr<AppId>IsStandardInput` is exactly `1`.
 
 In standard input mode each field resolves by priority:
 
@@ -80,7 +77,7 @@ Executable: `workflow/dist/app/timeline.js`
 | `list` | `frrTimelineList` | string | no | none |
 | `category` | `frrTimelineCategory` | string | no | none |
 
-Markers: `frrTimelineKind`, `frrTimelineIsStandardInput`.
+Marker: `frrTimelineIsStandardInput`.
 
 `query` is accepted for interface completeness but, as with the workflow
 itself, result filtering is done by Alfred — an external caller gets the full
@@ -97,7 +94,7 @@ Executable: `workflow/dist/app/subscriptions.js`
 | `view` | `frrSubscriptionsView` | string | no | none |
 | `category` | `frrSubscriptionsCategory` | string | no | none |
 
-Markers: `frrSubscriptionsKind`, `frrSubscriptionsIsStandardInput`.
+Marker: `frrSubscriptionsIsStandardInput`.
 
 `query` is not applied inside the app; Alfred filters the workflow's rendered
 items, so external standard calls return the unfiltered list.
@@ -111,7 +108,7 @@ Executable: `workflow/dist/app/unread.js`
 | `query` | `frrUnreadQuery` | string | no | `""` |
 | `view` | `frrUnreadView` | string | no | none |
 
-Markers: `frrUnreadKind`, `frrUnreadIsStandardInput`.
+Marker: `frrUnreadIsStandardInput`.
 
 `query` behaves like `subscriptions`: filtering is Alfred's job.
 
@@ -123,7 +120,7 @@ Executable: `workflow/dist/app/mark-read.js`
 | --- | --- | --- | --- | --- |
 | `entryId` | `frrMarkReadEntryId` | non-empty string | yes | none |
 
-Markers: `frrMarkReadKind`, `frrMarkReadIsStandardInput`.
+Marker: `frrMarkReadIsStandardInput`.
 
 Workflow-internal calls still pass the complete `TimelineSelection`; standard
 variables never override a selection's fields.
@@ -137,7 +134,7 @@ Executable: `workflow/dist/app/mark-read-above.js`
 | `entryId` | `frrMarkReadAboveEntryId` | non-empty string | yes | none |
 | `resultCacheKey` | `frrMarkReadAboveResultCacheKey` | non-empty string | yes | none |
 
-Markers: `frrMarkReadAboveKind`, `frrMarkReadAboveIsStandardInput`.
+Marker: `frrMarkReadAboveIsStandardInput`.
 
 `resultCacheKey` must name a timeline response already stored by a previous
 Script Filter run in the same environment (the `frrResultCacheKey` reported by
@@ -153,7 +150,7 @@ Executable: `workflow/dist/app/login.js`
 | --- | --- | --- | --- | --- |
 | `workflowBundleId` | `frrLoginWorkflowBundleId` | non-empty string | yes | none |
 
-Markers: `frrLoginKind`, `frrLoginIsStandardInput`.
+Marker: `frrLoginIsStandardInput`.
 
 `workflowBundleId` names the Alfred workflow whose `FOLO_TOKEN`
 configuration receives the token; workflow-internal calls keep using
@@ -175,7 +172,7 @@ node workflow/dist/app/mark-read.js \
 environment only:
 
 ```bash
-frrMarkReadKind=standard \
+frrMarkReadIsStandardInput=1 \
 frrMarkReadEntryId=entry-1 \
 node workflow/dist/app/mark-read.js
 ```

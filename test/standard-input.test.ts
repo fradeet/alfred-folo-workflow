@@ -41,7 +41,6 @@ import { FoloSubscription, FoloTimelineItem } from "../src/types/folo-types.js";
 /** Fixture spec exercising every shared capability without referencing a real app. */
 const widgetSpec: StandardInputSpec = {
   appId: "widget",
-  kindEnv: "frrWidgetKind",
   isStandardEnv: "frrWidgetIsStandardInput",
   fields: [
     { field: "name", env: "frrWidgetName", type: "string" },
@@ -76,63 +75,47 @@ test("resolveStandardInput merges argv, standard variables, and global configura
   assert.deepEqual(resolveStandardInput('{"kind":"standard"}', {}, widgetSpec, widgetContracts), {});
 });
 
-test("resolveStandardInput activates from either environment marker when argv is empty", () => {
+test("resolveStandardInput activates from the environment marker when argv is empty", () => {
   const env = { frrWidgetName: "from-env" };
-  const byKind = resolveStandardInput("", { ...env, frrWidgetKind: "standard" }, widgetSpec, widgetContracts);
   const byFlag = resolveStandardInput("", { ...env, frrWidgetIsStandardInput: "1" }, widgetSpec, widgetContracts);
-  const byBoth = resolveStandardInput(
-    "",
-    { ...env, frrWidgetKind: "standard", frrWidgetIsStandardInput: "1" },
-    widgetSpec,
-    widgetContracts,
-  );
-  assert.deepEqual(byKind, { name: "from-env" });
   assert.deepEqual(byFlag, { name: "from-env" });
-  assert.deepEqual(byBoth, { name: "from-env" });
 });
 
-test("resolveStandardInput accepts either argv marker and rejects incompatible values", () => {
+test("resolveStandardInput accepts the argv kind and rejects the removed argv marker", () => {
   const resolve = (argv: string) => resolveStandardInput(argv, {}, widgetSpec, widgetContracts);
   assert.deepEqual(resolve('{"kind":"standard","name":"a"}'), { name: "a" });
-  assert.deepEqual(resolve('{"isStandardInput":1,"name":"a"}'), { name: "a" });
-  assert.deepEqual(resolve('{"kind":"standard","isStandardInput":1,"name":"a"}'), { name: "a" });
-  assert.throws(() => resolve('{"kind":"standard","isStandardInput":2}'), /isStandardInput must be the number 1/);
-  assert.throws(() => resolve('{"isStandardInput":"1"}'), /isStandardInput must be the number 1/);
-  assert.throws(() => resolve('{"kind":"other","isStandardInput":1}'), /kind must be "standard"/);
+  assert.throws(() => resolve('{"isStandardInput":1,"name":"a"}'), /isStandardInput.*not supported/);
+  assert.throws(
+    () => resolve('{"kind":"standard","isStandardInput":1,"name":"a"}'),
+    /isStandardInput.*not supported/,
+  );
+  assert.throws(() => resolve('{"kind":"other","isStandardInput":1}'), /isStandardInput.*not supported/);
 });
 
-test("resolveStandardInput rejects conflicting environment markers", () => {
-  assert.throws(
-    () => resolveStandardInput("", { frrWidgetKind: "bogus" }, widgetSpec, widgetContracts),
-    /frrWidgetKind must be exactly "standard"/,
-  );
+test("resolveStandardInput rejects an invalid environment marker", () => {
   assert.throws(
     () => resolveStandardInput("", { frrWidgetIsStandardInput: "2" }, widgetSpec, widgetContracts),
     /frrWidgetIsStandardInput must be exactly "1"/,
   );
-  assert.throws(
-    () => resolveStandardInput("", { frrWidgetKind: "bogus", frrWidgetIsStandardInput: "1" }, widgetSpec, widgetContracts),
-    /frrWidgetKind must be exactly "standard"/,
-  );
-  assert.throws(
-    () => resolveStandardInput("", { frrWidgetKind: "standard", frrWidgetIsStandardInput: "2" }, widgetSpec, widgetContracts),
-    /frrWidgetIsStandardInput must be exactly "1"/,
-  );
 });
 
-test("resolveStandardInput reports a contract carrying standard markers as a conflict", () => {
+test("resolveStandardInput reports a contract carrying the standard marker as a conflict", () => {
   assert.throws(
-    () => resolveStandardInput('{"kind":"widget-input","isStandardInput":1}', {}, widgetSpec, widgetContracts),
+    () => resolveStandardInput('{"kind":"standard"}', {}, widgetSpec, () => true),
     /matches a known workflow contract/i,
   );
 });
 
 test("resolveStandardInput does not read standard variables without a marker", () => {
-  const env = { frrWidgetName: "ignored", frrWidgetCount: "40", FRR_WIDGET_COUNT: "50", frrWidgetKind: "standard" };
+  const env = { frrWidgetName: "ignored", frrWidgetCount: "40", FRR_WIDGET_COUNT: "50", frrWidgetIsStandardInput: "1" };
   assert.equal(resolveStandardInput("plain query", env, widgetSpec, widgetContracts), undefined);
   assert.equal(resolveStandardInput('{"kind":"widget-input"}', env, widgetSpec, widgetContracts), undefined);
   assert.equal(resolveStandardInput("", { frrWidgetName: "ignored" }, widgetSpec, widgetContracts), undefined);
-  assert.equal(resolveStandardInput('{"kind":"other"}', { frrWidgetKind: "standard" }, widgetSpec, widgetContracts), undefined);
+  assert.equal(
+    resolveStandardInput("", { frrWidgetKind: "standard", frrWidgetName: "ignored" }, widgetSpec, widgetContracts),
+    undefined,
+  );
+  assert.equal(resolveStandardInput('{"kind":"other"}', { frrWidgetIsStandardInput: "1" }, widgetSpec, widgetContracts), undefined);
 });
 
 test("resolveStandardInput skips invalid environment values overridden by argv", () => {
@@ -206,7 +189,7 @@ test("timeline standard input parses from argv alone", () => {
 
 test("timeline standard input parses from environment variables alone", () => {
   const input = parseTimelineAppInput("", {
-    frrTimelineKind: "standard",
+    frrTimelineIsStandardInput: "1",
     frrTimelineView: "articles",
     frrTimelineLimit: "50",
     frrTimelineUnreadOnly: "true",
@@ -266,7 +249,7 @@ test("timeline standard input rejects an explicit zero limit instead of using th
 
 test("timeline non-standard inputs ignore the standard environment variables", () => {
   const hostileEnv = {
-    frrTimelineKind: "standard",
+    frrTimelineIsStandardInput: "1",
     frrTimelineLimit: "not-a-number",
     frrTimelineView: "pictures",
     frrTimelineQuery: "from-env",
@@ -302,8 +285,8 @@ test("timeline standard input rejects malformed values", () => {
   assert.throws(() => parseTimelineAppInput('{"kind":"standard","view":"articles","bogus":1}', {}), /Unknown standard input field/);
   assert.throws(() => parseTimelineAppInput('{"kind":"standard","version":2}', {}), /Unsupported standard input version/);
   assert.throws(
-    () => parseTimelineAppInput('{"kind":"view-input","view":"articles","isStandardInput":1}', {}),
-    /matches a known workflow contract/i,
+    () => parseTimelineAppInput('{"kind":"standard","view":"articles","isStandardInput":1}', {}),
+    /isStandardInput.*not supported/i,
   );
 });
 
@@ -328,7 +311,7 @@ test("subscriptions standard input parses from argv, environment, and both combi
 
 test("subscriptions non-standard and malformed inputs keep their behavior", () => {
   assert.deepEqual(
-    parseSubscriptionsAppInput("tech", { frrSubscriptionsKind: "standard", frrSubscriptionsQuery: "from-env" }),
+    parseSubscriptionsAppInput("tech", { frrSubscriptionsIsStandardInput: "1", frrSubscriptionsQuery: "from-env" }),
     new SubscriptionsQueryInput("tech"),
   );
   assert.deepEqual(parseSubscriptionsAppInput("", { frrSubscriptionsQuery: "from-env" }), new SubscriptionsQueryInput(""));
@@ -348,17 +331,17 @@ test("unread standard input parses from argv, environment, and both combined", (
   const fromArgv = parseUnreadAppInput('{"kind":"standard","query":"tech","view":"articles"}', {});
   assert.deepEqual(fromArgv, new UnreadStandardInput({ query: "tech", view: "articles" }));
 
-  const fromEnv = parseUnreadAppInput("", { frrUnreadKind: "standard", frrUnreadView: "articles" });
+  const fromEnv = parseUnreadAppInput("", { frrUnreadIsStandardInput: "1", frrUnreadView: "articles" });
   assert.deepEqual(fromEnv, new UnreadStandardInput({ view: "articles" }));
 
-  const combined = parseUnreadAppInput('{"isStandardInput":1,"query":"alfred"}', { frrUnreadQuery: "from-env" });
+  const combined = parseUnreadAppInput('{"kind":"standard","query":"alfred"}', { frrUnreadQuery: "from-env" });
   assert.deepEqual(combined, new UnreadStandardInput({ query: "alfred" }));
   assert.ok(combined instanceof UnreadStandardInput);
 });
 
 test("unread non-standard and malformed inputs keep their behavior", () => {
   assert.deepEqual(
-    parseUnreadAppInput("tech", { frrUnreadKind: "standard", frrUnreadQuery: "from-env" }),
+    parseUnreadAppInput("tech", { frrUnreadIsStandardInput: "1", frrUnreadQuery: "from-env" }),
     new UnreadQueryInput("tech"),
   );
   assert.deepEqual(
@@ -379,11 +362,11 @@ test("mark-read standard input parses from argv, environment, and both combined"
     new MarkReadStandardInput({ entryId: "entry-1" }),
   );
   assert.deepEqual(
-    parseMarkReadAppInput("", { frrMarkReadKind: "standard", frrMarkReadEntryId: "entry-1" }),
+    parseMarkReadAppInput("", { frrMarkReadIsStandardInput: "1", frrMarkReadEntryId: "entry-1" }),
     new MarkReadStandardInput({ entryId: "entry-1" }),
   );
   assert.deepEqual(
-    parseMarkReadAppInput('{"isStandardInput":1,"entryId":"entry-1"}', { frrMarkReadEntryId: "from-env" }),
+    parseMarkReadAppInput('{"kind":"standard","entryId":"entry-1"}', { frrMarkReadEntryId: "from-env" }),
     new MarkReadStandardInput({ entryId: "entry-1" }),
   );
 });
@@ -391,7 +374,7 @@ test("mark-read standard input parses from argv, environment, and both combined"
 test("mark-read keeps the timeline selection input and ignores standard variables", () => {
   const selection = timelineSelection("entry-1");
   const parsed = parseMarkReadAppInput(selection.serialize(), {
-    frrMarkReadKind: "standard",
+    frrMarkReadIsStandardInput: "1",
     frrMarkReadEntryId: "hijacked",
   });
   assert.ok(parsed instanceof TimelineSelection);
@@ -433,7 +416,7 @@ test("mark-read-above keeps the selection plus frrResultCacheKey legacy input", 
   const selection = timelineSelection("entry-1");
   const parsed = parseMarkReadAboveAppInput(selection.serialize(), {
     frrResultCacheKey: "timeline-abc.json",
-    frrMarkReadAboveKind: "standard",
+    frrMarkReadAboveIsStandardInput: "1",
     frrMarkReadAboveEntryId: "hijacked",
     frrMarkReadAboveResultCacheKey: "hijacked.json",
   });
@@ -450,7 +433,7 @@ test("mark-read-above keeps the selection plus frrResultCacheKey legacy input", 
 test("mark-read-above standard input rejects missing or malformed fields", () => {
   assert.throws(() => parseMarkReadAboveAppInput('{"kind":"standard","entryId":"entry-1"}', {}), /resultCacheKey.*non-empty string/i);
   assert.throws(
-    () => parseMarkReadAboveAppInput("", { frrMarkReadAboveKind: "standard", frrMarkReadAboveEntryId: "entry-1" }),
+    () => parseMarkReadAboveAppInput("", { frrMarkReadAboveIsStandardInput: "1", frrMarkReadAboveEntryId: "entry-1" }),
     /resultCacheKey.*non-empty string/i,
   );
   assert.throws(
@@ -471,11 +454,11 @@ test("login standard input parses from argv, environment, and both combined", ()
     new LoginStandardInput({ workflowBundleId: "dev.fradeet.folo" }),
   );
   assert.deepEqual(
-    parseLoginAppInput("", { frrLoginKind: "standard", frrLoginWorkflowBundleId: "dev.fradeet.folo" }),
+    parseLoginAppInput("", { frrLoginIsStandardInput: "1", frrLoginWorkflowBundleId: "dev.fradeet.folo" }),
     new LoginStandardInput({ workflowBundleId: "dev.fradeet.folo" }),
   );
   assert.deepEqual(
-    parseLoginAppInput('{"isStandardInput":1,"workflowBundleId":"dev.fradeet.folo"}', {
+    parseLoginAppInput('{"kind":"standard","workflowBundleId":"dev.fradeet.folo"}', {
       frrLoginWorkflowBundleId: "from-env",
     }),
     new LoginStandardInput({ workflowBundleId: "dev.fradeet.folo" }),
@@ -484,7 +467,7 @@ test("login standard input parses from argv, environment, and both combined", ()
 
 test("login keeps the Alfred invocation when no standard marker is present", () => {
   assert.ok(parseLoginAppInput("", { frrLoginWorkflowBundleId: "dev.fradeet.folo" }) instanceof LoginAlfredInput);
-  assert.ok(parseLoginAppInput("anything", { frrLoginKind: "standard" }) instanceof LoginAlfredInput);
+  assert.ok(parseLoginAppInput("anything", { frrLoginIsStandardInput: "1" }) instanceof LoginAlfredInput);
 });
 
 test("login standard input rejects missing or malformed workflow bundle IDs", () => {

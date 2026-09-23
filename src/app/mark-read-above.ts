@@ -8,11 +8,11 @@
  *   Script Filter, combined with the `frrResultCacheKey` environment variable
  *   naming the stored timeline response that produced the list the user
  *   acted on, or
- * - a standard input JSON object marked with `kind: "standard"` or
- *   `isStandardInput: 1` (see docs/reference/standard-input.md).
+ * - a standard input JSON object marked with `kind: "standard"` (see
+ *   docs/reference/standard-input.md).
  *
- * Standard environment variables: `frrMarkReadAboveKind` or
- * `frrMarkReadAboveIsStandardInput` enable standard input when argv is empty;
+ * Standard environment variable: `frrMarkReadAboveIsStandardInput=1` enables
+ * standard input when argv is empty;
  * `frrMarkReadAboveEntryId` and `frrMarkReadAboveResultCacheKey` then provide
  * the fields. The cache key must name a timeline response already stored in
  * the calling environment; this app neither creates nor restores it.
@@ -40,7 +40,6 @@ const MARK_CONCURRENCY = 6;
 /** Standard input declaration for the mark-read-above app. */
 const markReadAboveStandardSpec: StandardInputSpec = {
   appId: "mark-read-above",
-  kindEnv: "frrMarkReadAboveKind",
   isStandardEnv: "frrMarkReadAboveIsStandardInput",
   fields: [
     { field: "entryId", env: "frrMarkReadAboveEntryId", type: "string" },

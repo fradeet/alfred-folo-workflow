@@ -96,9 +96,8 @@ protocol for external callers, built on the shared parser in
   shared module never branches on specific apps.
 - Standard external input is the one exception to passing an app's primary
   input through argv. The exception applies only after the call is recognized
-  as standard input via `kind === "standard"` or `isStandardInput === 1` (or
-  the app's `frr<AppId>Kind`/`frr<AppId>IsStandardInput` markers when argv is
-  empty).
+  as standard input via `kind === "standard"` (or the app's
+  `frr<AppId>IsStandardInput` marker when argv is empty).
 - Non-standard inputs — workflow contracts, plain queries, share URLs, view
   inputs — keep their original parsing path and never read or merge standard
   business environment variables. Existing complete contracts keep flowing

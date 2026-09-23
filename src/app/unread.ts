@@ -5,11 +5,11 @@
  * Input (argv joined with spaces): either
  * - a filter query matched against titles, kinds, categories, and unread
  *   counts, or
- * - a standard input JSON object marked with `kind: "standard"` or
- *   `isStandardInput: 1` (see docs/reference/standard-input.md).
+ * - a standard input JSON object marked with `kind: "standard"` (see
+ *   docs/reference/standard-input.md).
  *
- * Standard environment variables: `frrUnreadKind` or
- * `frrUnreadIsStandardInput` enable standard input when argv is empty;
+ * Standard environment variable: `frrUnreadIsStandardInput=1` enables
+ * standard input when argv is empty;
  * `frrUnreadQuery` and `frrUnreadView` then provide fields. Non-standard
  * calls ignore these variables, and the query never filters results inside
  * the app: Alfred filters the rendered items.
@@ -40,7 +40,6 @@ import { AlfredSF, AlfredSFCache, AlfredSFItem, AlfredVariables } from "../types
 /** Standard input declaration for the unread app. */
 const unreadStandardSpec: StandardInputSpec = {
   appId: "unread",
-  kindEnv: "frrUnreadKind",
   isStandardEnv: "frrUnreadIsStandardInput",
   fields: [
     { field: "query", env: "frrUnreadQuery", type: "string" },

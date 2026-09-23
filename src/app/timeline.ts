@@ -8,11 +8,12 @@
  * - an {@link TimelineViewInput} JSON value emitted by an Alfred node, such as
  *   `{"kind": "view-input", "view": "articles"}`, or
  * - a serialized {@link TimelineDirectInput}, or
- * - a standard input JSON object marked with `kind: "standard"` or
- *   `isStandardInput: 1` (see docs/reference/standard-input.md).
+ * - a standard input JSON object marked with `kind: "standard"` (see
+ *   docs/reference/standard-input.md).
  *   Malformed JSON falls back to a query.
  *
- * Environment: `FRR_TIMELINE_LIMIT` sets the default entry limit (digits only,
+ * Environment: `frrTimelineIsStandardInput=1` enables standard input when argv
+ * is empty. `FRR_TIMELINE_LIMIT` sets the default entry limit (digits only,
  * otherwise 30). `frrTimelineUnreadOnly` set to `1` adds the unread-only flag
  * to the request. In standard input mode both variables are merged by priority
  * behind argv and the `frrTimelineLimit` / `frrTimelineUnreadOnly` standard
@@ -50,7 +51,6 @@ import { TimelineViewInput } from "../types/alfred-node-types.js";
 /** Standard input declaration for the timeline app. */
 const timelineStandardSpec: StandardInputSpec = {
   appId: "timeline",
-  kindEnv: "frrTimelineKind",
   isStandardEnv: "frrTimelineIsStandardInput",
   fields: [
     { field: "query", env: "frrTimelineQuery", type: "string" },

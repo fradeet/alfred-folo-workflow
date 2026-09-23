@@ -4,11 +4,11 @@
  *
  * Input: either no arguments (the workflow must run inside Alfred, which
  * provides `alfred_workflow_bundleid` in the environment), or a standard input
- * JSON object marked with `kind: "standard"` or `isStandardInput: 1` (see
+ * JSON object marked with `kind: "standard"` (see
  * docs/reference/standard-input.md).
  *
- * Standard environment variables: `frrLoginKind` or `frrLoginIsStandardInput`
- * enable standard input when argv is empty; `frrLoginWorkflowBundleId` then
+ * Standard environment variable: `frrLoginIsStandardInput=1` enables standard
+ * input when argv is empty; `frrLoginWorkflowBundleId` then
  * provides the workflow bundle ID the token is saved to. Standard input does
  * not remove this app's dependence on macOS, Alfred, and `osascript`.
  *
@@ -35,7 +35,6 @@ import { FoloUser } from "../types/folo-types.js";
 /** Standard input declaration for the login app. */
 const loginStandardSpec: StandardInputSpec = {
   appId: "login",
-  kindEnv: "frrLoginKind",
   isStandardEnv: "frrLoginIsStandardInput",
   fields: [{ field: "workflowBundleId", env: "frrLoginWorkflowBundleId", type: "string" }],
 };

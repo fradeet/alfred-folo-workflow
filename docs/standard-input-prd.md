@@ -98,14 +98,6 @@ node workflow/dist/app/mark-read.js \
 外部调用者通过标准标记和 app 专属环境变量构造输入：
 
 ```bash
-frrMarkReadKind=standard \
-frrMarkReadEntryId=entry-1 \
-node workflow/dist/app/mark-read.js
-```
-
-也可以使用 `IS_STANDARD_INPUT` 标记：
-
-```bash
 frrMarkReadIsStandardInput=1 \
 frrMarkReadEntryId=entry-1 \
 node workflow/dist/app/mark-read.js
@@ -149,8 +141,7 @@ node workflow/dist/app/timeline.js \
 
 | 字段 | 类型 | 必需 | 说明 |
 | --- | --- | --- | --- |
-| `kind` | `"standard"` | 条件必需 | 与 `isStandardInput` 二选一，用于识别标准输入 |
-| `isStandardInput` | `1` | 条件必需 | 与 `kind` 二选一，用于识别标准输入 |
+| `kind` | `"standard"` | 是 | 用于识别标准输入 |
 | `version` | positive integer | 否 | 缺省为 `1`；不支持的版本必须报错 |
 
 业务字段位于同一个 JSON object 顶层，避免为了少量标量参数增加无必要的 envelope 层级。
@@ -159,15 +150,10 @@ node workflow/dist/app/timeline.js \
 
 ### 6.2 标准输入判定
 
-argv JSON 满足以下任一条件时，被识别为标准输入：
+argv JSON 在 `kind === "standard"` 时被识别为标准输入。
 
-- `kind === "standard"`；
-- `isStandardInput === 1`。
-
-仅使用环境变量时，满足以下任一条件即可进入标准输入模式：
-
-- app 专属 `frr<AppId>Kind` 环境变量严格等于 `standard`；
-- app 专属 `frr<AppId>IsStandardInput` 环境变量严格等于 `1`。
+仅使用环境变量时，app 专属 `frr<AppId>IsStandardInput` 环境变量严格等于 `1`
+即可进入标准输入模式。
 
 判定顺序必须满足：
 
@@ -215,13 +201,8 @@ argv JSON 满足以下任一条件时，被识别为标准输入：
 
 ### 6.5 标记一致性
 
-如果 `kind` 与 `isStandardInput` 同时出现：
-
-- `kind` 必须为 `standard`；
-- `isStandardInput` 必须为数字 `1`；
-- 任一字段出现不兼容值时必须报错。
-
-JSON 中的 `isStandardInput` 使用数字 `1`。环境变量中的对应值使用字符串 `1`。
+JSON 仅使用 `kind: "standard"` 标记标准输入。环境变量仅使用 app 专属的
+`frr<AppId>IsStandardInput=1` 标记，两者不共享字段名或值类型。
 
 ## 7. Alfred 变量与环境变量规范
 
@@ -265,21 +246,15 @@ frrMarkReadAboveResultCacheKey
 
 ### 7.3 公共标记变量
 
-每个 app 明确声明自己的两个标准输入标记：
+每个 app 明确声明自己的标准输入标记：
 
 ```text
-frr<AppId>Kind
 frr<AppId>IsStandardInput
 ```
 
-两者均可开启环境变量标准输入模式，不要求同时提供。
+该变量严格等于字符串 `1` 时开启环境变量标准输入模式。
 
-例如 `timeline` 使用：
-
-```text
-frrTimelineKind
-frrTimelineIsStandardInput
-```
+例如 `timeline` 使用 `frrTimelineIsStandardInput`。
 
 ### 7.4 全局变量、标准变量与默认值
 
@@ -436,7 +411,7 @@ orchestration 函数不应自行读取标准输入环境变量。所有标准输
 标准输入的识别、字段来源合并和基础类型转换应由共享模块提供。每个 app 只负责声明：
 
 - 稳定 app ID；
-- 该 app 的两个标准标记变量名；
+- 该 app 的标准标记变量名；
 - JSON 字段与硬编码环境变量名的映射；
 - 字段类型和可选的全局配置 fallback；
 - app 专属输入 class 的最终验证；
@@ -496,7 +471,7 @@ orchestration 函数不应自行读取标准输入环境变量。所有标准输
 
 以下情况必须产生可操作的错误信息：
 
-- 标准标记值非法或互相冲突；
+- 标准标记值非法；
 - 协议版本不受支持；
 - 必需字段在合并后仍缺失；
 - 环境变量无法转换为声明类型；
@@ -532,8 +507,8 @@ orchestration 函数不应自行读取标准输入环境变量。所有标准输
 
 共享解析工具还应覆盖：
 
-- 两种标准标记分别生效；
-- 两种标记一致时生效、冲突时失败；
+- JSON 的 `kind: "standard"` 标记生效；
+- 环境标准标记值非法时失败；
 - 被 argv 覆盖的非法环境变量不会导致失败；
 - 没有标准标记时不读取标准业务环境变量。
 
@@ -565,7 +540,8 @@ README 或独立 reference 文档需要列出：
 1. 六个由 Alfred 直接调用的 app 均定义并导出自己的标准输入 class。
 2. 每个 app 均支持完整 argv、完整环境变量和二者组合三种标准输入方式。
 3. 每个环境变量名均在代码中明确声明，没有动态名称生成逻辑。
-4. 标准输入可通过 `kind=standard` 或 `isStandardInput=1` 识别。
+4. argv 标准输入通过 `kind=standard` 识别，环境标准输入通过 app 专属
+   `frr<AppId>IsStandardInput=1` 识别。
 5. 同一字段同时存在时 argv 始终优先，并正确保留 falsy 值。
 6. 非标准输入不受任何标准业务环境变量影响。
 7. Alfred 内部节点间 contract 和 `workflow/info.plist` 路由方式保持不变。
@@ -611,7 +587,7 @@ README 或独立 reference 文档需要列出：
 1. 在 **App rules** 中规定：所有由 Alfred 直接调用的新增 app 必须定义并导出标准输入
    class，并使用仓库共享解析能力。
 2. 明确标准外部输入是 primary input 必须经 argv 传递规则的例外，但该例外仅在
-   `kind=standard` 或 `isStandardInput=1` 被确认后生效。
+   `kind=standard` 被确认后生效。
 3. 明确非标准 Alfred contract 永远不与标准环境变量合并，现有完整 contract 必须继续
    通过 argv 原样传递。
 4. 增加变量命名分层：

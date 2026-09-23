@@ -5,11 +5,11 @@
  * Input (argv joined with spaces): either
  * - a filter query matched against subscription titles, kinds, categories,
  *   descriptions, and IDs, or
- * - a standard input JSON object marked with `kind: "standard"` or
- *   `isStandardInput: 1` (see docs/reference/standard-input.md).
+ * - a standard input JSON object marked with `kind: "standard"` (see
+ *   docs/reference/standard-input.md).
  *
- * Standard environment variables: `frrSubscriptionsKind` or
- * `frrSubscriptionsIsStandardInput` enable standard input when argv is empty;
+ * Standard environment variable: `frrSubscriptionsIsStandardInput=1` enables
+ * standard input when argv is empty;
  * `frrSubscriptionsQuery`, `frrSubscriptionsView`, and
  * `frrSubscriptionsCategory` then provide fields. Non-standard calls ignore
  * these variables, and the query never filters results inside the app:
@@ -38,7 +38,6 @@ import { AlfredSF, AlfredSFCache, AlfredSFItem, AlfredVariables } from "../types
 /** Standard input declaration for the subscriptions app. */
 const subscriptionsStandardSpec: StandardInputSpec = {
   appId: "subscriptions",
-  kindEnv: "frrSubscriptionsKind",
   isStandardEnv: "frrSubscriptionsIsStandardInput",
   fields: [
     { field: "query", env: "frrSubscriptionsQuery", type: "string" },
