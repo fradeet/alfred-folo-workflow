@@ -115,8 +115,8 @@ frrMarkReadIsStandardInput=1 frrMarkReadEntryId=entry-1 \
 ```
 
 Workflow-internal calls are unchanged: node contracts keep flowing through
-argv and never read the standard variables. Field tables, marker names,
-merging rules, and per-app caveats live in
+argv and never read the standard variables. Protocol rules, implementation
+links, and per-app caveats live in
 [docs/reference/standard-input.md](docs/reference/standard-input.md).
 
 Then open `Folo.alfredworkflow` to install it in Alfred.

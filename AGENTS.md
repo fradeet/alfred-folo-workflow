@@ -109,9 +109,10 @@ protocol for external callers, built on the shared parser in
   explicitly linked global configuration, then the input class defaults. Merge
   by field presence, not truthiness, so `false`, `0`, `""`, and `null` from
   argv are preserved; whether such a value is valid is the class's decision.
-- When adding an app, register its fields and examples in the standard input
-  reference and add four test classes: argv-only, environment-only, mixed
-  input, and non-standard isolation.
+- When adding an app, register its app ID, executable, standard input class/spec
+  location, and important caveats in the standard input reference. Add four
+  test classes: argv-only, environment-only, mixed input, and non-standard
+  isolation.
 - Internal background workers not called by Alfred directly are exempt; any
   other exemption must state its reason in a code comment or a design document.
 

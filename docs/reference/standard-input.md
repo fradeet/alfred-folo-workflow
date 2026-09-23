@@ -16,9 +16,7 @@ Pass one JSON object as the complete argv argument, marked as standard input by
 ```json
 {
   "kind": "standard",
-  "version": 1,
-  "view": "articles",
-  "limit": 30
+  "version": 1
 }
 ```
 
@@ -46,7 +44,7 @@ In standard input mode each field resolves by priority:
 1. the argv JSON field, when present — `false`, `0`, `""`, and `null` count as
    present and are never replaced by lower-priority values;
 2. the app's `frr<AppId><Field>` environment variable;
-3. the field's linked global configuration (only `FRR_TIMELINE_LIMIT` today);
+3. the field's explicitly linked global configuration, when one exists;
 4. the app input class default.
 
 Environment values convert strictly: booleans accept `1`, `0`, `true`,
@@ -62,127 +60,39 @@ through argv: the argument list is visible to other processes on the system.
 
 ## Apps
 
-### `timeline`
+The app module is the authoritative source for its business fields. Its
+`*StandardInput` class defines validation, normalization, required values, and
+defaults; the adjacent `*StandardSpec` declares the hardcoded environment
+variable mapping.
 
-Executable: `workflow/dist/app/timeline.js`
+| App | Executable | Input definition | Notes |
+| --- | --- | --- | --- |
+| `timeline` | `workflow/dist/app/timeline.js` | [`TimelineStandardInput` and `timelineStandardSpec`](../../src/app/timeline.ts) | Query filtering remains Alfred's responsibility. The existing workflow meaning of `frrTimelineUnreadOnly` is preserved. |
+| `subscriptions` | `workflow/dist/app/subscriptions.js` | [`SubscriptionsStandardInput` and `subscriptionsStandardSpec`](../../src/app/subscriptions.ts) | Query filtering remains Alfred's responsibility. |
+| `unread` | `workflow/dist/app/unread.js` | [`UnreadStandardInput` and `unreadStandardSpec`](../../src/app/unread.ts) | Query filtering remains Alfred's responsibility. |
+| `mark-read` | `workflow/dist/app/mark-read.js` | [`MarkReadStandardInput` and `markReadStandardSpec`](../../src/app/mark-read.ts) | Workflow selections remain complete contracts and ignore standard business variables. |
+| `mark-read-above` | `workflow/dist/app/mark-read-above.js` | [`MarkReadAboveStandardInput` and `markReadAboveStandardSpec`](../../src/app/mark-read-above.ts) | Requires an accessible cached timeline response; standard input does not create or restore the cache. |
+| `login` | `workflow/dist/app/login.js` | [`LoginStandardInput` and `loginStandardSpec`](../../src/app/login.ts) | Still requires macOS, Alfred, and `osascript`. |
 
-| JSON field | Environment variable | Type | Required | Default |
-| --- | --- | --- | --- | --- |
-| `query` | `frrTimelineQuery` | string | no | `""` |
-| `view` | `frrTimelineView` | string | no | none |
-| `limit` | `frrTimelineLimit` | positive integer | no | `FRR_TIMELINE_LIMIT`, else `30` |
-| `unreadOnly` | `frrTimelineUnreadOnly` | boolean | no | `false` |
-| `cursor` | `frrTimelineCursor` | string | no | none |
-| `feed` | `frrTimelineFeed` | string | no | none |
-| `list` | `frrTimelineList` | string | no | none |
-| `category` | `frrTimelineCategory` | string | no | none |
-
-Marker: `frrTimelineIsStandardInput`.
-
-`query` is accepted for interface completeness but, as with the workflow
-itself, result filtering is done by Alfred — an external caller gets the full
-rendered list. `frrTimelineUnreadOnly` keeps its existing Alfred meaning in
-workflow-internal calls.
-
-### `subscriptions`
-
-Executable: `workflow/dist/app/subscriptions.js`
-
-| JSON field | Environment variable | Type | Required | Default |
-| --- | --- | --- | --- | --- |
-| `query` | `frrSubscriptionsQuery` | string | no | `""` |
-| `view` | `frrSubscriptionsView` | string | no | none |
-| `category` | `frrSubscriptionsCategory` | string | no | none |
-
-Marker: `frrSubscriptionsIsStandardInput`.
-
-`query` is not applied inside the app; Alfred filters the workflow's rendered
-items, so external standard calls return the unfiltered list.
-
-### `unread`
-
-Executable: `workflow/dist/app/unread.js`
-
-| JSON field | Environment variable | Type | Required | Default |
-| --- | --- | --- | --- | --- |
-| `query` | `frrUnreadQuery` | string | no | `""` |
-| `view` | `frrUnreadView` | string | no | none |
-
-Marker: `frrUnreadIsStandardInput`.
-
-`query` behaves like `subscriptions`: filtering is Alfred's job.
-
-### `mark-read`
-
-Executable: `workflow/dist/app/mark-read.js`
-
-| JSON field | Environment variable | Type | Required | Default |
-| --- | --- | --- | --- | --- |
-| `entryId` | `frrMarkReadEntryId` | non-empty string | yes | none |
-
-Marker: `frrMarkReadIsStandardInput`.
-
-Workflow-internal calls still pass the complete `TimelineSelection`; standard
-variables never override a selection's fields.
-
-### `mark-read-above`
-
-Executable: `workflow/dist/app/mark-read-above.js`
-
-| JSON field | Environment variable | Type | Required | Default |
-| --- | --- | --- | --- | --- |
-| `entryId` | `frrMarkReadAboveEntryId` | non-empty string | yes | none |
-| `resultCacheKey` | `frrMarkReadAboveResultCacheKey` | non-empty string | yes | none |
-
-Marker: `frrMarkReadAboveIsStandardInput`.
-
-`resultCacheKey` must name a timeline response already stored by a previous
-Script Filter run in the same environment (the `frrResultCacheKey` reported by
-the timeline list). Standard input only transports the key; it
-neither creates, transfers, nor restores the cache, and a missing cache file is
-an error.
-
-### `login`
-
-Executable: `workflow/dist/app/login.js`
-
-| JSON field | Environment variable | Type | Required | Default |
-| --- | --- | --- | --- | --- |
-| `workflowBundleId` | `frrLoginWorkflowBundleId` | non-empty string | yes | none |
-
-Marker: `frrLoginIsStandardInput`.
-
-`workflowBundleId` names the Alfred workflow whose `FOLO_TOKEN`
-configuration receives the token; workflow-internal calls keep using
-`alfred_workflow_bundleid`. Login still requires macOS, a running Alfred, and
-`osascript` — standard input only changes how the bundle ID is provided.
-
-`cache-subscription-icons` is an internal background worker, not called by
-Alfred directly, and offers no standard input.
+`cache-subscription-icons` is an internal background worker and does not offer
+standard input.
 
 ## Examples
 
-argv only:
+argv form:
 
-```bash
-node workflow/dist/app/mark-read.js \
-  '{"kind":"standard","version":1,"entryId":"entry-1"}'
+```text
+node workflow/dist/app/<app>.js \
+  '{"kind":"standard","version":1,"<field>":"<value>"}'
 ```
 
-environment only:
+environment-only form:
 
-```bash
-frrMarkReadIsStandardInput=1 \
-frrMarkReadEntryId=entry-1 \
-node workflow/dist/app/mark-read.js
+```text
+frr<AppId>IsStandardInput=1 \
+frr<AppId><Field>=<value> \
+node workflow/dist/app/<app>.js
 ```
 
-mixed, with argv overriding the environment (`limit` is `20`, `view` is
-`articles`, `unreadOnly` is `false`):
-
-```bash
-frrTimelineLimit=50 \
-frrTimelineView=articles \
-node workflow/dist/app/timeline.js \
-  '{"kind":"standard","version":1,"limit":20,"unreadOnly":false}'
-```
+The two forms may be combined. An argv field always overrides its mapped
+environment variable.

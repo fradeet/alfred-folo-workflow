@@ -447,7 +447,7 @@ orchestration 函数不应自行读取标准输入环境变量。所有标准输
 3. 明确写出标准标记和业务字段的驼峰环境变量名；
 4. 使用共享能力解析和合并 standard argv/environment；
 5. 保持 Alfred 内部 contract 与标准外部输入隔离；
-6. 在 reference 文档中登记字段和调用示例；
+6. 在 reference 文档中登记标准输入 class/spec 的代码位置、关键限制和调用形式；
 7. 添加 argv-only、environment-only、混合输入和非标准输入隔离测试。
 
 只有不受 Alfred 直接调用的内部 worker，或在需求中明确说明不提供外部调用能力的内部
@@ -525,13 +525,15 @@ README 或独立 reference 文档需要列出：
 
 - 标准 JSON 格式；
 - 每个 app 的 app ID；
-- 每个字段的类型、是否必需和默认值；
-- 每个硬编码环境变量名；
+- 每个 app 的可执行入口及标准输入 class/spec 代码位置；
 - argv 优先规则；
-- 环境变量-only 和混合调用示例；
+- argv、环境变量-only 和混合调用形式；
 - `timeline`、`subscriptions`、`unread` 查询过滤由 Alfred 完成的现状；
 - `mark-read-above` 对 workflow cache 的依赖；
 - `login` 对 Alfred 和 macOS 的依赖。
+
+具体业务字段、类型、必需性、默认值和硬编码环境变量映射以各 app 文件中的标准输入
+class 与相邻 spec 为准，不在 reference 文档中重复维护字段表。
 
 ## 15. 验收标准
 
@@ -599,8 +601,8 @@ README 或独立 reference 文档需要列出：
 6. 固定合并优先级：argv、app 驼峰标准变量、明确关联的全局配置、class 默认值。
 7. 要求合并依据字段存在性，保留 `false`、`0`、空字符串和 `null`，最终由输入 class
    判断值是否合法。
-8. 要求新入口同步添加标准输入 reference 文档和四类测试：argv-only、environment-only、
-   混合输入、非标准输入隔离。
+8. 要求新入口在标准输入 reference 文档中登记 class/spec 代码位置和关键限制，并添加四类
+   测试：argv-only、environment-only、混合输入、非标准输入隔离。
 9. 规定内部 worker 可以豁免；其他豁免必须在需求或设计文档中明确说明原因。
 10. 在 **Verification** 中补充：修改或新增 app 输入时，必须验证硬编码变量表、非标准输入
     隔离和 argv 覆盖环境变量的行为。
