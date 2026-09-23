@@ -78,7 +78,7 @@ export function resolveStandardInput(
 
   const kindMarker = env[spec.kindEnv];
   const isMarker = env[spec.isStandardEnv];
-  if (kindMarker !== "standard" && isMarker !== "1") return undefined;
+  if (kindMarker === undefined && isMarker === undefined) return undefined;
   if (kindMarker !== undefined && kindMarker !== "standard") {
     throw new StandardInputError(`${spec.kindEnv} must be exactly "standard" when standard input is enabled`);
   }

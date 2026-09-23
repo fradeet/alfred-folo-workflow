@@ -141,7 +141,7 @@ Markers: `frrMarkReadAboveKind`, `frrMarkReadAboveIsStandardInput`.
 
 `resultCacheKey` must name a timeline response already stored by a previous
 Script Filter run in the same environment (the `frrResultCacheKey` reported by
-the timeline or subscription list). Standard input only transports the key; it
+the timeline list). Standard input only transports the key; it
 neither creates, transfers, nor restores the cache, and a missing cache file is
 an error.
 

@@ -103,6 +103,14 @@ test("resolveStandardInput accepts either argv marker and rejects incompatible v
 
 test("resolveStandardInput rejects conflicting environment markers", () => {
   assert.throws(
+    () => resolveStandardInput("", { frrWidgetKind: "bogus" }, widgetSpec, widgetContracts),
+    /frrWidgetKind must be exactly "standard"/,
+  );
+  assert.throws(
+    () => resolveStandardInput("", { frrWidgetIsStandardInput: "2" }, widgetSpec, widgetContracts),
+    /frrWidgetIsStandardInput must be exactly "1"/,
+  );
+  assert.throws(
     () => resolveStandardInput("", { frrWidgetKind: "bogus", frrWidgetIsStandardInput: "1" }, widgetSpec, widgetContracts),
     /frrWidgetKind must be exactly "standard"/,
   );
