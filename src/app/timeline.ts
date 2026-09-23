@@ -50,7 +50,6 @@ import { TimelineViewInput } from "../types/alfred-node-types.js";
 
 /** Standard input declaration for the timeline app. */
 const timelineStandardSpec: StandardInputSpec = {
-  appId: "timeline",
   isStandardEnv: "frrTimelineIsStandardInput",
   fields: [
     { field: "query", env: "frrTimelineQuery", type: "string" },

@@ -410,7 +410,7 @@ orchestration 函数不应自行读取标准输入环境变量。所有标准输
 
 标准输入的识别、字段来源合并和基础类型转换应由共享模块提供。每个 app 只负责声明：
 
-- 稳定 app ID；
+- 在 reference 文档中登记的稳定 app ID；
 - 该 app 的标准标记变量名；
 - JSON 字段与硬编码环境变量名的映射；
 - 字段类型和可选的全局配置 fallback；
@@ -442,7 +442,7 @@ orchestration 函数不应自行读取标准输入环境变量。所有标准输
 
 以后每新增一个由 Alfred 直接调用的 `src/app` 可执行入口，必须同时完成：
 
-1. 声明稳定 app ID；
+1. 在 reference 文档中登记稳定 app ID；
 2. 定义并导出标准输入 class；
 3. 明确写出标准标记和业务字段的驼峰环境变量名；
 4. 使用共享能力解析和合并 standard argv/environment；

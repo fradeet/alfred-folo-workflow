@@ -37,7 +37,6 @@ import { AlfredSF, AlfredSFCache, AlfredSFItem, AlfredVariables } from "../types
 
 /** Standard input declaration for the subscriptions app. */
 const subscriptionsStandardSpec: StandardInputSpec = {
-  appId: "subscriptions",
   isStandardEnv: "frrSubscriptionsIsStandardInput",
   fields: [
     { field: "query", env: "frrSubscriptionsQuery", type: "string" },

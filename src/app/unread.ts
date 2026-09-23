@@ -39,7 +39,6 @@ import { AlfredSF, AlfredSFCache, AlfredSFItem, AlfredVariables } from "../types
 
 /** Standard input declaration for the unread app. */
 const unreadStandardSpec: StandardInputSpec = {
-  appId: "unread",
   isStandardEnv: "frrUnreadIsStandardInput",
   fields: [
     { field: "query", env: "frrUnreadQuery", type: "string" },

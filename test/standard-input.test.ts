@@ -40,7 +40,6 @@ import { FoloSubscription, FoloTimelineItem } from "../src/types/folo-types.js";
 
 /** Fixture spec exercising every shared capability without referencing a real app. */
 const widgetSpec: StandardInputSpec = {
-  appId: "widget",
   isStandardEnv: "frrWidgetIsStandardInput",
   fields: [
     { field: "name", env: "frrWidgetName", type: "string" },

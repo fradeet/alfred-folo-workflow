@@ -29,7 +29,6 @@ import {
 
 /** Standard input declaration for the mark-read app. */
 const markReadStandardSpec: StandardInputSpec = {
-  appId: "mark-read",
   isStandardEnv: "frrMarkReadIsStandardInput",
   fields: [{ field: "entryId", env: "frrMarkReadEntryId", type: "string" }],
 };

@@ -30,8 +30,6 @@ export interface StandardInputFieldSpec {
 
 /** Everything the shared parser needs to know about one app's standard input. */
 export interface StandardInputSpec {
-  /** Stable app ID used for documentation, such as `mark-read`. */
-  readonly appId: string;
   /** App marker variable that must equal `1` to opt in from the environment. */
   readonly isStandardEnv: string;
   readonly fields: readonly StandardInputFieldSpec[];

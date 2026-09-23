@@ -39,7 +39,6 @@ const MARK_CONCURRENCY = 6;
 
 /** Standard input declaration for the mark-read-above app. */
 const markReadAboveStandardSpec: StandardInputSpec = {
-  appId: "mark-read-above",
   isStandardEnv: "frrMarkReadAboveIsStandardInput",
   fields: [
     { field: "entryId", env: "frrMarkReadAboveEntryId", type: "string" },

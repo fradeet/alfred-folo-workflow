@@ -90,7 +90,7 @@ Every app entry point called directly by Alfred offers the standard input
 protocol for external callers, built on the shared parser in
 `src/shared/standard-input.ts` (see `docs/reference/standard-input.md`).
 
-- A new Alfred-called app must declare a stable app ID, define and export one
+- A new Alfred-called app must document a stable app ID, define and export one
   standard input class whose constructor validates every field, and parse
   standard argv/environment through the shared module by declaring a spec; the
   shared module never branches on specific apps.

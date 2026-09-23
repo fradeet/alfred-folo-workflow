@@ -34,7 +34,6 @@ import { FoloUser } from "../types/folo-types.js";
 
 /** Standard input declaration for the login app. */
 const loginStandardSpec: StandardInputSpec = {
-  appId: "login",
   isStandardEnv: "frrLoginIsStandardInput",
   fields: [{ field: "workflowBundleId", env: "frrLoginWorkflowBundleId", type: "string" }],
 };
