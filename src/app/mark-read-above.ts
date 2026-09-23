@@ -3,12 +3,19 @@
  * "Mark read above" Run Script entry: marks the selected timeline entry and
  * every unread entry above it in the rendered list as read.
  *
- * Input (argv joined with spaces): a serialized timeline selection passed down
- * unchanged from the timeline Script Filter.
+ * Input (argv joined with spaces): either
+ * - a serialized timeline selection passed down unchanged from the timeline
+ *   Script Filter, combined with the `frrResultCacheKey` environment variable
+ *   naming the stored timeline response that produced the list the user
+ *   acted on, or
+ * - a standard input JSON object marked with `kind: "standard"` or
+ *   `isStandardInput: 1` (see docs/reference/standard-input.md).
  *
- * Environment: `frrResultCacheKey` names the stored timeline response that
- * produced the list the user acted on; the entries above the selection are read
- * from that record so the action matches the list the user saw.
+ * Standard environment variables: `frrMarkReadAboveKind` or
+ * `frrMarkReadAboveIsStandardInput` enable standard input when argv is empty;
+ * `frrMarkReadAboveEntryId` and `frrMarkReadAboveResultCacheKey` then provide
+ * the fields. The cache key must name a timeline response already stored in
+ * the calling environment; this app neither creates nor restores it.
  *
  * Output:
  * - stdout: a serialized {@link MarkReadAboveAppOutput} on success.
@@ -20,10 +27,68 @@ import { TimelineSelection } from "../contracts/timeline-selection.js";
 import { SerializedValue } from "../contracts/serialized-value.js";
 import { mapWithConcurrency } from "../shared/concurrency.js";
 import { readResponseCache } from "../shared/response-cache.js";
+import {
+  StandardInputSpec,
+  resolveStandardInput,
+  standardRequiredString,
+} from "../shared/standard-input.js";
 import { FoloTimelineResult } from "../types/folo-types.js";
 
 /** CLI mark requests run concurrently, bounded like the icon cache pool. */
 const MARK_CONCURRENCY = 6;
+
+/** Standard input declaration for the mark-read-above app. */
+const markReadAboveStandardSpec: StandardInputSpec = {
+  appId: "mark-read-above",
+  kindEnv: "frrMarkReadAboveKind",
+  isStandardEnv: "frrMarkReadAboveIsStandardInput",
+  fields: [
+    { field: "entryId", env: "frrMarkReadAboveEntryId", type: "string" },
+    { field: "resultCacheKey", env: "frrMarkReadAboveResultCacheKey", type: "string" },
+  ],
+};
+
+/** Standard input for external callers; the constructor validates every field. */
+export class MarkReadAboveStandardInput {
+  readonly entryId: string;
+  readonly resultCacheKey: string;
+
+  constructor(options: { entryId?: unknown; resultCacheKey?: unknown } = {}) {
+    this.entryId = standardRequiredString(options.entryId, "entryId");
+    this.resultCacheKey = standardRequiredString(options.resultCacheKey, "resultCacheKey");
+  }
+
+  static from(value: unknown): MarkReadAboveStandardInput {
+    if (typeof value !== "object" || value === null || Array.isArray(value)) {
+      throw new TypeError("Mark-read-above standard input must be an object");
+    }
+    return new MarkReadAboveStandardInput(value);
+  }
+}
+
+/**
+ * Parses argv, activating the standard environment variables only when marked.
+ * The legacy path converts the timeline selection plus `frrResultCacheKey`
+ * into the same validated input class.
+ */
+export function parseMarkReadAboveAppInput(
+  value: string,
+  env: NodeJS.ProcessEnv = process.env,
+): MarkReadAboveStandardInput {
+  const standard = resolveStandardInput(
+    value,
+    env,
+    markReadAboveStandardSpec,
+    (data) => data.kind === "timeline-entry",
+  );
+  if (standard !== undefined) return MarkReadAboveStandardInput.from(standard);
+  const selection = TimelineSelection.parse(value);
+  const resultCacheKey = env.frrResultCacheKey ?? "";
+  if (!resultCacheKey.trim()) {
+    throw new Error("frrResultCacheKey is required; it names the stored timeline response for this list");
+  }
+  return new MarkReadAboveStandardInput({ entryId: selection.entryId, resultCacheKey });
+}
 
 export class MarkReadAboveAppOutput extends SerializedValue {
   readonly kind = "mark-read-above-result";
@@ -67,10 +132,9 @@ export function unreadEntryIdsAbove(result: FoloTimelineResult, anchorEntryId: s
  * successfully marked IDs in list order.
  */
 export async function markReadAbove(
-  input: TimelineSelection,
-  cacheKey: string,
+  input: MarkReadAboveStandardInput,
 ): Promise<MarkReadAboveAppOutput> {
-  const timeline = FoloTimelineResult.from(readResponseCache(cacheKey));
+  const timeline = FoloTimelineResult.from(readResponseCache(input.resultCacheKey));
   const entryIds = unreadEntryIdsAbove(timeline, input.entryId);
 
   const failures: string[] = [];
@@ -96,8 +160,7 @@ export async function markReadAbove(
 
 async function main(): Promise<void> {
   try {
-    const input = TimelineSelection.parse(process.argv.slice(2).join(" "));
-    const output = await markReadAbove(input, process.env.frrResultCacheKey ?? "");
+    const output = await markReadAbove(parseMarkReadAboveAppInput(process.argv.slice(2).join(" ")));
     process.stdout.write(output.serialize());
   } catch (error: unknown) {
     console.error(error instanceof Error ? error.message : String(error));
