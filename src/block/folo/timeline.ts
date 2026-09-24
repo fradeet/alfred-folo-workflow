@@ -1,4 +1,3 @@
-import { isRecord } from "../../shared/guards.js";
 import { FoloTimelineResult } from "../../types/folo-types.js";
 import { runFolo } from "./client.js";
 
@@ -27,31 +26,6 @@ export class TimelineBlockInput {
     this.feed = optionalString(options.feed);
     this.list = optionalString(options.list);
     this.category = optionalString(options.category);
-  }
-
-  static from(value: unknown): TimelineBlockInput {
-    if (!isRecord(value)) throw new TypeError("Timeline block input must be an object");
-    return new TimelineBlockInput({
-      view: optionalString(value.view),
-      limit: positiveInteger(value.limit),
-      unreadOnly: value.unreadOnly === true,
-      cursor: optionalString(value.cursor),
-      feed: optionalString(value.feed),
-      list: optionalString(value.list),
-      category: optionalString(value.category),
-    });
-  }
-
-  withDefaultLimit(defaultLimit: number): TimelineBlockInput {
-    return this.limit === undefined
-      ? new TimelineBlockInput({ ...this, limit: defaultLimit })
-      : this;
-  }
-
-  withDefaultUnreadOnly(unreadOnly: boolean): TimelineBlockInput {
-    return this.unreadOnly !== true && unreadOnly
-      ? new TimelineBlockInput({ ...this, unreadOnly: true })
-      : this;
   }
 
   toArguments(): string[] {

@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { TimelineDirectInput, parseTimelineAppInput } from "../src/app/timeline.js";
-import { TimelineBlockInput } from "../src/block/folo/timeline.js";
+import { TimelineStandardInput, parseTimelineAppInput } from "../src/app/timeline.js";
 import { SubscriptionSelection } from "../src/contracts/subscription-selection.js";
 import { TimelineSelection } from "../src/contracts/timeline-selection.js";
 import { UnreadSelection } from "../src/contracts/unread-selection.js";
@@ -63,15 +62,7 @@ test("timeline selections rehydrate nested Folo classes", () => {
   assert.ok(parsed.subscription instanceof FoloTimelineSubscription);
 });
 
-test("timeline app input rehydrates its block input", () => {
-  const value = new TimelineDirectInput("", new TimelineBlockInput({ list: "list-1" }));
-  const parsed = parseTimelineAppInput(value.serialize());
-  assert.ok(parsed instanceof TimelineDirectInput);
-  if (!(parsed instanceof TimelineDirectInput)) throw new TypeError("Expected direct timeline input");
-  assert.ok(parsed.request instanceof TimelineBlockInput);
-  assert.equal(parsed.request.list, "list-1");
-  assert.throws(
-    () => parseTimelineAppInput('{"kind":"timeline-input","request":"invalid"}'),
-    /block input/i,
-  );
+test("timeline app treats retired internal input JSON as a plain query", () => {
+  const value = '{"kind":"timeline-input","request":{"list":"list-1"}}';
+  assert.deepEqual(parseTimelineAppInput(value, {}), new TimelineStandardInput({ query: value }));
 });

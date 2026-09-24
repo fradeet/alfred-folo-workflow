@@ -7,18 +7,15 @@ import {
 } from "../src/shared/standard-input.js";
 import {
   parseSubscriptionsAppInput,
-  SubscriptionsQueryInput,
   SubscriptionsStandardInput,
 } from "../src/app/subscriptions.js";
 import {
   parseUnreadAppInput,
-  UnreadQueryInput,
   UnreadStandardInput,
 } from "../src/app/unread.js";
 import {
   parseTimelineAppInput,
   resolveTimelineInput,
-  TimelineDirectInput,
   TimelineStandardInput,
 } from "../src/app/timeline.js";
 import {
@@ -181,7 +178,7 @@ test("timeline standard input parses from argv alone", () => {
     category: "tech",
   }));
   assert.deepEqual(
-    resolveTimelineInput(input, { frrTimelineUnreadOnly: "1" }).request.toArguments(),
+    resolveTimelineInput(input, { frrTimelineUnreadOnly: "1" }).toBlockInput().toArguments(),
     ["timeline", "--limit", "20", "--view", "articles", "--feed", "feed-1", "--list", "list-1", "--category", "tech", "--cursor", "c1", "--unread-only"],
   );
 });
@@ -232,7 +229,7 @@ test("timeline standard input keeps explicit falsy values over environment varia
   assert.equal(input.cursor, undefined);
   assert.equal(input.feed, undefined);
   const resolved = resolveTimelineInput(input, { frrTimelineUnreadOnly: "1" });
-  assert.equal(resolved.request.unreadOnly, undefined);
+  assert.equal(resolved.toBlockInput().unreadOnly, undefined);
   assert.equal(resolved.query, "");
 });
 
@@ -259,20 +256,22 @@ test("timeline non-standard inputs ignore the standard environment variables", (
     lists: { id: "list-1" },
   }));
   assert.ok(parseTimelineAppInput(subscription.serialize(), hostileEnv) instanceof SubscriptionSelection);
-  assert.deepEqual(parseTimelineAppInput("Alfred Blog", hostileEnv), new TimelineDirectInput("Alfred Blog"));
+  assert.deepEqual(parseTimelineAppInput("Alfred Blog", hostileEnv), new TimelineStandardInput({ query: "Alfred Blog" }));
   const viewInput = parseTimelineAppInput('{"kind":"view-input","view":"articles"}', hostileEnv);
   const resolved = resolveTimelineInput(viewInput, hostileEnv);
-  assert.equal(resolved.request.view, "articles");
-  assert.equal(resolved.request.limit, 30);
-  assert.equal(resolved.request.feed, undefined);
+  assert.equal(resolved.view, "articles");
+  assert.equal(resolved.limit, 30);
+  assert.equal(resolved.feed, undefined);
   assert.equal(resolved.query, "");
 });
 
 test("timeline keeps the lenient legacy limit behavior for non-standard calls", () => {
-  const direct = resolveTimelineInput(new TimelineDirectInput(""), { FRR_TIMELINE_LIMIT: "not-a-number" });
-  assert.equal(direct.request.limit, 30);
-  const configured = resolveTimelineInput(new TimelineDirectInput(""), { FRR_TIMELINE_LIMIT: "50" });
-  assert.equal(configured.request.limit, 50);
+  const direct = parseTimelineAppInput("", { FRR_TIMELINE_LIMIT: "not-a-number" });
+  assert.ok(direct instanceof TimelineStandardInput);
+  assert.equal(direct.limit, 30);
+  const configured = parseTimelineAppInput("", { FRR_TIMELINE_LIMIT: "50" });
+  assert.ok(configured instanceof TimelineStandardInput);
+  assert.equal(configured.limit, 50);
 });
 
 test("timeline standard input rejects malformed values", () => {
@@ -311,9 +310,9 @@ test("subscriptions standard input parses from argv, environment, and both combi
 test("subscriptions non-standard and malformed inputs keep their behavior", () => {
   assert.deepEqual(
     parseSubscriptionsAppInput("tech", { frrSubscriptionsIsStandardInput: "1", frrSubscriptionsQuery: "from-env" }),
-    new SubscriptionsQueryInput("tech"),
+    new SubscriptionsStandardInput({ query: "tech" }),
   );
-  assert.deepEqual(parseSubscriptionsAppInput("", { frrSubscriptionsQuery: "from-env" }), new SubscriptionsQueryInput(""));
+  assert.deepEqual(parseSubscriptionsAppInput("", { frrSubscriptionsQuery: "from-env" }), new SubscriptionsStandardInput());
   assert.deepEqual(
     parseSubscriptionsAppInput('{"kind":"standard","query":"","category":null}', {
       frrSubscriptionsQuery: "from-env",
@@ -341,7 +340,7 @@ test("unread standard input parses from argv, environment, and both combined", (
 test("unread non-standard and malformed inputs keep their behavior", () => {
   assert.deepEqual(
     parseUnreadAppInput("tech", { frrUnreadIsStandardInput: "1", frrUnreadQuery: "from-env" }),
-    new UnreadQueryInput("tech"),
+    new UnreadStandardInput({ query: "tech" }),
   );
   assert.deepEqual(
     parseUnreadAppInput('{"kind":"standard","query":"","view":null}', {

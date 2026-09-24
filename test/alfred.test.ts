@@ -33,7 +33,7 @@ import {
 } from "../src/types/folo-types.js";
 import { readToken, setWorkflowToken } from "../src/app/login.js";
 import { MarkReadAboveAppOutput, unreadEntryIdsAbove } from "../src/app/mark-read-above.js";
-import { resolveTimelineInput, TimelineAppOutput, TimelineDirectInput, parseTimelineAppInput } from "../src/app/timeline.js";
+import { resolveTimelineInput, TimelineAppOutput, TimelineStandardInput, parseTimelineAppInput } from "../src/app/timeline.js";
 import { parseFoloShareUrl } from "../src/shared/folo-url.js";
 import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/shared/icon-cache.js";
 import { SubscriptionSelection } from "../src/contracts/subscription-selection.js";
@@ -167,18 +167,10 @@ test("unreadItems maps unread sources", () => {
   assert.equal(items[0]?.text?.largetype, "Example Feed");
 });
 
-test("timeline app input restores its nested block input and treats other JSON as a query", () => {
-  const serialized = new TimelineDirectInput(
-    "",
-    new TimelineBlockInput({ feed: "41470869403557888", unreadOnly: true }),
-  ).serialize();
-  assert.deepEqual(parseTimelineAppInput(serialized), new TimelineDirectInput(
-    "",
-    new TimelineBlockInput({ feed: "41470869403557888", unreadOnly: true }),
-  ));
-  assert.deepEqual(parseTimelineAppInput("Alfred Blog"), new TimelineDirectInput("Alfred Blog"));
-  assert.deepEqual(parseTimelineAppInput("{oops"), new TimelineDirectInput("{oops"));
-  assert.deepEqual(parseTimelineAppInput('{"feed":"feed-1"}'), new TimelineDirectInput('{"feed":"feed-1"}'));
+test("timeline app input treats plain and unrecognized JSON as queries", () => {
+  assert.deepEqual(parseTimelineAppInput("Alfred Blog", {}), new TimelineStandardInput({ query: "Alfred Blog" }));
+  assert.deepEqual(parseTimelineAppInput("{oops", {}), new TimelineStandardInput({ query: "{oops" }));
+  assert.deepEqual(parseTimelineAppInput('{"feed":"feed-1"}', {}), new TimelineStandardInput({ query: '{"feed":"feed-1"}' }));
 });
 
 test("parseFoloShareUrl parses feed and list share URLs", () => {
@@ -193,20 +185,20 @@ test("parseFoloShareUrl parses feed and list share URLs", () => {
   assert.equal(parseFoloShareUrl("Alfred Blog"), undefined);
 });
 
-test("timeline app input converts share URLs into typed direct input", () => {
+test("timeline app input converts share URLs into validated input", () => {
   const feed = parseTimelineAppInput("https://app.folo.is/share/feeds/41470869403557888");
   const list = parseTimelineAppInput("https://app.folo.is/share/lists/162747179238521856");
   const query = parseTimelineAppInput("https://example.com/feed");
-  assert.ok(feed instanceof TimelineDirectInput);
-  assert.ok(list instanceof TimelineDirectInput);
-  assert.ok(query instanceof TimelineDirectInput);
-  if (!(feed instanceof TimelineDirectInput)
-    || !(list instanceof TimelineDirectInput)
-    || !(query instanceof TimelineDirectInput)) {
-    throw new TypeError("Expected direct timeline inputs");
+  assert.ok(feed instanceof TimelineStandardInput);
+  assert.ok(list instanceof TimelineStandardInput);
+  assert.ok(query instanceof TimelineStandardInput);
+  if (!(feed instanceof TimelineStandardInput)
+    || !(list instanceof TimelineStandardInput)
+    || !(query instanceof TimelineStandardInput)) {
+    throw new TypeError("Expected timeline inputs");
   }
-  assert.equal(feed.request.feed, "41470869403557888");
-  assert.equal(list.request.list, "162747179238521856");
+  assert.equal(feed.feed, "41470869403557888");
+  assert.equal(list.list, "162747179238521856");
   assert.equal(query.query, "https://example.com/feed");
 });
 
@@ -230,22 +222,6 @@ test("TimelineBlockInput maps its fields onto Folo CLI flags", () => {
     "list-1",
   ]);
 
-  assert.deepEqual(new TimelineBlockInput().withDefaultLimit(50).toArguments(), ["timeline", "--limit", "50"]);
-
-  assert.deepEqual(new TimelineBlockInput().withDefaultUnreadOnly(true).toArguments(), [
-    "timeline",
-    "--limit",
-    "30",
-    "--unread-only",
-  ]);
-  assert.deepEqual(
-    new TimelineBlockInput({ unreadOnly: true }).withDefaultUnreadOnly(false).toArguments(),
-    ["timeline", "--limit", "30", "--unread-only"],
-  );
-  assert.deepEqual(
-    new TimelineBlockInput().withDefaultUnreadOnly(false).toArguments(),
-    ["timeline", "--limit", "30"],
-  );
 });
 
 test("timeline app input preserves subscription and unread selections", () => {
@@ -266,13 +242,10 @@ test("timeline app input resolves an Alfred node config into a view request", ()
   const parsed = parseTimelineAppInput('{"kind": "view-input", "view": "articles"}');
   assert.ok(parsed instanceof TimelineViewInput);
   assert.deepEqual(parsed, new TimelineViewInput("articles"));
-  assert.deepEqual(parseTimelineAppInput('{"view": "articles"}', {}), new TimelineDirectInput(
-    '{"view": "articles"}',
-  ));
-  assert.deepEqual(resolveTimelineInput(parsed, {}), new TimelineDirectInput(
-    "",
-    new TimelineBlockInput({ view: "articles", limit: 30 }),
-  ));
+  assert.deepEqual(parseTimelineAppInput('{"view": "articles"}', {}), new TimelineStandardInput({
+    query: '{"view": "articles"}',
+  }));
+  assert.deepEqual(resolveTimelineInput(parsed, {}), new TimelineStandardInput({ view: "articles", limit: 30 }));
 });
 
 test("FoloSubscriptionsResult keeps feed, list, and inbox subscriptions", () => {

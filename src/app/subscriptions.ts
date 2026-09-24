@@ -45,16 +45,7 @@ const subscriptionsStandardSpec: StandardInputSpec = {
   ],
 };
 
-/** Legacy Alfred input: a filter query applied by Alfred, not by this app. */
-export class SubscriptionsQueryInput {
-  constructor(readonly query: string) {}
-
-  static parse(value: string): SubscriptionsQueryInput {
-    return new SubscriptionsQueryInput(value.trim());
-  }
-}
-
-/** Standard input for external callers; the constructor validates every field. */
+/** Validated input for standard calls and Alfred's plain filter query. */
 export class SubscriptionsStandardInput {
   readonly query: string;
   readonly view?: string;
@@ -74,16 +65,14 @@ export class SubscriptionsStandardInput {
   }
 }
 
-export type SubscriptionsAppInput = SubscriptionsQueryInput | SubscriptionsStandardInput;
-
 /** Parses argv, activating the standard environment variables only when marked. */
 export function parseSubscriptionsAppInput(
   value: string,
   env: NodeJS.ProcessEnv = process.env,
-): SubscriptionsAppInput {
+): SubscriptionsStandardInput {
   const standard = resolveStandardInput(value, env, subscriptionsStandardSpec, () => false);
   if (standard !== undefined) return SubscriptionsStandardInput.from(standard);
-  return SubscriptionsQueryInput.parse(value);
+  return new SubscriptionsStandardInput({ query: value });
 }
 
 export class SubscriptionsAppOutput extends AlfredSF {
@@ -92,10 +81,8 @@ export class SubscriptionsAppOutput extends AlfredSF {
   }
 }
 
-export async function subscriptions(input: SubscriptionsAppInput): Promise<SubscriptionsAppOutput> {
-  const blockInput = input instanceof SubscriptionsStandardInput
-    ? new SubscriptionsBlockInput(input.view, input.category)
-    : new SubscriptionsBlockInput();
+export async function subscriptions(input: SubscriptionsStandardInput): Promise<SubscriptionsAppOutput> {
+  const blockInput = new SubscriptionsBlockInput(input.view, input.category);
   const data = getSubscriptions(blockInput);
   const sources = data.subscriptions.flatMap((item) => item.lists ?? item.feeds ?? []);
   const iconFor = await cacheIcons(sources);
