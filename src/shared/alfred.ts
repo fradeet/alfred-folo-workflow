@@ -28,7 +28,12 @@ const text = (value: unknown, fallback = ""): string => {
 const optionalString = (value: unknown): string | undefined =>
   typeof value === "string" && value ? value : undefined;
 
-export function timelineItems(data: FoloTimelineResult, iconFor?: IconResolver): AlfredSFItem[] {
+export function timelineItems(
+  data: FoloTimelineResult,
+  iconFor?: IconResolver,
+  nextPageArg = "",
+  latestPageArg?: string,
+): AlfredSFItem[] {
   return data.entries.flatMap((item): AlfredSFItem[] => {
     const entry = item.entries;
     const feed = item.feeds;
@@ -45,6 +50,17 @@ export function timelineItems(data: FoloTimelineResult, iconFor?: IconResolver):
       action: url,
       subtitle,
       arg: entryOutput.serialize(),
+      mods: {
+        alt: nextPageArg
+          ? { arg: nextPageArg }
+          : { arg: "", subtitle: "No next page", valid: false },
+        "cmd+shift": nextPageArg
+          ? { arg: nextPageArg }
+          : { arg: "", subtitle: "No next page", valid: false },
+        "shift+alt": latestPageArg
+          ? { arg: latestPageArg }
+          : { arg: "", subtitle: "Already at the top", valid: false },
+      },
       icon: icon(feed, iconFor),
       uid: entryId,
       quicklookurl: url,

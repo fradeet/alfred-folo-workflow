@@ -23,8 +23,8 @@
  */
 import { pathToFileURL } from "node:url";
 import { MarkReadBlockInput, markEntryRead } from "../block/folo/mark-read.js";
+import { MarkReadAboveAppOutput } from "../contracts/mark-read-above-result.js";
 import { TimelineSelection } from "../contracts/timeline-selection.js";
-import { SerializedValue } from "../contracts/serialized-value.js";
 import { mapWithConcurrency } from "../shared/concurrency.js";
 import { readResponseCache } from "../shared/response-cache.js";
 import {
@@ -88,24 +88,7 @@ export function parseMarkReadAboveAppInput(
   return new MarkReadAboveStandardInput({ entryId: selection.entryId, resultCacheKey });
 }
 
-export class MarkReadAboveAppOutput extends SerializedValue {
-  readonly kind = "mark-read-above-result";
-
-  constructor(
-    readonly anchorEntryId: string,
-    readonly markedEntryIds: string[],
-  ) {
-    super();
-  }
-
-  toJSON(): Record<string, unknown> {
-    return {
-      kind: this.kind,
-      anchorEntryId: this.anchorEntryId,
-      markedEntryIds: this.markedEntryIds,
-    };
-  }
-}
+export { MarkReadAboveAppOutput } from "../contracts/mark-read-above-result.js";
 
 /**
  * Returns the IDs of the anchor entry and the unread entries above it, in list

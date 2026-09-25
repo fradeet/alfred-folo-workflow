@@ -16,6 +16,7 @@ for (const entryPoint of [
   "app/login.js",
   "app/mark-read.js",
   "app/mark-read-above.js",
+  "app/mark-page-read.js",
   "app/subscriptions.js",
   "app/timeline.js",
   "app/unread.js",

@@ -20,7 +20,12 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
 - Timeline results pass a complete `TimelineSelection` JSON value downstream. Both the URL
   action and mark-read action parse the same value without intermediate field extraction.
   Hold Command and press Enter to mark the selected entry and every unread entry above it
-  in the rendered list as read.
+  in the rendered list as read. Hold Option and press Enter to load the next page; Option
+  shows “No next page” when there is no next cursor. Hold Shift and Option, then press
+  Enter to return to the latest entries; it shows “Already at the top” when the
+  current page has no cursor. In the unread timeline, Command and Shift
+  send the next-page input to Timeline and the current cache key to Mark Page as Read
+  on parallel workflow branches.
 - Every Folo CLI request made by a Script Filter stores its response as a JSON file in
   Alfred's workflow cache (`folo-requests/`). The filename is a stable hash of the CLI
   arguments, and each Script Filter response reports it in the `frrResultCacheKey`
@@ -90,6 +95,15 @@ frrResultCacheKey="$RESULT_CACHE_KEY" \
   node workflow/dist/app/mark-read-above.js "$TIMELINE_SELECTION_JSON"
 ```
 
+The `Mark Page as Read` action takes the timeline response cache filename as its
+argument. It marks every unread entry in that cached page and emits the same result
+shape as `mark-read-above`, using the page's last entry as `anchorEntryId`. Its Alfred
+action node is ready for a cache-key argument and has no incoming connection yet:
+
+```bash
+node workflow/dist/app/mark-page-read.js "$RESULT_CACHE_KEY"
+```
+
 The timeline app accepts Folo share URLs, serialized resource selections, and Alfred
 node configuration JSON directly:
 
@@ -100,7 +114,7 @@ node workflow/dist/app/timeline.js '{"view": "articles"}'
 
 ## Standard input
 
-Every app entry point Alfred calls directly (`timeline`, `subscriptions`,
+The public app entry points Alfred calls directly (`timeline`, `subscriptions`,
 `unread`, `mark-read`, `mark-read-above`, `login`) also accepts a uniform
 external calling convention: one JSON object as argv marked with
 `kind: "standard"`, the app's `frr<AppId>…` environment variables, or both —

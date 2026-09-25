@@ -33,6 +33,7 @@ import {
 } from "../src/types/folo-types.js";
 import { readToken, setWorkflowToken } from "../src/app/login.js";
 import { MarkReadAboveAppOutput, unreadEntryIdsAbove } from "../src/app/mark-read-above.js";
+import { MarkPageReadAppOutput, MarkPageReadInput, unreadPageEntryIds } from "../src/app/mark-page-read.js";
 import { resolveTimelineInput, TimelineAppOutput, TimelineStandardInput, parseTimelineAppInput } from "../src/app/timeline.js";
 import { parseFoloShareUrl } from "../src/shared/folo-url.js";
 import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/shared/icon-cache.js";
@@ -331,6 +332,48 @@ test("timelineItems maps Folo entry envelopes", () => {
   assert.equal(items[0]?.variables, undefined);
   assert.equal(items[0]?.text?.largetype, "Hello & Folo");
   assert.equal(items[0]?.match, undefined);
+  assert.deepEqual(items[0]?.mods?.alt, { arg: "", subtitle: "No next page", valid: false });
+  assert.deepEqual(items[0]?.mods?.["cmd+shift"], { arg: "", subtitle: "No next page", valid: false });
+  assert.deepEqual(items[0]?.mods?.["shift+alt"], { arg: "", subtitle: "Already at the top", valid: false });
+});
+
+test("timeline Option action carries the complete next-page standard input", () => {
+  const current = new TimelineStandardInput({
+    query: "Ada",
+    view: "articles",
+    limit: 20,
+    unreadOnly: true,
+    cursor: "old-cursor",
+    feed: "feed-1",
+    category: "Tech",
+  });
+  const nextArg = current.withCursor("next-cursor").serialize();
+  const latestArg = current.withCursor("").serialize();
+  const data = FoloTimelineResult.from({
+    entries: [{ entries: { id: "entry-1", title: "Post" }, feeds: { title: "Feed" } }],
+    nextCursor: "next-cursor",
+    hasNext: true,
+  });
+  const item = timelineItems(data, undefined, nextArg, latestArg)[0];
+  assert.deepEqual(item?.mods?.alt, { arg: nextArg });
+  assert.deepEqual(item?.mods?.["cmd+shift"], { arg: nextArg });
+  assert.deepEqual(item?.mods?.["shift+alt"], { arg: latestArg });
+  assert.deepEqual(parseTimelineAppInput(nextArg, { frrTimelineUnreadOnly: "0" }), current.withCursor("next-cursor"));
+  assert.equal(JSON.parse(latestArg).cursor, "");
+  const latestInput = parseTimelineAppInput(latestArg, { frrTimelineCursor: "stale-cursor" });
+  assert.deepEqual(latestInput, current.withCursor(""));
+  assert.ok(latestInput instanceof TimelineStandardInput);
+  assert.equal(latestInput.toBlockInput().toArguments().includes("--cursor"), false);
+  const lastPage = timelineItems(FoloTimelineResult.from({
+    entries: [{ entries: { id: "entry-2" }, feeds: {} }],
+    nextCursor: null,
+    hasNext: false,
+  }), undefined, "", latestArg)[0];
+  assert.deepEqual(lastPage?.mods?.alt, { arg: "", subtitle: "No next page", valid: false });
+  assert.deepEqual(lastPage?.mods?.["cmd+shift"], { arg: "", subtitle: "No next page", valid: false });
+  assert.deepEqual(lastPage?.mods?.["shift+alt"], { arg: latestArg });
+  assert.equal(new TimelineStandardInput({ cursor: "" }).cursor, undefined);
+  assert.equal(TimelineSelection.parse(String(item?.arg)).entryId, "entry-1");
 });
 
 test("MarkReadBlockInput rejects a missing entry ID before calling Folo", () => {
@@ -362,6 +405,26 @@ test("MarkReadAboveAppOutput reports the anchor and every marked entry", () => {
     kind: "mark-read-above-result",
     anchorEntryId: "entry-4",
     markedEntryIds: ["entry-2", "entry-4"],
+  });
+});
+
+test("mark-page-read selects every unread entry and uses the mark-above result shape", () => {
+  assert.equal(new MarkPageReadInput(" timeline-abc.json ").resultCacheKey, "timeline-abc.json");
+  assert.throws(() => new MarkPageReadInput(" "), /Response cache key is required/);
+  const page = FoloTimelineResult.from({
+    entries: [
+      { read: false, entries: { id: "entry-1" }, feeds: {} },
+      { read: true, entries: { id: "entry-2" }, feeds: {} },
+      { read: false, entries: { id: "entry-3" }, feeds: {} },
+    ],
+    nextCursor: null,
+    hasNext: false,
+  });
+  assert.deepEqual(unreadPageEntryIds(page), ["entry-1", "entry-3"]);
+  assert.deepEqual(JSON.parse(new MarkPageReadAppOutput("entry-3", ["entry-1", "entry-3"]).serialize()), {
+    kind: "mark-read-above-result",
+    anchorEntryId: "entry-3",
+    markedEntryIds: ["entry-1", "entry-3"],
   });
 });
 

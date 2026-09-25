@@ -1,8 +1,9 @@
 # Standard input reference
 
-Every app entry point under `workflow/dist/app/` that Alfred calls directly also
-accepts a uniform "standard input" for external callers. Standard input is the
-name of this project's app input protocol; it is not Unix stdin.
+The public app entry points under `workflow/dist/app/` accept a uniform
+"standard input" for external callers. The internal `mark-page-read` action is
+excluded because its sole input is a workflow cache filename passed through argv.
+Standard input is the name of this project's app input protocol; it is not Unix stdin.
 
 The protocol leaves the workflow's internal behavior untouched: Alfred nodes
 keep passing complete serialized contracts through argv, and those calls never
