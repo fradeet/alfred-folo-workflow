@@ -23,16 +23,16 @@
  * Output:
  * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` carries a
  *   serialized timeline selection and its `action` exposes the entry URL to
- *   Universal Actions. Shift uses a standard timeline input for the next page,
- *   or an empty, disabled argument at the end; an empty result yields a non-valid
- *   placeholder item. The response's `frrResultCacheKey` variable names the cached
- *   Folo CLI response file backing the list. `frrTimelineRequest` carries the
- *   complete normalized query as a serialized standard input, and
+ *   Universal Actions. Option uses a standard timeline input for the next page,
+ *   or an empty, disabled argument at the end; an empty result yields a placeholder
+ *   item. The response's `frrResultCacheKey` variable names the cached Folo CLI
+ *   response file backing the list. Standard timeline variables carry the
+ *   complete normalized request for cache refresh, and
  *   `skipknowledge` keeps Alfred from reordering the timeline's own entry order.
  * - On failure: an error item is emitted and the exit code is 1.
  */
 import { pathToFileURL } from "node:url";
-import { emptyItem, errorItem, timelineItems } from "../shared/alfred.js";
+import { errorItem, timelineItems } from "../shared/alfred.js";
 import { cacheIcons } from "../shared/icon-cache.js";
 import { parseFoloShareUrl } from "../shared/folo-url.js";
 import { responseCacheFilename, writeResponseCache } from "../shared/response-cache.js";
@@ -142,13 +142,13 @@ export class TimelineStandardInput {
       kind: "standard",
       version: STANDARD_INPUT_VERSION,
       query: this.query,
-      view: this.view,
+      view: this.view ?? "",
       limit: this.limit,
       unreadOnly: this.unreadOnly,
       cursor: this.cursor ?? "",
-      feed: this.feed,
-      list: this.list,
-      category: this.category,
+      feed: this.feed ?? "",
+      list: this.list ?? "",
+      category: this.category ?? "",
     };
   }
 
@@ -221,14 +221,18 @@ export class TimelineAppOutput extends AlfredSF {
   }
 }
 
-/** Session variables describing the response and the query that produced it. */
-export function timelineResultVariables(
-  input: TimelineStandardInput,
-  request: TimelineBlockInput,
-): AlfredVariables {
+/** Response identity and complete standard input for downstream actions. */
+export function timelineResultVariables(input: TimelineStandardInput, request: TimelineBlockInput): AlfredVariables {
   return {
     frrResultCacheKey: responseCacheFilename(request.toArguments()),
-    frrTimelineRequest: input.serialize(),
+    frrTimelineQuery: input.query,
+    frrTimelineView: input.view ?? "",
+    frrTimelineLimit: String(input.limit),
+    frrTimelineUnreadOnly: input.unreadOnly ? "1" : "0",
+    frrTimelineCursor: input.cursor ?? "",
+    frrTimelineFeed: input.feed ?? "",
+    frrTimelineList: input.list ?? "",
+    frrTimelineCategory: input.category ?? "",
   };
 }
 
@@ -261,7 +265,11 @@ export async function timeline(
         ? "This view has no entries"
         : "Try another query";
   const output = new TimelineAppOutput(
-    items.length ? items : [emptyItem("No Folo entries", emptySubtitle)],
+    items.length ? items : [new AlfredSFItem("No Folo entries", {
+      subtitle: emptySubtitle,
+      valid: false,
+      mods: { shift: { valid: true, subtitle: "Refresh this timeline page" } },
+    })],
     false,
     timelineResultVariables(standardInput, request),
   );
@@ -272,8 +280,10 @@ export async function timeline(
 async function main(): Promise<void> {
   try {
     const argument = process.argv.slice(2).join(" ");
-    if (process.env.frrTimelineForceRefresh === "1" && !argument.trim()) {
-      throw new TypeError("A timeline request is required to refresh the cache");
+    if (process.env.frrTimelineForceRefresh === "1"
+      && !argument.trim()
+      && process.env.frrTimelineIsStandardInput !== "1") {
+      throw new TypeError("Standard timeline variables are required to refresh the cache");
     }
     const input = parseTimelineAppInput(argument);
     process.stdout.write(JSON.stringify(await timeline(input, {

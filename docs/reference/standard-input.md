@@ -5,9 +5,11 @@ The public app entry points under `workflow/dist/app/` accept a uniform
 excluded because its sole input is a workflow cache filename passed through argv.
 Standard input is the name of this project's app input protocol; it is not Unix stdin.
 
-The protocol leaves the workflow's internal behavior untouched: Alfred nodes
-keep passing complete serialized contracts through argv, and those calls never
-read the standard input variables described here.
+Alfred nodes normally pass complete serialized contracts through argv. The
+timeline refresh branch uses the protocol's environment form: the Script
+Filter exports the complete `frrTimeline…` field set, and the downstream script
+sets `frrTimelineIsStandardInput=1` before calling timeline without argv. Entry
+selections continue to use their original serialized contracts.
 
 ## JSON format
 

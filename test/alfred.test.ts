@@ -253,7 +253,7 @@ test("timeline app input resolves an Alfred node config into a view request", ()
   assert.deepEqual(resolveTimelineInput(parsed, {}), new TimelineStandardInput({ view: "articles", limit: 30 }));
 });
 
-test("timeline result variables preserve the normalized query for downstream actions", () => {
+test("timeline result variables provide complete environment standard input", () => {
   const input = resolveTimelineInput(new TimelineViewInput("articles"), {
     FRR_TIMELINE_LIMIT: "20",
     frrTimelineUnreadOnly: "1",
@@ -264,10 +264,24 @@ test("timeline result variables preserve the normalized query for downstream act
   const serializedVariables = JSON.parse(JSON.stringify(output)).variables as Record<string, string>;
 
   assert.equal(serializedVariables.frrResultCacheKey, variables.frrResultCacheKey);
-  assert.deepEqual(
-    parseTimelineAppInput(serializedVariables.frrTimelineRequest, { frrTimelineUnreadOnly: "0" }),
-    input,
-  );
+  assert.deepEqual(serializedVariables, {
+    frrResultCacheKey: responseCacheFilename(request.toArguments()),
+    frrTimelineQuery: "",
+    frrTimelineView: "articles",
+    frrTimelineLimit: "20",
+    frrTimelineUnreadOnly: "1",
+    frrTimelineCursor: "",
+    frrTimelineFeed: "",
+    frrTimelineList: "",
+    frrTimelineCategory: "",
+  });
+  assert.deepEqual(parseTimelineAppInput("", { ...serializedVariables, frrTimelineIsStandardInput: "1" }), input);
+  assert.deepEqual(parseTimelineAppInput(input.serialize(), {
+    frrTimelineFeed: "stale-feed",
+    frrTimelineList: "stale-list",
+    frrTimelineCursor: "stale-cursor",
+    frrTimelineUnreadOnly: "0",
+  }), input);
   assert.deepEqual(request.toArguments(), ["timeline", "--limit", "20", "--view", "articles", "--unread-only"]);
 });
 
@@ -285,6 +299,11 @@ test("timeline app renders a fresh query cache and restores the action response 
     writeTimelineCache(input.serialize(), data);
     const output = await timeline(input);
     assert.equal(output.items[0]?.title, "TypeScript news");
+    assert.equal(output.items[0]?.mods?.shift, undefined);
+    assert.deepEqual(parseTimelineAppInput("", {
+      ...output.variables as NodeJS.ProcessEnv,
+      frrTimelineIsStandardInput: "1",
+    }), input);
     assert.equal(output.variables?.frrResultCacheKey, responseCacheFilename(input.toBlockInput().toArguments()));
     assert.deepEqual(FoloTimelineResult.from(readResponseCache(String(output.variables?.frrResultCacheKey))), data);
     assert.deepEqual(lastTimelineQuery(), input);
@@ -313,6 +332,12 @@ test("timeline app renders a fresh query cache and restores the action response 
     assert.equal(refreshedOutput.items[0]?.title, "Fresh TypeScript news");
     assert.deepEqual(readTimelineCache(input.serialize())?.data, refreshed);
     assert.equal((await timeline(input)).items[0]?.title, "Fresh TypeScript news");
+
+    const emptyInput = new TimelineStandardInput({ query: "nothing", unreadOnly: false });
+    writeTimelineCache(emptyInput.serialize(), FoloTimelineResult.from({ entries: [], nextCursor: null, hasNext: false }));
+    const emptyOutput = await timeline(emptyInput);
+    assert.equal(emptyOutput.items[0]?.valid, false);
+    assert.deepEqual(emptyOutput.items[0]?.mods?.shift, { valid: true, subtitle: "Refresh this timeline page" });
   } finally {
     if (previous === undefined) delete process.env.alfred_workflow_cache;
     else process.env.alfred_workflow_cache = previous;
@@ -320,17 +345,18 @@ test("timeline app renders a fresh query cache and restores the action response 
   }
 });
 
-test("refresh adapter forwards the complete timeline request and forces a live fetch", async () => {
+test("refresh adapter uses standard input variables without an argv request", async () => {
   const directory = await mkdtemp(join(tmpdir(), "alfred-folo-refresh-adapter-"));
   try {
-    const request = new TimelineStandardInput({
+    const input = new TimelineStandardInput({
       query: 'TypeScript "news"', unreadOnly: false, cursor: "page-2", feed: "feed-1",
-    }).serialize();
-    const captured = join(directory, "captured-request");
+    });
+    const variables = timelineResultVariables(input, input.toBlockInput()) as Record<string, string>;
+    const captured = join(directory, "captured-input");
     const flag = join(directory, "captured-flag");
     await writeFile(join(directory, "node"), [
       "#!/bin/sh",
-      'printf "%s" "$2" > "$REFRESH_CAPTURE_PATH"',
+      'printf "%s\n" "$#" "$frrTimelineIsStandardInput" "$frrTimelineQuery" "$frrTimelineView" "$frrTimelineLimit" "$frrTimelineUnreadOnly" "$frrTimelineCursor" "$frrTimelineFeed" "$frrTimelineList" "$frrTimelineCategory" > "$REFRESH_CAPTURE_PATH"',
       'printf "%s" "$frrTimelineForceRefresh" > "$REFRESH_FLAG_PATH"',
       "",
     ].join("\n"), { mode: 0o755 });
@@ -338,13 +364,16 @@ test("refresh adapter forwards the complete timeline request and forces a live f
       cwd: directory,
       env: {
         ...process.env,
+        ...variables,
+        frrTimelineIsStandardInput: "0",
         PATH: `${directory}:${process.env.PATH ?? ""}`,
-        frrTimelineRequest: request,
         REFRESH_CAPTURE_PATH: captured,
         REFRESH_FLAG_PATH: flag,
       },
     });
-    assert.equal(await readFile(captured, "utf8"), request);
+    assert.deepEqual((await readFile(captured, "utf8")).split("\n").slice(0, -1), [
+      "1", "1", input.query, "", "30", "0", "page-2", "feed-1", "", "",
+    ]);
     assert.equal(await readFile(flag, "utf8"), "1");
   } finally {
     await rm(directory, { recursive: true, force: true });
@@ -457,6 +486,7 @@ test("timeline Option action carries the complete next-page standard input", () 
     hasNext: true,
   });
   const item = timelineItems(data, undefined, nextArg, latestArg)[0];
+  assert.equal(item?.mods?.shift, undefined);
   assert.deepEqual(item?.mods?.alt, { arg: nextArg });
   assert.deepEqual(item?.mods?.["cmd+shift"], { arg: nextArg });
   assert.deepEqual(item?.mods?.["shift+alt"], { arg: latestArg });

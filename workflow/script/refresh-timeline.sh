@@ -1,4 +1,4 @@
 #!/bin/sh
 
-# Alfred supplies the complete timeline request as a Script Filter variable.
-exec env frrTimelineForceRefresh=1 node "$(dirname "$0")/../dist/app/timeline.js" "$frrTimelineRequest" >/dev/null
+# Alfred passes standard timeline input fields as workflow environment variables.
+exec env frrTimelineIsStandardInput=1 frrTimelineForceRefresh=1 node "$(dirname "$0")/../dist/app/timeline.js" >/dev/null
