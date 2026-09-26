@@ -14,6 +14,7 @@ execFileSync("tsc", ["-p", join(projectDirectory, "tsconfig.build.json")], {
 
 for (const entryPoint of [
   "app/login.js",
+  "app/last-timeline-query.js",
   "app/mark-read.js",
   "app/mark-read-above.js",
   "app/mark-page-read.js",

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -34,12 +35,15 @@ import {
 import { readToken, setWorkflowToken } from "../src/app/login.js";
 import { MarkReadAboveAppOutput, unreadEntryIdsAbove } from "../src/app/mark-read-above.js";
 import { MarkPageReadAppOutput, MarkPageReadInput, unreadPageEntryIds } from "../src/app/mark-page-read.js";
-import { resolveTimelineInput, timelineResultVariables, TimelineAppOutput, TimelineStandardInput, parseTimelineAppInput } from "../src/app/timeline.js";
+import { resolveTimelineInput, timeline, timelineResultVariables, TimelineAppOutput, TimelineStandardInput, parseTimelineAppInput } from "../src/app/timeline.js";
 import { parseFoloShareUrl } from "../src/shared/folo-url.js";
 import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/shared/icon-cache.js";
 import { SubscriptionSelection } from "../src/contracts/subscription-selection.js";
 import { TimelineSelection } from "../src/contracts/timeline-selection.js";
 import { UnreadSelection } from "../src/contracts/unread-selection.js";
+import { readResponseCache, responseCacheFilename } from "../src/shared/response-cache.js";
+import { readTimelineCache, writeTimelineCache } from "../src/shared/timeline-cache.js";
+import { lastTimelineQuery } from "../src/app/last-timeline-query.js";
 
 test("feedIconUrl prefers an official image and falls back to Folo's domain icon", () => {
   assert.equal(feedIconUrl({
@@ -265,6 +269,86 @@ test("timeline result variables preserve the normalized query for downstream act
     input,
   );
   assert.deepEqual(request.toArguments(), ["timeline", "--limit", "20", "--view", "articles", "--unread-only"]);
+});
+
+test("timeline app renders a fresh query cache and restores the action response cache", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "alfred-folo-timeline-app-"));
+  const previous = process.env.alfred_workflow_cache;
+  process.env.alfred_workflow_cache = directory;
+  try {
+    const input = new TimelineStandardInput({ query: "TypeScript", unreadOnly: true });
+    const data = FoloTimelineResult.from({
+      entries: [{ entries: { id: "entry-1", title: "TypeScript news" }, feeds: { id: "feed-1" }, read: false }],
+      nextCursor: null,
+      hasNext: false,
+    });
+    writeTimelineCache(input.serialize(), data);
+    const output = await timeline(input);
+    assert.equal(output.items[0]?.title, "TypeScript news");
+    assert.equal(output.variables?.frrResultCacheKey, responseCacheFilename(input.toBlockInput().toArguments()));
+    assert.deepEqual(FoloTimelineResult.from(readResponseCache(String(output.variables?.frrResultCacheKey))), data);
+    assert.deepEqual(lastTimelineQuery(), input);
+    assert.deepEqual(parseTimelineAppInput(lastTimelineQuery().serialize(), {}), input);
+    const scriptOutput = execFileSync(process.execPath, ["--import", "tsx", "src/app/last-timeline-query.ts"], {
+      encoding: "utf8",
+      env: process.env,
+    });
+    assert.deepEqual(parseTimelineAppInput(scriptOutput.trim(), {}), input);
+
+    let requests = 0;
+    const refreshed = FoloTimelineResult.from({
+      entries: [{ entries: { id: "entry-2", title: "Fresh TypeScript news" }, feeds: { id: "feed-1" }, read: false }],
+      nextCursor: null,
+      hasNext: false,
+    });
+    const refreshedOutput = await timeline(input, {
+      refresh: true,
+      fetchTimeline: (request) => {
+        assert.deepEqual(request.toArguments(), input.toBlockInput().toArguments());
+        requests += 1;
+        return refreshed;
+      },
+    });
+    assert.equal(requests, 1);
+    assert.equal(refreshedOutput.items[0]?.title, "Fresh TypeScript news");
+    assert.deepEqual(readTimelineCache(input.serialize())?.data, refreshed);
+    assert.equal((await timeline(input)).items[0]?.title, "Fresh TypeScript news");
+  } finally {
+    if (previous === undefined) delete process.env.alfred_workflow_cache;
+    else process.env.alfred_workflow_cache = previous;
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test("refresh adapter forwards the complete timeline request and forces a live fetch", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "alfred-folo-refresh-adapter-"));
+  try {
+    const request = new TimelineStandardInput({
+      query: 'TypeScript "news"', unreadOnly: false, cursor: "page-2", feed: "feed-1",
+    }).serialize();
+    const captured = join(directory, "captured-request");
+    const flag = join(directory, "captured-flag");
+    await writeFile(join(directory, "node"), [
+      "#!/bin/sh",
+      'printf "%s" "$2" > "$REFRESH_CAPTURE_PATH"',
+      'printf "%s" "$frrTimelineForceRefresh" > "$REFRESH_FLAG_PATH"',
+      "",
+    ].join("\n"), { mode: 0o755 });
+    execFileSync(join(process.cwd(), "workflow/script/refresh-timeline.sh"), {
+      cwd: directory,
+      env: {
+        ...process.env,
+        PATH: `${directory}:${process.env.PATH ?? ""}`,
+        frrTimelineRequest: request,
+        REFRESH_CAPTURE_PATH: captured,
+        REFRESH_FLAG_PATH: flag,
+      },
+    });
+    assert.equal(await readFile(captured, "utf8"), request);
+    assert.equal(await readFile(flag, "utf8"), "1");
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
 });
 
 test("FoloSubscriptionsResult keeps feed, list, and inbox subscriptions", () => {

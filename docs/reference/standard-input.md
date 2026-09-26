@@ -74,6 +74,7 @@ variable mapping.
 | `mark-read` | `workflow/dist/app/mark-read.js` | [`MarkReadStandardInput` and `markReadStandardSpec`](../../src/app/mark-read.ts) | Workflow selections remain complete contracts and ignore standard business variables. |
 | `mark-read-above` | `workflow/dist/app/mark-read-above.js` | [`MarkReadAboveStandardInput` and `markReadAboveStandardSpec`](../../src/app/mark-read-above.ts) | Requires an accessible cached timeline response; standard input does not create or restore the cache. |
 | `login` | `workflow/dist/app/login.js` | [`LoginStandardInput` and `loginStandardSpec`](../../src/app/login.ts) | Still requires macOS, Alfred, and `osascript`. |
+| `last-timeline-query` | `workflow/dist/app/last-timeline-query.js` | No input ([source](../../src/app/last-timeline-query.ts)) | Terminal helper that prints a saved `TimelineStandardInput` for direct use as timeline argv; it does not consume standard input. |
 
 `cache-subscription-icons` is an internal background worker and does not offer
 standard input.

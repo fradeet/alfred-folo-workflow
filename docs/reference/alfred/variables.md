@@ -30,3 +30,22 @@ including defaults resolved from workflow configuration. Downstream actions can 
 value unchanged as one argument to the timeline app or another app that accepts this
 contract. The variable describes the current page, so its `cursor` is the cursor used to
 fetch that page.
+
+The timeline app also keeps a separate timestamped result in
+`folo-requests/timeline/`, keyed by the complete normalized request including the
+local `query`. It reads that result for up to 60 seconds, then refreshes it from
+Folo. `frrResultCacheKey` continues to identify the response used by downstream
+mark-read actions.
+
+The last successful timeline input is also saved in
+`folo-requests/timeline/last-timeline-request.json`. Run
+`workflow/dist/app/last-timeline-query.js` to print its serialized standard input;
+the output can be passed unchanged as one argument to `workflow/dist/app/timeline.js`.
+This saved input does not expire with the 60-second result cache.
+
+The timeline Script Filter's Shift and Enter connection runs
+`workflow/script/refresh-timeline.sh`. That adapter forwards `frrTimelineRequest`
+unchanged as one argv value to the timeline app and sets
+`frrTimelineForceRefresh=1`. The app skips its 60-second read cache, fetches the
+same page from Folo, and replaces the cached response. The selected item's
+`arg` is a `TimelineSelection` for entry actions and is not the refresh input.

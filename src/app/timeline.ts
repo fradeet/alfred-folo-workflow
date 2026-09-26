@@ -17,6 +17,8 @@
  * to the request. In standard input mode both variables are merged by priority
  * behind argv and the `frrTimelineLimit` / `frrTimelineUnreadOnly` standard
  * variables, and invalid values are reported instead of ignored.
+ * `frrTimelineForceRefresh=1` bypasses the result cache for this invocation
+ * and updates the cache after a live CLI request.
  *
  * Output:
  * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` carries a
@@ -33,7 +35,8 @@ import { pathToFileURL } from "node:url";
 import { emptyItem, errorItem, timelineItems } from "../shared/alfred.js";
 import { cacheIcons } from "../shared/icon-cache.js";
 import { parseFoloShareUrl } from "../shared/folo-url.js";
-import { responseCacheFilename } from "../shared/response-cache.js";
+import { responseCacheFilename, writeResponseCache } from "../shared/response-cache.js";
+import { readTimelineCache, writeLastTimelineRequest, writeTimelineCache } from "../shared/timeline-cache.js";
 import {
   STANDARD_INPUT_VERSION,
   StandardInputSpec,
@@ -49,6 +52,7 @@ import { SubscriptionSelection } from "../contracts/subscription-selection.js";
 import { UnreadSelection } from "../contracts/unread-selection.js";
 import { AlfredSF, AlfredSFCache, AlfredSFItem, AlfredVariables } from "../types/alfred-types.js";
 import { TimelineViewInput } from "../types/alfred-node-types.js";
+import { FoloTimelineResult } from "../types/folo-types.js";
 
 /** Standard input declaration for the timeline app. */
 const timelineStandardSpec: StandardInputSpec = {
@@ -228,10 +232,21 @@ export function timelineResultVariables(
   };
 }
 
-export async function timeline(input: TimelineAppInput): Promise<TimelineAppOutput> {
+export async function timeline(
+  input: TimelineAppInput,
+  options: { refresh?: boolean; fetchTimeline?: (request: TimelineBlockInput) => FoloTimelineResult } = {},
+): Promise<TimelineAppOutput> {
   const standardInput = resolveTimelineInput(input);
   const request = standardInput.toBlockInput();
-  const data = getTimeline(request);
+  const cacheRequest = standardInput.serialize();
+  const cached = options.refresh ? undefined : readTimelineCache(cacheRequest);
+  const data = cached?.data ?? (options.fetchTimeline ?? getTimeline)(request);
+  if (cached) {
+    // Downstream mark-read actions still need the response cache for the shown list.
+    writeResponseCache(request.toArguments(), data);
+  } else {
+    writeTimelineCache(cacheRequest, data);
+  }
   const iconFor = await cacheIcons(data.entries.map((item) => item.feeds));
   const nextPageArg = data.hasNext && data.nextCursor
     ? standardInput.withCursor(data.nextCursor).serialize()
@@ -245,17 +260,25 @@ export async function timeline(input: TimelineAppInput): Promise<TimelineAppOutp
       : request.view
         ? "This view has no entries"
         : "Try another query";
-  return new TimelineAppOutput(
+  const output = new TimelineAppOutput(
     items.length ? items : [emptyItem("No Folo entries", emptySubtitle)],
     false,
     timelineResultVariables(standardInput, request),
   );
+  writeLastTimelineRequest(cacheRequest);
+  return output;
 }
 
 async function main(): Promise<void> {
   try {
-    const input = parseTimelineAppInput(process.argv.slice(2).join(" "));
-    process.stdout.write(JSON.stringify(await timeline(input)));
+    const argument = process.argv.slice(2).join(" ");
+    if (process.env.frrTimelineForceRefresh === "1" && !argument.trim()) {
+      throw new TypeError("A timeline request is required to refresh the cache");
+    }
+    const input = parseTimelineAppInput(argument);
+    process.stdout.write(JSON.stringify(await timeline(input, {
+      refresh: process.env.frrTimelineForceRefresh === "1",
+    })));
   } catch (error: unknown) {
     console.error(error);
     process.stdout.write(JSON.stringify(new TimelineAppOutput([errorItem(error)], false)));

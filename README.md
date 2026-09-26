@@ -26,6 +26,10 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
   current page has no cursor. In the unread timeline, Command and Shift
   send the next-page input to Timeline and the current cache key to Mark Page as Read
   on parallel workflow branches.
+- Shift and Enter on a timeline item refreshes the current page's cache from Folo.
+  The downstream Run Script receives the complete `frrTimelineRequest` variable
+  from the Script Filter, so it keeps the current keyword, unread setting, source,
+  and cursor without extracting fields from the selected entry.
 - Every Folo CLI request made by a Script Filter stores its response as a JSON file in
   Alfred's workflow cache (`folo-requests/`). The filename is a stable hash of the CLI
   arguments, and each Script Filter response reports it in the `frrResultCacheKey`
@@ -34,6 +38,25 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
 - Timeline results also report `frrTimelineRequest`, a serialized standard input with
   the complete normalized query for the current page. Downstream actions can forward
   this value unchanged when they need to reload the same page.
+- Timeline reads reuse a timestamped cache for 60 seconds. The cache key includes the
+  full normalized request, so a different keyword, unread setting, view, source, or
+  page has its own entry. Expired or invalid entries are fetched again from Folo.
+- After a successful timeline query, the workflow remembers its complete input. To
+  run that same query again, pass the helper script's output directly to timeline:
+
+  ```bash
+  node workflow/dist/app/timeline.js "$(node workflow/dist/app/last-timeline-query.js)"
+  ```
+
+  The helper returns an error when there is no previous query. The saved input remains
+  available after the 60-second result cache expires.
+
+To refresh the current timeline page from a downstream Run Script, pass its
+`frrTimelineRequest` variable to the provided adapter:
+
+```bash
+frrTimelineRequest="$TIMELINE_REQUEST_JSON" workflow/script/refresh-timeline.sh
+```
 - Feed and list icons use Folo's `image` field. Feeds without one fall back to
   `icons.folo.is/<site-domain>` and are cached by feed/list ID in Alfred's
   workflow cache. Folo fallback icons follow the service's 30-day cache policy;

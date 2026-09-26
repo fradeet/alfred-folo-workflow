@@ -25,7 +25,7 @@ export class FoloMedia {
     return new FoloMedia(
       string(data.url) ?? "",
       mediaType(data.type),
-      string(data.preview_image_url),
+      string(data.preview_image_url) ?? string(data.previewImageUrl),
       number(data.width),
       number(data.height),
       string(data.blurhash),
@@ -45,9 +45,9 @@ export class FoloAttachment {
     const data = record(value);
     this.url = string(data.url) ?? "";
     this.title = string(data.title);
-    this.durationInSeconds = numberLike(data.duration_in_seconds);
-    this.mimeType = string(data.mime_type);
-    this.sizeInBytes = numberLike(data.size_in_bytes);
+    this.durationInSeconds = numberLike(data.duration_in_seconds) ?? numberLike(data.durationInSeconds);
+    this.mimeType = string(data.mime_type) ?? string(data.mimeType);
+    this.sizeInBytes = numberLike(data.size_in_bytes) ?? numberLike(data.sizeInBytes);
   }
 }
 
