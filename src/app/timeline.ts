@@ -24,8 +24,9 @@
  *   Universal Actions. Shift uses a standard timeline input for the next page,
  *   or an empty, disabled argument at the end; an empty result yields a non-valid
  *   placeholder item. The response's `frrResultCacheKey` variable names the cached
- *   Folo CLI response file backing the list, and `skipknowledge` keeps Alfred from
- *   reordering the timeline's own entry order.
+ *   Folo CLI response file backing the list. `frrTimelineRequest` carries the
+ *   complete normalized query as a serialized standard input, and
+ *   `skipknowledge` keeps Alfred from reordering the timeline's own entry order.
  * - On failure: an error item is emitted and the exit code is 1.
  */
 import { pathToFileURL } from "node:url";
@@ -216,6 +217,17 @@ export class TimelineAppOutput extends AlfredSF {
   }
 }
 
+/** Session variables describing the response and the query that produced it. */
+export function timelineResultVariables(
+  input: TimelineStandardInput,
+  request: TimelineBlockInput,
+): AlfredVariables {
+  return {
+    frrResultCacheKey: responseCacheFilename(request.toArguments()),
+    frrTimelineRequest: input.serialize(),
+  };
+}
+
 export async function timeline(input: TimelineAppInput): Promise<TimelineAppOutput> {
   const standardInput = resolveTimelineInput(input);
   const request = standardInput.toBlockInput();
@@ -236,7 +248,7 @@ export async function timeline(input: TimelineAppInput): Promise<TimelineAppOutp
   return new TimelineAppOutput(
     items.length ? items : [emptyItem("No Folo entries", emptySubtitle)],
     false,
-    { frrResultCacheKey: responseCacheFilename(request.toArguments()) },
+    timelineResultVariables(standardInput, request),
   );
 }
 

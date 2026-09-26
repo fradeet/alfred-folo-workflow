@@ -20,3 +20,13 @@ The mark-read-above action reads the stored timeline response through this varia
 locates the selected entry in the recorded list and marks every unread entry above it,
 so the action follows the list the user saw instead of a freshly fetched timeline. A
 fresh CLI call overwrites the file of the same request.
+
+## `frrTimelineRequest`
+
+The timeline Script Filter reports its complete normalized query as a serialized
+`TimelineStandardInput` JSON value in this session variable. It includes the effective
+`query`, `view`, `limit`, `unreadOnly`, `cursor`, `feed`, `list`, and `category` values,
+including defaults resolved from workflow configuration. Downstream actions can pass the
+value unchanged as one argument to the timeline app or another app that accepts this
+contract. The variable describes the current page, so its `cursor` is the cursor used to
+fetch that page.

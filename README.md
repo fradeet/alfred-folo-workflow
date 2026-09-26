@@ -31,6 +31,9 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
   arguments, and each Script Filter response reports it in the `frrResultCacheKey`
   workflow variable. The mark-read-above action reads the stored timeline response named
   by this variable so it marks exactly the entries the user saw above the selection.
+- Timeline results also report `frrTimelineRequest`, a serialized standard input with
+  the complete normalized query for the current page. Downstream actions can forward
+  this value unchanged when they need to reload the same page.
 - Feed and list icons use Folo's `image` field. Feeds without one fall back to
   `icons.folo.is/<site-domain>` and are cached by feed/list ID in Alfred's
   workflow cache. Folo fallback icons follow the service's 30-day cache policy;

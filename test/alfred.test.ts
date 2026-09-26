@@ -34,7 +34,7 @@ import {
 import { readToken, setWorkflowToken } from "../src/app/login.js";
 import { MarkReadAboveAppOutput, unreadEntryIdsAbove } from "../src/app/mark-read-above.js";
 import { MarkPageReadAppOutput, MarkPageReadInput, unreadPageEntryIds } from "../src/app/mark-page-read.js";
-import { resolveTimelineInput, TimelineAppOutput, TimelineStandardInput, parseTimelineAppInput } from "../src/app/timeline.js";
+import { resolveTimelineInput, timelineResultVariables, TimelineAppOutput, TimelineStandardInput, parseTimelineAppInput } from "../src/app/timeline.js";
 import { parseFoloShareUrl } from "../src/shared/folo-url.js";
 import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/shared/icon-cache.js";
 import { SubscriptionSelection } from "../src/contracts/subscription-selection.js";
@@ -247,6 +247,24 @@ test("timeline app input resolves an Alfred node config into a view request", ()
     query: '{"view": "articles"}',
   }));
   assert.deepEqual(resolveTimelineInput(parsed, {}), new TimelineStandardInput({ view: "articles", limit: 30 }));
+});
+
+test("timeline result variables preserve the normalized query for downstream actions", () => {
+  const input = resolveTimelineInput(new TimelineViewInput("articles"), {
+    FRR_TIMELINE_LIMIT: "20",
+    frrTimelineUnreadOnly: "1",
+  });
+  const request = input.toBlockInput();
+  const variables = timelineResultVariables(input, request);
+  const output = new TimelineAppOutput([new AlfredSFItem("Post")], false, variables);
+  const serializedVariables = JSON.parse(JSON.stringify(output)).variables as Record<string, string>;
+
+  assert.equal(serializedVariables.frrResultCacheKey, variables.frrResultCacheKey);
+  assert.deepEqual(
+    parseTimelineAppInput(serializedVariables.frrTimelineRequest, { frrTimelineUnreadOnly: "0" }),
+    input,
+  );
+  assert.deepEqual(request.toArguments(), ["timeline", "--limit", "20", "--view", "articles", "--unread-only"]);
 });
 
 test("FoloSubscriptionsResult keeps feed, list, and inbox subscriptions", () => {
