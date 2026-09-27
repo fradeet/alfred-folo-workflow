@@ -5,7 +5,7 @@ import { FoloTimelineResult } from "../types/folo-types.js";
 import { isRecord } from "./guards.js";
 import { responseCacheDirectory } from "./response-cache.js";
 
-export const TIMELINE_CACHE_MAX_AGE_MS = 60_000;
+export const TIMELINE_CACHE_MAX_AGE_MS = 300_000;
 const LAST_REQUEST_FILENAME = "last-timeline-request.json";
 
 export interface TimelineCacheOptions {
