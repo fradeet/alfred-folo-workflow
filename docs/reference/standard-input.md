@@ -73,6 +73,8 @@ variable mapping.
 | `subscriptions` | `workflow/dist/app/subscriptions.js` | [`SubscriptionsStandardInput` and `subscriptionsStandardSpec`](../../src/app/subscriptions.ts) | Query filtering remains Alfred's responsibility. |
 | `unread` | `workflow/dist/app/unread.js` | [`UnreadStandardInput` and `unreadStandardSpec`](../../src/app/unread.ts) | Query filtering remains Alfred's responsibility. |
 | `mark-read` | `workflow/dist/app/mark-read.js` | [`MarkReadStandardInput` and `markReadStandardSpec`](../../src/app/mark-read.ts) | Workflow selections remain complete contracts and ignore standard business variables. |
+| `mark-all-read` | `workflow/dist/app/mark-all-read.js` | [`MarkAllReadStandardInput` and `markAllReadStandardSpec`](../../src/app/mark-all-read.ts) | Accepts subscription and unread selections, or standard `feed`, `list`, and `view` fields. With no fields, marks all entries read. |
+| `timeline-mark-all-read` | `workflow/dist/app/timeline-mark-all-read.js` | [`TimelineMarkAllReadInput` and `timelineMarkAllReadStandardSpec`](../../src/app/timeline-mark-all-read.ts) | Its adapter enables standard input using timeline's existing `frrTimelineFeed`, `frrTimelineList`, `frrTimelineView`, and `frrTimelineCategory` variables. Rejects category scopes because the CLI cannot target them. |
 | `login` | `workflow/dist/app/login.js` | [`LoginStandardInput` and `loginStandardSpec`](../../src/app/login.ts) | Still requires macOS, Alfred, and `osascript`. |
 | `last-timeline-query` | `workflow/dist/app/last-timeline-query.js` | No input ([source](../../src/app/last-timeline-query.ts)) | Terminal helper that prints a saved `TimelineStandardInput` for direct use as timeline argv; it does not consume standard input. |
 

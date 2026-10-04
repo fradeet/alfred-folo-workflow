@@ -33,6 +33,9 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
 - Timeline output includes all eight standard input field variables. These preserve
   the current keyword, view, limit, unread setting, cursor, feed, list, and category
   for downstream actions. The refresh script enables standard input mode.
+- `workflow/script/timeline-mark-all-read.sh` enables standard input for the
+  timeline bulk-read action using timeline's existing scope variables. A category
+  timeline is rejected because the CLI cannot mark only that category read.
 - Timeline reads reuse a timestamped cache for 5 minutes. The cache key includes the
   full normalized request, so a different keyword, unread setting, view, source, or
   page has its own entry. Expired or invalid entries are fetched again from Folo.
@@ -107,6 +110,15 @@ serialized mark-read result after a successful update:
 node workflow/dist/app/mark-read.js "$TIMELINE_SELECTION_JSON"
 ```
 
+The bulk-read action accepts a complete subscription or unread selection, or
+standard input for a feed, list, view, or all entries:
+
+```bash
+node workflow/dist/app/mark-all-read.js "$SUBSCRIPTION_SELECTION_JSON"
+node workflow/dist/app/mark-all-read.js '{"kind":"standard","view":"articles"}'
+node workflow/dist/app/timeline-mark-all-read.js '{"kind":"standard","feed":"feed-1"}'
+```
+
 The timeline app accepts Folo share URLs, serialized resource selections, and Alfred
 node configuration JSON directly:
 
@@ -118,7 +130,7 @@ node workflow/dist/app/timeline.js '{"view": "articles"}'
 ## Standard input
 
 The public app entry points Alfred calls directly (`timeline`, `subscriptions`,
-`unread`, `mark-read`, `login`) also accepts a uniform
+`unread`, `mark-read`, `mark-all-read`, `timeline-mark-all-read`, `login`) also accept a uniform
 external calling convention: one JSON object as argv marked with
 `kind: "standard"`, the app's `frr<AppId>…` environment variables, or both —
 argv always wins:

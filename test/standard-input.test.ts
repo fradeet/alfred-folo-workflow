@@ -413,3 +413,44 @@ test("login standard input rejects missing or malformed workflow bundle IDs", ()
   assert.throws(() => parseLoginAppInput('{"kind":"standard","workflowBundleId":7}', {}), /workflowBundleId.*non-empty string/i);
   assert.throws(() => parseLoginAppInput('{"kind":"standard","bundleId":"x"}', {}), /Unknown standard input field/);
 });
+
+// Mark-all-read actions accept workflow selections and the public standard protocol.
+test("mark-all-read standard input merges argv and environment and isolates selections", async () => {
+  const { parseMarkAllReadAppInput, MarkAllReadStandardInput } = await import("../src/app/mark-all-read.js");
+  const { UnreadSelection } = await import("../src/contracts/unread-selection.js");
+  const { FoloUnreadItem } = await import("../src/types/folo-types.js");
+  const env = { frrMarkAllReadIsStandardInput: "1", frrMarkAllReadFeed: "env-feed", frrMarkAllReadView: "articles" };
+  assert.deepEqual(parseMarkAllReadAppInput('{"kind":"standard","feed":"argv-feed"}', env),
+    new MarkAllReadStandardInput({ feed: "argv-feed", view: "articles" }));
+  assert.deepEqual(parseMarkAllReadAppInput("", env),
+    new MarkAllReadStandardInput({ feed: "env-feed", view: "articles" }));
+  const selection = new SubscriptionSelection(new FoloSubscription({ feedId: "selected", feeds: { id: "selected" } }));
+  assert.deepEqual(parseMarkAllReadAppInput(selection.serialize(), env), selection);
+  const unread = new UnreadSelection(new FoloUnreadItem({ sourceType: "list", sourceId: "list-1" }));
+  assert.deepEqual(parseMarkAllReadAppInput(unread.serialize(), env), unread);
+  assert.throws(() => parseMarkAllReadAppInput('{"kind":"standard","feed":"a","list":"b"}', {}), /only one/i);
+});
+
+test("timeline mark-all-read accepts its scope contract and standard input", async () => {
+  const { TimelineMarkAllReadInput, parseTimelineMarkAllReadInput, timelineMarkAllRead } = await import("../src/app/timeline-mark-all-read.js");
+  const env = { frrTimelineMarkAllReadIsStandardInput: "1", frrTimelineFeed: "env-feed", frrTimelineView: "social" };
+  assert.deepEqual(parseTimelineMarkAllReadInput("", env), new TimelineMarkAllReadInput({ feed: "env-feed", view: "social" }));
+  assert.deepEqual(parseTimelineMarkAllReadInput('{"kind":"standard","feed":"argv-feed"}', env),
+    new TimelineMarkAllReadInput({ feed: "argv-feed", view: "social" }));
+  const contract = new TimelineMarkAllReadInput({ list: "list-1", view: "articles" });
+  assert.deepEqual(parseTimelineMarkAllReadInput(contract.serialize(), env), contract);
+  assert.throws(() => timelineMarkAllRead(new TimelineMarkAllReadInput({ category: "Tech" })), /cannot target.*category/i);
+});
+
+test("mark-all-read maps selected sources and timeline scope to CLI arguments", async () => {
+  const { markAllReadBlockInput } = await import("../src/app/mark-all-read.js");
+  const { TimelineMarkAllReadInput } = await import("../src/app/timeline-mark-all-read.js");
+  const { UnreadSelection } = await import("../src/contracts/unread-selection.js");
+  const { FoloUnreadItem } = await import("../src/types/folo-types.js");
+  const subscription = new SubscriptionSelection(new FoloSubscription({ feedId: "feed-1", feeds: { id: "feed-1" } }));
+  assert.deepEqual(markAllReadBlockInput(subscription).toArguments(), ["entry", "mark-all-read", "--feed", "feed-1"]);
+  const unread = new UnreadSelection(new FoloUnreadItem({ sourceType: "list", sourceId: "list-1" }));
+  assert.deepEqual(markAllReadBlockInput(unread).toArguments(), ["entry", "mark-all-read", "--list", "list-1"]);
+  assert.deepEqual(markAllReadBlockInput(new TimelineMarkAllReadInput({ view: "articles" })).toArguments(),
+    ["entry", "mark-all-read", "--view", "articles"]);
+});
