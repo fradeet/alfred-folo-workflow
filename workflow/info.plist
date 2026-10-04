@@ -252,6 +252,16 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>66EA0DBB-F55D-42DC-AEF8-CD31FA1844D8</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Mark all read</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
 		</array>
 		<key>8AAD2354-8F94-409A-A7FF-D0E8D77D9781</key>
 		<array>
@@ -418,6 +428,16 @@
 				<string>View all entry (include already read)</string>
 				<key>vitoclose</key>
 				<true/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>22035A2E-6574-4D37-98F6-BB61471BB4D6</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Mark all read</string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>DAF6B6DB-684C-47F8-A2E4-D368CAFB141F</key>
@@ -1314,6 +1334,29 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>script/timeline-mark-all-read.sh</string>
+				<key>type</key>
+				<integer>8</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>66EA0DBB-F55D-42DC-AEF8-CD31FA1844D8</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>externaltriggerid</key>
 				<string>timeline</string>
 				<key>passinputasargument</key>
@@ -1406,6 +1449,29 @@
 			<integer>1</integer>
 		</dict>
 		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>dist/app/mark-all-read.js</string>
+				<key>type</key>
+				<integer>8</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>22035A2E-6574-4D37-98F6-BB61471BB4D6</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
 			<key>type</key>
 			<string>alfred.workflow.utility.junction</string>
 			<key>uid</key>
@@ -1479,6 +1545,15 @@
 			<key>ypos</key>
 			<real>325</real>
 		</dict>
+		<key>22035A2E-6574-4D37-98F6-BB61471BB4D6</key>
+		<dict>
+			<key>note</key>
+			<string>Mark all read</string>
+			<key>xpos</key>
+			<real>480</real>
+			<key>ypos</key>
+			<real>630</real>
+		</dict>
 		<key>283BC7D9-A99A-450B-ACEB-8E90B50EE6D8</key>
 		<dict>
 			<key>xpos</key>
@@ -1544,6 +1619,15 @@
 			<real>700</real>
 			<key>ypos</key>
 			<real>25</real>
+		</dict>
+		<key>66EA0DBB-F55D-42DC-AEF8-CD31FA1844D8</key>
+		<dict>
+			<key>note</key>
+			<string>Mark all read</string>
+			<key>xpos</key>
+			<real>2010</real>
+			<key>ypos</key>
+			<real>625</real>
 		</dict>
 		<key>732E7981-CDB0-4461-AE79-60BD5D1F84D0</key>
 		<dict>
