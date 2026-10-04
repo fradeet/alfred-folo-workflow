@@ -23,10 +23,6 @@ import {
   MarkReadStandardInput,
 } from "../src/app/mark-read.js";
 import {
-  parseMarkReadAboveAppInput,
-  MarkReadAboveStandardInput,
-} from "../src/app/mark-read-above.js";
-import {
   parseLoginAppInput,
   LoginAlfredInput,
   LoginStandardInput,
@@ -386,64 +382,6 @@ test("mark-read standard input rejects missing or malformed entry IDs", () => {
   assert.throws(() => parseMarkReadAppInput('{"kind":"standard","entryId":null}', {}), /entryId.*non-empty string/i);
   assert.throws(() => parseMarkReadAppInput('{"kind":"standard","entryId":5}', {}), /entryId.*non-empty string/i);
   assert.throws(() => parseMarkReadAppInput('{"kind":"standard","entryId":"e","extra":1}', {}), /Unknown standard input field/);
-});
-
-test("mark-read-above standard input parses from argv, environment, and both combined", () => {
-  assert.deepEqual(
-    parseMarkReadAboveAppInput('{"kind":"standard","entryId":"entry-1","resultCacheKey":"timeline-abc.json"}', {}),
-    new MarkReadAboveStandardInput({ entryId: "entry-1", resultCacheKey: "timeline-abc.json" }),
-  );
-  assert.deepEqual(
-    parseMarkReadAboveAppInput("", {
-      frrMarkReadAboveIsStandardInput: "1",
-      frrMarkReadAboveEntryId: "entry-1",
-      frrMarkReadAboveResultCacheKey: "timeline-abc.json",
-    }),
-    new MarkReadAboveStandardInput({ entryId: "entry-1", resultCacheKey: "timeline-abc.json" }),
-  );
-  assert.deepEqual(
-    parseMarkReadAboveAppInput('{"kind":"standard","entryId":"entry-1"}', {
-      frrMarkReadAboveEntryId: "from-env",
-      frrMarkReadAboveResultCacheKey: "timeline-abc.json",
-    }),
-    new MarkReadAboveStandardInput({ entryId: "entry-1", resultCacheKey: "timeline-abc.json" }),
-  );
-});
-
-test("mark-read-above keeps the selection plus frrResultCacheKey legacy input", () => {
-  const selection = timelineSelection("entry-1");
-  const parsed = parseMarkReadAboveAppInput(selection.serialize(), {
-    frrResultCacheKey: "timeline-abc.json",
-    frrMarkReadAboveIsStandardInput: "1",
-    frrMarkReadAboveEntryId: "hijacked",
-    frrMarkReadAboveResultCacheKey: "hijacked.json",
-  });
-  assert.deepEqual(parsed, new MarkReadAboveStandardInput({
-    entryId: "entry-1",
-    resultCacheKey: "timeline-abc.json",
-  }));
-  assert.throws(
-    () => parseMarkReadAboveAppInput(selection.serialize(), {}),
-    /frrResultCacheKey is required/,
-  );
-});
-
-test("mark-read-above standard input rejects missing or malformed fields", () => {
-  assert.throws(() => parseMarkReadAboveAppInput('{"kind":"standard","entryId":"entry-1"}', {}), /resultCacheKey.*non-empty string/i);
-  assert.throws(
-    () => parseMarkReadAboveAppInput("", { frrMarkReadAboveIsStandardInput: "1", frrMarkReadAboveEntryId: "entry-1" }),
-    /resultCacheKey.*non-empty string/i,
-  );
-  assert.throws(
-    () => parseMarkReadAboveAppInput('{"kind":"standard","entryId":"entry-1","resultCacheKey":null}', {}),
-    /resultCacheKey.*non-empty string/i,
-  );
-  assert.throws(
-    () => parseMarkReadAboveAppInput('{"kind":"standard","entryId":"entry-1","resultCacheKey":" "}', {}),
-    /resultCacheKey.*non-empty string/i,
-  );
-  assert.throws(() => parseMarkReadAboveAppInput('{"kind":"standard","entryId":"e","cache":"x"}', {}), /Unknown standard input field/);
-  assert.throws(() => parseMarkReadAboveAppInput('{"kind":"standard","version":2}', {}), /Unsupported standard input version/);
 });
 
 test("login standard input parses from argv, environment, and both combined", () => {

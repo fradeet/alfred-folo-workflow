@@ -12,7 +12,7 @@ import { TimelineBlockInput } from "../src/block/folo/timeline.js";
 import { UnreadBlockInput } from "../src/block/folo/unread.js";
 import { FoloTimelineResult, FoloView } from "../src/types/folo-types.js";
 import { readResponseCache, responseCacheFilename, writeResponseCache } from "../src/shared/response-cache.js";
-import { readLastTimelineRequest, readTimelineCache, timelineCacheFilename, writeLastTimelineRequest, writeTimelineCache } from "../src/shared/timeline-cache.js";
+import { TIMELINE_CACHE_MAX_AGE_MS, readLastTimelineRequest, readTimelineCache, timelineCacheFilename, writeLastTimelineRequest, writeTimelineCache } from "../src/shared/timeline-cache.js";
 
 test("Folo block inputs own their complete CLI argument mapping", () => {
   assert.deepEqual(
@@ -138,14 +138,14 @@ test("timeline cache reads fresh entries by complete query and retains the captu
     });
     writeTimelineCache(request, data, { cacheDirectory: directory, now: capturedAt });
     assert.notEqual(timelineCacheFilename(request), timelineCacheFilename(otherQuery));
-    assert.deepEqual(readTimelineCache(request, { cacheDirectory: directory, now: capturedAt + 59_999 }), {
+    assert.deepEqual(readTimelineCache(request, { cacheDirectory: directory, now: capturedAt + TIMELINE_CACHE_MAX_AGE_MS - 1 }), {
       cachedAt: "2026-09-26T10:00:00.000Z",
       data,
     });
     assert.equal(readTimelineCache(otherQuery, { cacheDirectory: directory, now: capturedAt }), undefined);
     assert.equal(readTimelineCache(allEntries, { cacheDirectory: directory, now: capturedAt }), undefined);
     assert.equal(readTimelineCache(nextPage, { cacheDirectory: directory, now: capturedAt }), undefined);
-    assert.equal(readTimelineCache(request, { cacheDirectory: directory, now: capturedAt + 60_000 }), undefined);
+    assert.equal(readTimelineCache(request, { cacheDirectory: directory, now: capturedAt + TIMELINE_CACHE_MAX_AGE_MS }), undefined);
     assert.equal(readTimelineCache(request, { cacheDirectory: directory, now: capturedAt - 1 }), undefined);
 
     await writeFile(join(directory, timelineCacheFilename(request)), "{broken");

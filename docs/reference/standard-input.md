@@ -1,8 +1,7 @@
 # Standard input reference
 
 The public app entry points under `workflow/dist/app/` accept a uniform
-"standard input" for external callers. The internal `mark-page-read` action is
-excluded because its sole input is a workflow cache filename passed through argv.
+"standard input" for external callers.
 Standard input is the name of this project's app input protocol; it is not Unix stdin.
 
 Alfred nodes normally pass complete serialized contracts through argv. The
@@ -74,7 +73,6 @@ variable mapping.
 | `subscriptions` | `workflow/dist/app/subscriptions.js` | [`SubscriptionsStandardInput` and `subscriptionsStandardSpec`](../../src/app/subscriptions.ts) | Query filtering remains Alfred's responsibility. |
 | `unread` | `workflow/dist/app/unread.js` | [`UnreadStandardInput` and `unreadStandardSpec`](../../src/app/unread.ts) | Query filtering remains Alfred's responsibility. |
 | `mark-read` | `workflow/dist/app/mark-read.js` | [`MarkReadStandardInput` and `markReadStandardSpec`](../../src/app/mark-read.ts) | Workflow selections remain complete contracts and ignore standard business variables. |
-| `mark-read-above` | `workflow/dist/app/mark-read-above.js` | [`MarkReadAboveStandardInput` and `markReadAboveStandardSpec`](../../src/app/mark-read-above.ts) | Requires an accessible cached timeline response; standard input does not create or restore the cache. |
 | `login` | `workflow/dist/app/login.js` | [`LoginStandardInput` and `loginStandardSpec`](../../src/app/login.ts) | Still requires macOS, Alfred, and `osascript`. |
 | `last-timeline-query` | `workflow/dist/app/last-timeline-query.js` | No input ([source](../../src/app/last-timeline-query.ts)) | Terminal helper that prints a saved `TimelineStandardInput` for direct use as timeline argv; it does not consume standard input. |
 

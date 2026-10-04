@@ -16,11 +16,6 @@ inspect the stored response of the list the user just acted on:
 cat "$alfred_workflow_cache/folo-requests/$frrResultCacheKey"
 ```
 
-The mark-read-above action reads the stored timeline response through this variable: it
-locates the selected entry in the recorded list and marks every unread entry above it,
-so the action follows the list the user saw instead of a freshly fetched timeline. A
-fresh CLI call overwrites the file of the same request.
-
 ## Timeline refresh input
 
 The timeline Script Filter exports `frrTimelineQuery`, `frrTimelineView`, `frrTimelineLimit`,
@@ -33,15 +28,14 @@ entry actions.
 
 The timeline app also keeps a separate timestamped result in
 `folo-requests/timeline/`, keyed by the complete normalized request including the
-local `query`. It reads that result for up to 60 seconds, then refreshes it from
-Folo. `frrResultCacheKey` continues to identify the response used by downstream
-mark-read actions.
+local `query`. It reads that result for up to 5 minutes, then refreshes it from
+Folo. `frrResultCacheKey` identifies the corresponding CLI response cache file.
 
 The last successful timeline input is also saved in
 `folo-requests/timeline/last-timeline-request.json`. Run
 `workflow/dist/app/last-timeline-query.js` to print its serialized standard input;
 the output can be passed unchanged as one argument to `workflow/dist/app/timeline.js`.
-This saved input does not expire with the 60-second result cache.
+This saved input does not expire with the 5-minute result cache.
 
 The timeline Script Filter's Shift and Enter connection runs
 `workflow/script/refresh-timeline.sh`. The script sets

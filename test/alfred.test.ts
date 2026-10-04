@@ -33,8 +33,6 @@ import {
   FoloView,
 } from "../src/types/folo-types.js";
 import { readToken, setWorkflowToken } from "../src/app/login.js";
-import { MarkReadAboveAppOutput, unreadEntryIdsAbove } from "../src/app/mark-read-above.js";
-import { MarkPageReadAppOutput, MarkPageReadInput, unreadPageEntryIds } from "../src/app/mark-page-read.js";
 import { resolveTimelineInput, timeline, timelineResultVariables, TimelineAppOutput, TimelineStandardInput, parseTimelineAppInput } from "../src/app/timeline.js";
 import { parseFoloShareUrl } from "../src/shared/folo-url.js";
 import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/shared/icon-cache.js";
@@ -464,7 +462,6 @@ test("timelineItems maps Folo entry envelopes", () => {
   assert.equal(items[0]?.text?.largetype, "Hello & Folo");
   assert.equal(items[0]?.match, undefined);
   assert.deepEqual(items[0]?.mods?.alt, { arg: "", subtitle: "No next page", valid: false });
-  assert.deepEqual(items[0]?.mods?.["cmd+shift"], { arg: "", subtitle: "No next page", valid: false });
   assert.deepEqual(items[0]?.mods?.["shift+alt"], { arg: "", subtitle: "Already at the top", valid: false });
 });
 
@@ -488,7 +485,6 @@ test("timeline Option action carries the complete next-page standard input", () 
   const item = timelineItems(data, undefined, nextArg, latestArg)[0];
   assert.equal(item?.mods?.shift, undefined);
   assert.deepEqual(item?.mods?.alt, { arg: nextArg });
-  assert.deepEqual(item?.mods?.["cmd+shift"], { arg: nextArg });
   assert.deepEqual(item?.mods?.["shift+alt"], { arg: latestArg });
   assert.deepEqual(parseTimelineAppInput(nextArg, { frrTimelineUnreadOnly: "0" }), current.withCursor("next-cursor"));
   assert.equal(JSON.parse(latestArg).cursor, "");
@@ -502,7 +498,6 @@ test("timeline Option action carries the complete next-page standard input", () 
     hasNext: false,
   }), undefined, "", latestArg)[0];
   assert.deepEqual(lastPage?.mods?.alt, { arg: "", subtitle: "No next page", valid: false });
-  assert.deepEqual(lastPage?.mods?.["cmd+shift"], { arg: "", subtitle: "No next page", valid: false });
   assert.deepEqual(lastPage?.mods?.["shift+alt"], { arg: latestArg });
   assert.equal(new TimelineStandardInput({ cursor: "" }).cursor, undefined);
   assert.equal(TimelineSelection.parse(String(item?.arg)).entryId, "entry-1");
@@ -510,54 +505,6 @@ test("timeline Option action carries the complete next-page standard input", () 
 
 test("MarkReadBlockInput rejects a missing entry ID before calling Folo", () => {
   assert.throws(() => new MarkReadBlockInput("  "), /Entry ID is required/);
-});
-
-test("unreadEntryIdsAbove keeps unread entries up to and including the anchor", () => {
-  const timeline = FoloTimelineResult.from({
-    entries: [
-      { read: true, entries: { id: "entry-1" }, feeds: {} },
-      { read: false, entries: { id: "entry-2" }, feeds: {} },
-      { read: true, entries: { id: "entry-3" }, feeds: {} },
-      { read: false, entries: { id: "entry-4" }, feeds: {} },
-      { read: false, entries: { id: "entry-5" }, feeds: {} },
-    ],
-    nextCursor: null,
-    hasNext: false,
-  });
-
-  assert.deepEqual(unreadEntryIdsAbove(timeline, "entry-4"), ["entry-2", "entry-4"]);
-  assert.deepEqual(unreadEntryIdsAbove(timeline, "entry-1"), []);
-  assert.deepEqual(unreadEntryIdsAbove(timeline, "entry-5"), ["entry-2", "entry-4", "entry-5"]);
-  assert.throws(() => unreadEntryIdsAbove(timeline, "missing"), /not in the cached timeline list/);
-});
-
-test("MarkReadAboveAppOutput reports the anchor and every marked entry", () => {
-  const output = new MarkReadAboveAppOutput("entry-4", ["entry-2", "entry-4"]);
-  assert.deepEqual(JSON.parse(output.serialize()), {
-    kind: "mark-read-above-result",
-    anchorEntryId: "entry-4",
-    markedEntryIds: ["entry-2", "entry-4"],
-  });
-});
-
-test("mark-page-read selects every unread entry and uses the mark-above result shape", () => {
-  assert.equal(new MarkPageReadInput(" timeline-abc.json ").resultCacheKey, "timeline-abc.json");
-  assert.throws(() => new MarkPageReadInput(" "), /Response cache key is required/);
-  const page = FoloTimelineResult.from({
-    entries: [
-      { read: false, entries: { id: "entry-1" }, feeds: {} },
-      { read: true, entries: { id: "entry-2" }, feeds: {} },
-      { read: false, entries: { id: "entry-3" }, feeds: {} },
-    ],
-    nextCursor: null,
-    hasNext: false,
-  });
-  assert.deepEqual(unreadPageEntryIds(page), ["entry-1", "entry-3"]);
-  assert.deepEqual(JSON.parse(new MarkPageReadAppOutput("entry-3", ["entry-1", "entry-3"]).serialize()), {
-    kind: "mark-read-above-result",
-    anchorEntryId: "entry-3",
-    markedEntryIds: ["entry-1", "entry-3"],
-  });
 });
 
 test("TimelineSelection serializes and restores every nested class", () => {

@@ -68,7 +68,6 @@ A stable identifier for the target app in the standard-input protocol. The app I
 - `subscriptions`
 - `unread`
 - `mark-read`
-- `mark-read-above`
 - `login`
 
 Every new entry point must document a new stable app ID. Once published as part of the standard-input interface, an app ID must not change merely because a file is renamed.
@@ -218,7 +217,6 @@ The first version uses the lowercase `frr` prefix, followed by the app ID and fi
 
 ```text
 frrMarkReadEntryId
-frrMarkReadAboveResultCacheKey
 ```
 
 This format provides naming consistency only. Every variable name must still be written explicitly in the corresponding app's code. The implementation must not construct environment variable names dynamically from filenames, app IDs, or field names.
@@ -316,20 +314,7 @@ Suggested class: `MarkReadStandardInput`
 
 Standard input only needs the entry ID required by the action. Alfred continues to pass a complete `TimelineSelection`, and standard environment variables must not override its fields.
 
-### 8.5 `mark-read-above`
-
-Suggested class: `MarkReadAboveStandardInput`
-
-| JSON field | Environment variable | Type | Required | Default |
-| --- | --- | --- | --- | --- |
-| `entryId` | `frrMarkReadAboveEntryId` | non-empty string | yes | none |
-| `resultCacheKey` | `frrMarkReadAboveResultCacheKey` | non-empty string | yes | none |
-
-`resultCacheKey` must identify an existing timeline response cache accessible in the invocation environment. Standard input only transports the parameter; it does not create, transfer, or restore the cache.
-
-Alfred continues to construct execution input from the complete `TimelineSelection` and `frrResultCacheKey`.
-
-### 8.6 `login`
+### 8.5 `login`
 
 Suggested class: `LoginStandardInput`
 
@@ -438,7 +423,6 @@ The following conditions must produce actionable errors:
 - An argv JSON field with an invalid type.
 - An unknown standard-input field.
 - Input that simultaneously matches a known non-standard contract and standard input.
-- A cache declared by `mark-read-above` that cannot be found.
 
 Error messages must not expose tokens or other sensitive environment values.
 
@@ -489,7 +473,6 @@ The README or a dedicated reference document must include:
 - argv precedence rules.
 - argv-only, environment-only, and mixed invocation forms.
 - The fact that Alfred performs query filtering for `timeline`, `subscriptions`, and `unread`.
-- The workflow-cache dependency of `mark-read-above`.
 - The Alfred and macOS dependencies of `login`.
 
 Concrete business fields, types, requiredness, defaults, and hardcoded environment mappings are authoritative in each app's standard-input class and adjacent spec. The reference documentation must not duplicate those field tables.
@@ -534,8 +517,7 @@ Integrate existing entry points from lower to higher risk:
 1. `subscriptions` and `unread`.
 2. `timeline`.
 3. `mark-read`.
-4. `mark-read-above`.
-5. `login`.
+4. `login`.
 
 For each migration, add the input class, environment declarations, direct-execution guard, tests, and external-call documentation together. Keep `cache-subscription-icons` as an internal worker without standard input.
 

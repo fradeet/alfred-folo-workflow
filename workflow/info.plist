@@ -34,29 +34,6 @@
 				<false/>
 			</dict>
 		</array>
-		<key>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>C51A7AB8-8550-4F14-980C-C2201DCDC477</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>4C57F8FA-E18F-4536-A99C-B1C64D707A7A</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
 		<key>0E7C5072-7BB1-4D46-9BD0-8115898C0710</key>
 		<array>
 			<dict>
@@ -114,29 +91,6 @@
 			<dict>
 				<key>destinationuid</key>
 				<string>A9CE5922-3D43-4EA3-B825-E816BC31892C</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
-		<key>2FA52B21-DCE1-434F-A70F-A199DC4258B0</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>732E7981-CDB0-4461-AE79-60BD5D1F84D0</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -298,36 +252,6 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</string>
-				<key>modifiers</key>
-				<integer>1572864</integer>
-				<key>modifiersubtext</key>
-				<string>Mark above items as read</string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>2FA52B21-DCE1-434F-A70F-A199DC4258B0</string>
-				<key>modifiers</key>
-				<integer>1048576</integer>
-				<key>modifiersubtext</key>
-				<string>Open this, mark above items as read</string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>A029C1C4-43BA-47F6-9518-DB153498DECD</string>
-				<key>modifiers</key>
-				<integer>1179648</integer>
-				<key>modifiersubtext</key>
-				<string>Mark page read, next page</string>
-				<key>vitoclose</key>
-				<true/>
-			</dict>
 		</array>
 		<key>8AAD2354-8F94-409A-A7FF-D0E8D77D9781</key>
 		<array>
@@ -413,52 +337,6 @@
 			<dict>
 				<key>destinationuid</key>
 				<string>C51A7AB8-8550-4F14-980C-C2201DCDC477</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
-		<key>A01DB4EB-D941-4A41-827E-F29CB0F1109E</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>C51A7AB8-8550-4F14-980C-C2201DCDC477</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>4C57F8FA-E18F-4536-A99C-B1C64D707A7A</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
-		<key>A029C1C4-43BA-47F6-9518-DB153498DECD</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>E388CDAB-94DA-4E0E-9493-FC24E060C792</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>5DC3EAA0-37BA-4FA0-B623-7405BD49CCDC</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -573,19 +451,6 @@
 				<string>View all feeds (include already read)</string>
 				<key>vitoclose</key>
 				<true/>
-			</dict>
-		</array>
-		<key>E388CDAB-94DA-4E0E-9493-FC24E060C792</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>A01DB4EB-D941-4A41-827E-F29CB0F1109E</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
 			</dict>
 		</array>
 		<key>E3FDCD1D-BC7D-412E-8B33-DDB13C2ACEF5</key>
@@ -1468,29 +1333,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>0</integer>
-				<key>script</key>
-				<string></string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string>dist/app/mark-read-above.js</string>
-				<key>type</key>
-				<integer>8</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>alfredfiltersresults</key>
 				<true/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -1564,35 +1406,6 @@
 			<integer>1</integer>
 		</dict>
 		<dict>
-			<key>config</key>
-			<dict>
-				<key>lastpathcomponent</key>
-				<false/>
-				<key>onlyshowifquerypopulated</key>
-				<true/>
-				<key>removeextension</key>
-				<false/>
-				<key>text</key>
-				<string>Task finish: Mark above as read</string>
-				<key>title</key>
-				<string>{const:alfred_workflow_name}</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.notification</string>
-			<key>uid</key>
-			<string>4C57F8FA-E18F-4536-A99C-B1C64D707A7A</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.junction</string>
-			<key>uid</key>
-			<string>2FA52B21-DCE1-434F-A70F-A199DC4258B0</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
 			<key>type</key>
 			<string>alfred.workflow.utility.junction</string>
 			<key>uid</key>
@@ -1605,73 +1418,6 @@
 			<string>alfred.workflow.utility.junction</string>
 			<key>uid</key>
 			<string>13B21D49-ED16-432B-BA87-8C0CF4041AAD</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>0</integer>
-				<key>script</key>
-				<string></string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string>dist/app/mark-page-read.js</string>
-				<key>type</key>
-				<integer>8</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>A01DB4EB-D941-4A41-827E-F29CB0F1109E</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argument</key>
-				<string>{var:frrResultCacheKey}</string>
-				<key>passthroughargument</key>
-				<false/>
-				<key>variables</key>
-				<dict/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.argument</string>
-			<key>uid</key>
-			<string>E388CDAB-94DA-4E0E-9493-FC24E060C792</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.junction</string>
-			<key>uid</key>
-			<string>A029C1C4-43BA-47F6-9518-DB153498DECD</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>externaltriggerid</key>
-				<string>timeline</string>
-				<key>passinputasargument</key>
-				<true/>
-				<key>passvariables</key>
-				<true/>
-				<key>workflowbundleid</key>
-				<string>self</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.callexternaltrigger</string>
-			<key>uid</key>
-			<string>5DC3EAA0-37BA-4FA0-B623-7405BD49CCDC</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -1695,15 +1441,6 @@
 			<real>520</real>
 			<key>ypos</key>
 			<real>355</real>
-		</dict>
-		<key>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</key>
-		<dict>
-			<key>note</key>
-			<string>Mark above as read</string>
-			<key>xpos</key>
-			<real>2010</real>
-			<key>ypos</key>
-			<real>625</real>
 		</dict>
 		<key>0E7C5072-7BB1-4D46-9BD0-8115898C0710</key>
 		<dict>
@@ -1749,13 +1486,6 @@
 			<key>ypos</key>
 			<real>205</real>
 		</dict>
-		<key>2FA52B21-DCE1-434F-A70F-A199DC4258B0</key>
-		<dict>
-			<key>xpos</key>
-			<real>1740</real>
-			<key>ypos</key>
-			<real>655</real>
-		</dict>
 		<key>318AF45B-B2CB-4A05-B082-F4C436780C09</key>
 		<dict>
 			<key>colorindex</key>
@@ -1786,13 +1516,6 @@
 			<key>ypos</key>
 			<real>205</real>
 		</dict>
-		<key>4C57F8FA-E18F-4536-A99C-B1C64D707A7A</key>
-		<dict>
-			<key>xpos</key>
-			<real>2230</real>
-			<key>ypos</key>
-			<real>625</real>
-		</dict>
 		<key>528EBBE4-AC53-41B4-BE91-D87A4C9BFB74</key>
 		<dict>
 			<key>colorindex</key>
@@ -1810,13 +1533,6 @@
 			<real>650</real>
 			<key>ypos</key>
 			<real>205</real>
-		</dict>
-		<key>5DC3EAA0-37BA-4FA0-B623-7405BD49CCDC</key>
-		<dict>
-			<key>xpos</key>
-			<real>2015</real>
-			<key>ypos</key>
-			<real>925</real>
 		</dict>
 		<key>63E2EF96-CB1A-4E6C-8062-D487A9BDDB9A</key>
 		<dict>
@@ -1910,22 +1626,6 @@
 			<key>ypos</key>
 			<real>475</real>
 		</dict>
-		<key>A01DB4EB-D941-4A41-827E-F29CB0F1109E</key>
-		<dict>
-			<key>note</key>
-			<string>Mark page read</string>
-			<key>xpos</key>
-			<real>2010</real>
-			<key>ypos</key>
-			<real>775</real>
-		</dict>
-		<key>A029C1C4-43BA-47F6-9518-DB153498DECD</key>
-		<dict>
-			<key>xpos</key>
-			<real>1740</real>
-			<key>ypos</key>
-			<real>805</real>
-		</dict>
 		<key>A9CE5922-3D43-4EA3-B825-E816BC31892C</key>
 		<dict>
 			<key>xpos</key>
@@ -2004,13 +1704,6 @@
 			<real>260</real>
 			<key>ypos</key>
 			<real>175</real>
-		</dict>
-		<key>E388CDAB-94DA-4E0E-9493-FC24E060C792</key>
-		<dict>
-			<key>xpos</key>
-			<real>1960</real>
-			<key>ypos</key>
-			<real>805</real>
 		</dict>
 		<key>E3FDCD1D-BC7D-412E-8B33-DDB13C2ACEF5</key>
 		<dict>
