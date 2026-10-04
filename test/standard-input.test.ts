@@ -432,19 +432,19 @@ test("mark-all-read standard input merges argv and environment and isolates sele
 });
 
 test("timeline mark-all-read accepts its scope contract and standard input", async () => {
-  const { TimelineMarkAllReadInput, parseTimelineMarkAllReadInput, timelineMarkAllRead } = await import("../src/app/timeline-mark-all-read.js");
+  const { TimelineMarkAllReadInput, parseTimelineMarkAllReadInput, resolveTimelineMarkAllReadScope } = await import("../src/app/timeline-mark-all-read.js");
   const env = { frrTimelineMarkAllReadIsStandardInput: "1", frrTimelineFeed: "env-feed", frrTimelineView: "social" };
   assert.deepEqual(parseTimelineMarkAllReadInput("", env), new TimelineMarkAllReadInput({ feed: "env-feed", view: "social" }));
   assert.deepEqual(parseTimelineMarkAllReadInput('{"kind":"standard","feed":"argv-feed"}', env),
     new TimelineMarkAllReadInput({ feed: "argv-feed", view: "social" }));
   const contract = new TimelineMarkAllReadInput({ list: "list-1", view: "articles" });
   assert.deepEqual(parseTimelineMarkAllReadInput(contract.serialize(), env), contract);
-  assert.throws(() => timelineMarkAllRead(new TimelineMarkAllReadInput({ category: "Tech" })), /cannot target.*category/i);
+  assert.throws(() => resolveTimelineMarkAllReadScope(new TimelineMarkAllReadInput({ category: "Tech" })), /cannot target.*category/i);
 });
 
 test("mark-all-read maps selected sources and timeline scope to CLI arguments", async () => {
   const { markAllReadBlockInput } = await import("../src/app/mark-all-read.js");
-  const { TimelineMarkAllReadInput } = await import("../src/app/timeline-mark-all-read.js");
+  const { TimelineMarkAllReadInput, resolveTimelineMarkAllReadScope } = await import("../src/app/timeline-mark-all-read.js");
   const { UnreadSelection } = await import("../src/contracts/unread-selection.js");
   const { FoloUnreadItem } = await import("../src/types/folo-types.js");
   const subscription = new SubscriptionSelection(new FoloSubscription({ feedId: "feed-1", feeds: { id: "feed-1" } }));
@@ -453,4 +453,8 @@ test("mark-all-read maps selected sources and timeline scope to CLI arguments", 
   assert.deepEqual(markAllReadBlockInput(unread).toArguments(), ["entry", "mark-all-read", "--list", "list-1"]);
   assert.deepEqual(markAllReadBlockInput(new TimelineMarkAllReadInput({ view: "articles" })).toArguments(),
     ["entry", "mark-all-read", "--view", "articles"]);
+  assert.deepEqual(markAllReadBlockInput(resolveTimelineMarkAllReadScope(new TimelineMarkAllReadInput({ feed: "feed-1", view: "articles" }))).toArguments(),
+    ["entry", "mark-all-read", "--feed", "feed-1"]);
+  assert.deepEqual(markAllReadBlockInput(resolveTimelineMarkAllReadScope(new TimelineMarkAllReadInput({ list: "list-1", view: "social" }))).toArguments(),
+    ["entry", "mark-all-read", "--list", "list-1"]);
 });

@@ -57,8 +57,17 @@ export function parseTimelineMarkAllReadInput(value: string, env: NodeJS.Process
 }
 
 export function timelineMarkAllRead(input: TimelineMarkAllReadInput): MarkAllReadAppOutput {
+  return markAllRead(resolveTimelineMarkAllReadScope(input));
+}
+
+/** A source selection takes precedence over the timeline's broader view. */
+export function resolveTimelineMarkAllReadScope(input: TimelineMarkAllReadInput): TimelineMarkAllReadInput {
   if (input.category) throw new TypeError("Folo mark-all-read cannot target a timeline category");
-  return markAllRead(input);
+  return new TimelineMarkAllReadInput({
+    feed: input.feed,
+    list: input.list,
+    view: input.feed || input.list ? undefined : input.view,
+  });
 }
 
 function main(): void {

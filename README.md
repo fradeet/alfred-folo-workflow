@@ -36,6 +36,8 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
 - `workflow/script/timeline-mark-all-read.sh` enables standard input for the
   timeline bulk-read action using timeline's existing scope variables. A category
   timeline is rejected because the CLI cannot mark only that category read.
+  When a timeline has a feed or list scope, bulk read uses that source and ignores
+  the view scope.
 - Timeline reads reuse a timestamped cache for 5 minutes. The cache key includes the
   full normalized request, so a different keyword, unread setting, view, source, or
   page has its own entry. Expired or invalid entries are fetched again from Folo.
