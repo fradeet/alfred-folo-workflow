@@ -174,6 +174,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>66EA0DBB-F55D-42DC-AEF8-CD31FA1844D8</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>C51A7AB8-8550-4F14-980C-C2201DCDC477</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>732E7981-CDB0-4461-AE79-60BD5D1F84D0</key>
 		<array>
 			<dict>
@@ -1579,6 +1592,8 @@
 		</dict>
 		<key>46A9EE5D-7909-4FFA-A3B4-68E991C59B6E</key>
 		<dict>
+			<key>note</key>
+			<string>Next Page / Top</string>
 			<key>xpos</key>
 			<real>1360</real>
 			<key>ypos</key>
@@ -1625,7 +1640,7 @@
 			<key>note</key>
 			<string>Mark all read</string>
 			<key>xpos</key>
-			<real>2010</real>
+			<real>1790</real>
 			<key>ypos</key>
 			<real>625</real>
 		</dict>
@@ -1634,7 +1649,7 @@
 			<key>colorindex</key>
 			<integer>3</integer>
 			<key>xpos</key>
-			<real>1830</real>
+			<real>1740</real>
 			<key>ypos</key>
 			<real>355</real>
 		</dict>
@@ -1712,6 +1727,8 @@
 		</dict>
 		<key>A9CE5922-3D43-4EA3-B825-E816BC31892C</key>
 		<dict>
+			<key>note</key>
+			<string>Next Page / Top</string>
 			<key>xpos</key>
 			<real>1360</real>
 			<key>ypos</key>
@@ -1825,6 +1842,8 @@
 		</dict>
 		<key>FB9E9180-6AAC-4AEF-BA50-1CEACB9FF7B5</key>
 		<dict>
+			<key>note</key>
+			<string>Recent</string>
 			<key>xpos</key>
 			<real>480</real>
 			<key>ypos</key>
@@ -1980,7 +1999,7 @@
 		</dict>
 	</array>
 	<key>version</key>
-	<string>0.5.6</string>
+	<string>0.6.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/fradeet/alfred-folo-workflow</string>
 </dict>
