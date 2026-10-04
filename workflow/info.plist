@@ -1317,7 +1317,7 @@
 				<key>argument</key>
 				<string>{query}</string>
 				<key>passthroughargument</key>
-				<false/>
+				<true/>
 				<key>variables</key>
 				<dict>
 					<key>frrTimelineUnreadOnly</key>
