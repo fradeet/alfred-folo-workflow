@@ -23,6 +23,7 @@
  * - On failure: an error item is emitted and the exit code is 1.
  */
 import { emptyItem, errorItem, subscriptionItems } from "../shared/alfred.js";
+import { en } from "../locales/en.js";
 import { pathToFileURL } from "node:url";
 import { cacheIcons } from "../shared/icon-cache.js";
 import { responseCacheFilename } from "../shared/response-cache.js";
@@ -88,7 +89,7 @@ export async function subscriptions(input: SubscriptionsStandardInput): Promise<
   const iconFor = await cacheIcons(sources);
   const items = subscriptionItems(data, iconFor);
   return new SubscriptionsAppOutput(
-    items.length ? items : [emptyItem("No Folo subscriptions", "Try another query")],
+    items.length ? items : [emptyItem(en.subscriptions.emptyTitle, en.common.tryAnotherQuery)],
     true,
     { frrResultCacheKey: responseCacheFilename(blockInput.toArguments()) },
   );

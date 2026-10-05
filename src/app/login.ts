@@ -24,6 +24,7 @@ import { readFile } from "node:fs/promises";
 import { env } from "node:process";
 import { pathToFileURL } from "node:url";
 import { isRecord } from "../shared/guards.js";
+import { en } from "../locales/en.js";
 import {
   StandardInputSpec,
   resolveStandardInput,
@@ -101,7 +102,7 @@ export function readToken(configText: string): string {
   const config = JSON.parse(configText) as unknown;
 
   if (!isRecord(config) || typeof config.token !== "string" || !config.token.trim()) {
-    throw new Error("Folo config does not contain a token.");
+    throw new Error(en.login.missingConfigToken);
   }
 
   return config.token;
@@ -114,11 +115,11 @@ export function setWorkflowToken(
   workflowBundleId?: string,
 ): void {
   if (!token.trim()) {
-    throw new Error("Folo token must not be empty.");
+    throw new Error(en.login.emptyToken);
   }
   const workflowId = workflowBundleId?.trim() || environment.alfred_workflow_bundleid?.trim();
   if (!workflowId) {
-    throw new Error("Alfred did not provide alfred_workflow_bundleid.");
+    throw new Error(en.login.missingWorkflowId);
   }
 
   const appleScript = `
@@ -137,7 +138,7 @@ end tell`;
   });
 
   if (result.status !== 0) {
-    throw new Error(result.stderr.trim() || "Unable to save the Folo token in Alfred.");
+    throw new Error(result.stderr.trim() || en.login.saveTokenFailed);
   }
 }
 
