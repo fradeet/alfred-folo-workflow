@@ -21,10 +21,10 @@ Browse timeline via the `ftl` keyword.
 ![Browsing Folo timeline entries](assets/imgs/show1.png)
 
 - <kbd>↩</kbd> Open the entry.
+- <kbd>⌃</kbd><kbd>↩</kbd> Show the entry in Folo.
 - <kbd>⌥</kbd><kbd>↩</kbd> Show the next page of entries.
 - <kbd>⇧</kbd><kbd>⌥</kbd><kbd>↩</kbd> Return to the first page.
 - <kbd>⌘</kbd><kbd>↩</kbd> Mark all entries in the current timeline as read.
-- <kbd>⌃</kbd><kbd>↩</kbd> Open the entry in Folo.
 
 Find subscriptions with unread entries via the `fun` keyword.
 
