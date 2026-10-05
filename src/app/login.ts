@@ -13,10 +13,11 @@
  * not remove this app's dependence on macOS, Alfred, and `osascript`.
  *
  * Output:
- * - stdout: a serialized {@link LoginAppOutput} containing the user profile.
+ * - stdout: a JSON result with `ok`, the user profile on success, or
+ *   `error.message` on failure for Alfred's conditional and notification nodes.
  * - Side effect: the token from the Folo CLI config file is saved as the
  *   workflow's `FOLO_TOKEN` configuration variable via osascript.
- * - On failure: the error message is written to stderr and the exit code is 1.
+ * - On failure: a JSON error result is written to stdout.
  */
 import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
@@ -71,16 +72,27 @@ export function parseLoginAppInput(
 
 export class LoginAppOutput extends SerializedValue {
   readonly kind = "login-result";
+  readonly ok = true;
 
-  constructor(
-    readonly name: string,
-    readonly user: FoloUser,
-  ) {
+  constructor(readonly user: FoloUser) {
     super();
   }
 
   toJSON(): Record<string, unknown> {
-    return { kind: this.kind, name: this.name, user: this.user };
+    return { kind: this.kind, ok: this.ok, user: this.user, error: null };
+  }
+}
+
+export class LoginAppErrorOutput extends SerializedValue {
+  readonly kind = "login-result";
+  readonly ok = false;
+
+  constructor(readonly message: string) {
+    super();
+  }
+
+  toJSON(): Record<string, unknown> {
+    return { kind: this.kind, ok: this.ok, error: { message: this.message } };
   }
 }
 
@@ -139,7 +151,7 @@ export async function login(input: LoginAppInput): Promise<LoginAppOutput> {
     env,
     input instanceof LoginStandardInput ? input.workflowBundleId : undefined,
   );
-  return new LoginAppOutput(data.user.name || data.user.handle || "Folo user", data.user);
+  return new LoginAppOutput(data.user);
 }
 
 async function main(): Promise<void> {
@@ -147,8 +159,9 @@ async function main(): Promise<void> {
     const output = await login(parseLoginAppInput(process.argv.slice(2).join(" ")));
     process.stdout.write(output.serialize());
   } catch (error: unknown) {
-    console.error(error instanceof Error ? error.message : String(error));
-    process.exitCode = 1;
+    process.stdout.write(
+      new LoginAppErrorOutput(error instanceof Error ? error.message : String(error)).serialize(),
+    );
   }
 }
 
