@@ -187,6 +187,21 @@
 				<false/>
 			</dict>
 		</array>
+		<key>5C3BDC35-C9A5-4A3C-B255-1FAC11321760</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>9FCCC6CA-5715-44A6-88E7-113666703284</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>sourceoutputuid</key>
+				<string>1C29B40A-51AF-45FB-BC87-A9DFDC041215</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>66EA0DBB-F55D-42DC-AEF8-CD31FA1844D8</key>
 		<array>
 			<dict>
@@ -227,7 +242,7 @@
 			</dict>
 			<dict>
 				<key>destinationuid</key>
-				<string>9FCCC6CA-5715-44A6-88E7-113666703284</string>
+				<string>5C3BDC35-C9A5-4A3C-B255-1FAC11321760</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -1355,6 +1370,38 @@
 			<integer>3</integer>
 		</dict>
 		<dict>
+			<key>config</key>
+			<dict>
+				<key>conditions</key>
+				<array>
+					<dict>
+						<key>inputstring</key>
+						<string>{var:FRR_MARK_WHEN_READ}</string>
+						<key>matchcasesensitive</key>
+						<false/>
+						<key>matchmode</key>
+						<integer>5</integer>
+						<key>matchstring</key>
+						<string></string>
+						<key>outputlabel</key>
+						<string>Mark when reading</string>
+						<key>uid</key>
+						<string>1C29B40A-51AF-45FB-BC87-A9DFDC041215</string>
+					</dict>
+				</array>
+				<key>elselabel</key>
+				<string>else</string>
+				<key>hideelse</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.conditional</string>
+			<key>uid</key>
+			<string>5C3BDC35-C9A5-4A3C-B255-1FAC11321760</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
 			<key>type</key>
 			<string>alfred.workflow.utility.junction</string>
 			<key>uid</key>
@@ -1855,6 +1902,8 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		</dict>
 		<key>283BC7D9-A99A-450B-ACEB-8E90B50EE6D8</key>
 		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
 			<key>xpos</key>
 			<real>1480</real>
 			<key>ypos</key>
@@ -1909,6 +1958,13 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 			<real>650</real>
 			<key>ypos</key>
 			<real>355</real>
+		</dict>
+		<key>5C3BDC35-C9A5-4A3C-B255-1FAC11321760</key>
+		<dict>
+			<key>xpos</key>
+			<real>1970</real>
+			<key>ypos</key>
+			<real>505</real>
 		</dict>
 		<key>63E2EF96-CB1A-4E6C-8062-D487A9BDDB9A</key>
 		<dict>
@@ -2009,6 +2065,8 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		</dict>
 		<key>9D3BB276-2A78-495C-A670-665AE64CD291</key>
 		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
 			<key>xpos</key>
 			<real>1400</real>
 			<key>ypos</key>
@@ -2016,8 +2074,6 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		</dict>
 		<key>9FCCC6CA-5715-44A6-88E7-113666703284</key>
 		<dict>
-			<key>colorindex</key>
-			<integer>3</integer>
 			<key>note</key>
 			<string>Mark as Read</string>
 			<key>xpos</key>
@@ -2036,6 +2092,8 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		</dict>
 		<key>A9CE5922-3D43-4EA3-B825-E816BC31892C</key>
 		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
 			<key>note</key>
 			<string>Next Page / Top</string>
 			<key>xpos</key>
@@ -2079,8 +2137,6 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		</dict>
 		<key>C51A7AB8-8550-4F14-980C-C2201DCDC477</key>
 		<dict>
-			<key>colorindex</key>
-			<integer>3</integer>
 			<key>note</key>
 			<string>Refresh result</string>
 			<key>xpos</key>
@@ -2243,6 +2299,25 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 			<string>slider</string>
 			<key>variable</key>
 			<string>FRR_TIMELINE_LIMIT</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<true/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Mark as read when opening the entry</string>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Reading</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>FRR_MARK_WHEN_READ</string>
 		</dict>
 		<dict>
 			<key>config</key>
