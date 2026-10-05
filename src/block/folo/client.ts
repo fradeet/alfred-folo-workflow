@@ -2,13 +2,10 @@ import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { isRecord } from "./guards.js";
+import { isRecord } from "../../shared/guards.js";
 
 const CLI_RELATIVE_ENTRY = join("node_modules", "folocli", "dist", "index.js");
 
-// The compiled module may sit at any depth under the workflow bundle
-// (e.g. dist/shared/), so locate the bundled CLI by walking up to the
-// directory that actually contains its node_modules entry.
 function resolveCliEntry(): string {
   let directory = dirname(fileURLToPath(import.meta.url));
   for (;;) {

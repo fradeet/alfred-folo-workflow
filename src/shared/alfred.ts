@@ -1,7 +1,14 @@
 import { isRecord } from "./guards.js";
-import { FoloEntryOutput } from "./entry-output.js";
-import { AlfredSF, AlfredSFCache, AlfredSFItem, AlfredSFItemIcon, AlfredSFItemText } from "../types/alfred-types.js";
+import { AlfredSFItem, AlfredSFItemIcon, AlfredSFItemText } from "../types/alfred-types.js";
 import { IconResolver } from "./icon-cache.js";
+import { SubscriptionSelection } from "../contracts/subscription-selection.js";
+import { TimelineSelection } from "../contracts/timeline-selection.js";
+import { UnreadSelection } from "../contracts/unread-selection.js";
+import {
+  FoloSubscriptionsResult,
+  FoloTimelineResult,
+  FoloUnreadResult,
+} from "../types/folo-types.js";
 
 const stripMarkup = (value: unknown): string =>
   String(value ?? "")
@@ -21,13 +28,12 @@ const text = (value: unknown, fallback = ""): string => {
 const optionalString = (value: unknown): string | undefined =>
   typeof value === "string" && value ? value : undefined;
 
-export function timelineItems(data: unknown, query = "", iconFor?: IconResolver): AlfredSFItem[] {
-  const entries = isRecord(data) && Array.isArray(data.entries) ? data.entries : [];
+export function timelineItems(data: FoloTimelineResult, query = "", iconFor?: IconResolver): AlfredSFItem[] {
   const needle = query.trim().toLocaleLowerCase();
 
-  const items = entries.flatMap((item): AlfredSFItem[] => {
-    const entry = isRecord(item) && isRecord(item.entries) ? item.entries : {};
-    const feed = isRecord(item) && isRecord(item.feeds) ? item.feeds : {};
+  const items = data.entries.flatMap((item): AlfredSFItem[] => {
+    const entry = item.entries;
+    const feed = item.feeds;
     const title = text(entry.title, "Untitled entry");
     const feedTitle = text(feed.title, "Unknown feed");
     const author = text(entry.author);
@@ -35,10 +41,8 @@ export function timelineItems(data: unknown, query = "", iconFor?: IconResolver)
     const date = formatDate(entry.publishedAt);
     const subtitle = [feedTitle, author, date].filter(Boolean).join(" · ");
     const url = optionalString(entry.url) ?? optionalString(feed.siteUrl) ?? "https://app.folo.is";
-    const entryId = optionalString(entry.id);
-    if (!entryId) return [];
-    const subscriptions = isRecord(item) && isRecord(item.subscriptions) ? item.subscriptions : undefined;
-    const entryOutput = new FoloEntryOutput(url, entryId, entry, feed, subscriptions);
+    const entryId = entry.id;
+    const entryOutput = new TimelineSelection(url, entryId, entry, feed, item.subscriptions);
     const searchable = [title, feedTitle, author, summary, url].join(" ").toLocaleLowerCase();
 
     return [new AlfredSFItem(title, {
@@ -55,81 +59,73 @@ export function timelineItems(data: unknown, query = "", iconFor?: IconResolver)
   return needle ? items.filter((item) => item.match?.includes(needle)) : items;
 }
 
-export function subscriptionItems(data: unknown, query = "", iconFor?: IconResolver): AlfredSFItem[] {
-  const subscriptions = isRecord(data) && Array.isArray(data.subscriptions) ? data.subscriptions : [];
+export function subscriptionItems(data: FoloSubscriptionsResult, query = "", iconFor?: IconResolver): AlfredSFItem[] {
   const needle = query.trim().toLocaleLowerCase();
 
-  const items = subscriptions.flatMap((item): AlfredSFItem[] => {
-    const subscription = isRecord(item) ? item : {};
-    const feed = isRecord(subscription.feeds) ? subscription.feeds : undefined;
-    const list = isRecord(subscription.lists) ? subscription.lists : undefined;
+  const items = data.subscriptions.flatMap((subscription): AlfredSFItem[] => {
+    const feed = subscription.feeds;
+    const list = subscription.lists;
     const target = list ?? feed;
     if (!target) return [];
 
-    const kind = list ? "List" : "Feed";
-    const id = optionalString(subscription.listId)
-      ?? optionalString(subscription.feedId)
-      ?? optionalString(target.id);
-    if (!id) return [];
+    const selection = new SubscriptionSelection(subscription);
+    const kind = selection.resourceType === "list" ? "List" : "Feed";
+    const id = selection.resourceId;
 
     const title = text(optionalString(subscription.title) ?? target.title, `Untitled ${kind.toLowerCase()}`);
     const description = text(target.description);
     const category = text(subscription.category);
-    const feedCount = list && Array.isArray(list.feedIds) ? list.feedIds.length : undefined;
+    const feedCount = list ? list.feedIds.length : undefined;
     const detail = feedCount === undefined ? undefined : `${feedCount} ${feedCount === 1 ? "feed" : "feeds"}`;
     const subtitle = [kind, category, detail, description]
       .filter(Boolean)
       .join(" · ");
-    const foloUrl = list
-      ? `https://app.folo.is/share/lists/${encodeURIComponent(id)}`
-      : `https://app.folo.is/share/feeds/${encodeURIComponent(id)}`;
+    const foloUrl = selection.shareUrl;
+    const serializedSelection = selection.serialize();
     const searchable = [title, kind, category, description, id].join(" ").toLocaleLowerCase();
 
     return [new AlfredSFItem(title, {
       subtitle,
-      arg: JSON.stringify(subscription),
       icon: icon(target, iconFor),
       uid: `${kind.toLocaleLowerCase()}-${id}`,
       match: searchable,
+      mods: { alt: { arg: serializedSelection } },
       quicklookurl: foloUrl,
       text: new AlfredSFItemText(foloUrl, description || title),
+      variables: { frr_timeline_filter: serializedSelection },
     })];
   });
 
   return needle ? items.filter((item) => item.match?.includes(needle)) : items;
 }
 
-export function unreadItems(data: unknown, query = "", iconFor?: IconResolver): AlfredSFItem[] {
-  const unread = isRecord(data) && Array.isArray(data.items) ? data.items : [];
+export function unreadItems(data: FoloUnreadResult, query = "", iconFor?: IconResolver): AlfredSFItem[] {
   const needle = query.trim().toLocaleLowerCase();
 
-  const items = unread.flatMap((item): AlfredSFItem[] => {
-    const source = isRecord(item) ? item : {};
+  const items = data.items.flatMap((source): AlfredSFItem[] => {
     const sourceType = source.sourceType;
-    const sourceId = optionalString(source.sourceId);
-    if ((sourceType !== "feed" && sourceType !== "list" && sourceType !== "inbox") || !sourceId) return [];
+    const sourceId = source.sourceId;
+    const selection = new UnreadSelection(source);
 
     const kind = sourceType[0]!.toUpperCase() + sourceType.slice(1);
     const title = text(source.title, `Untitled ${sourceType}`);
     const category = text(source.category);
-    const unreadCount = typeof source.unreadCount === "number" && Number.isFinite(source.unreadCount)
-      ? source.unreadCount
-      : 0;
+    const unreadCount = source.unreadCount;
     const unreadDetail = `${unreadCount} unread`;
     const subtitle = [unreadDetail, kind, category].filter(Boolean).join(" · ");
-    const timelineType = sourceType === "list" ? "lists" : "feeds";
-    const timelineId = sourceType === "inbox" ? optionalString(source.feedId) ?? sourceId : sourceId;
-    const foloUrl = `https://app.folo.is/share/${timelineType}/${encodeURIComponent(timelineId)}`;
+    const foloUrl = selection.shareUrl;
+    const serializedSelection = selection.serialize();
     const searchable = [title, kind, category, unreadDetail, sourceId].join(" ").toLocaleLowerCase();
 
     return [new AlfredSFItem(title, {
       subtitle,
-      arg: JSON.stringify(source),
       icon: icon(source, iconFor),
       uid: `unread-${sourceType}-${sourceId}`,
       match: searchable,
+      mods: { alt: { arg: serializedSelection } },
       quicklookurl: foloUrl,
       text: new AlfredSFItemText(foloUrl, `${title} · ${unreadDetail}`),
+      variables: { frr_timeline_filter: serializedSelection },
     })];
   });
 
@@ -154,13 +150,6 @@ export function errorItem(error: unknown): AlfredSFItem {
 
 export function emptyItem(title: string, subtitle: string): AlfredSFItem {
   return new AlfredSFItem(title, { subtitle, valid: false });
-}
-
-export function output(items: AlfredSFItem[], cacheSeconds?: number): void {
-  const response = new AlfredSF(items, {
-    cache: cacheSeconds ? new AlfredSFCache(cacheSeconds) : undefined,
-  });
-  process.stdout.write(JSON.stringify(response));
 }
 
 function icon(source: unknown, iconFor?: IconResolver): AlfredSFItemIcon | undefined {

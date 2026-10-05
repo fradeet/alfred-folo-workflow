@@ -2,30 +2,40 @@
 /**
  * "Mark read" Run Script entry: marks a single timeline entry as read.
  *
- * Input (argv joined with spaces): the entry ID, typically the `entryId` of a
- * {@link FoloEntryOutput} arg passed down from the timeline Script Filter.
+ * Input (argv joined with spaces): a serialized timeline selection passed down
+ * unchanged from the timeline Script Filter.
  *
  * Output:
- * - stdout: the trimmed entry ID on success.
+ * - stdout: a serialized {@link MarkReadAppOutput} on success.
  * - On failure: the error message is written to stderr and the exit code is 1.
  */
 import { pathToFileURL } from "node:url";
-import { FoloError, runFolo } from "../shared/folo-cli.js";
+import { MarkReadBlockInput, MarkReadBlockOutput, markEntryRead } from "../block/folo/mark-read.js";
+import { TimelineSelection } from "../contracts/timeline-selection.js";
+import { SerializedValue } from "../contracts/serialized-value.js";
 
-/** Marks the Folo entry as read and returns the normalized entry ID. */
-export function markRead(entryId: string): string {
-  const normalizedEntryId = entryId.trim();
-  if (!normalizedEntryId) {
-    throw new FoloError("INVALID_ARGUMENT", "Entry ID is required");
+export class MarkReadAppOutput extends SerializedValue {
+  readonly kind = "mark-read-result";
+
+  constructor(readonly entryId: string) {
+    super();
   }
 
-  runFolo(["entry", "mark-read", normalizedEntryId], {}, (data) => data);
-  return normalizedEntryId;
+  toJSON(): Record<string, unknown> {
+    return { kind: this.kind, entryId: this.entryId };
+  }
+}
+
+/** Marks the selected Folo entry as read. */
+export function markRead(input: TimelineSelection): MarkReadAppOutput {
+  const result: MarkReadBlockOutput = markEntryRead(new MarkReadBlockInput(input.entryId));
+  return new MarkReadAppOutput(result.entryId);
 }
 
 function main(): void {
   try {
-    process.stdout.write(markRead(process.argv.slice(2).join(" ")));
+    const input = TimelineSelection.parse(process.argv.slice(2).join(" "));
+    process.stdout.write(markRead(input).serialize());
   } catch (error: unknown) {
     console.error(error instanceof Error ? error.message : String(error));
     process.exitCode = 1;

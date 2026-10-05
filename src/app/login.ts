@@ -6,7 +6,7 @@
  * `alfred_workflow_bundleid` in the environment.
  *
  * Output:
- * - stdout: the authenticated user profile as JSON (`FoloLoginResult.user`).
+ * - stdout: a serialized {@link LoginAppOutput} containing the user profile.
  * - Side effect: the token from the Folo CLI config file is saved as the
  *   workflow's `FOLO_TOKEN` configuration variable via osascript.
  * - On failure: the error message is written to stderr and the exit code is 1.
@@ -15,9 +15,27 @@ import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { env } from "node:process";
 import { pathToFileURL } from "node:url";
-import { runFolo } from "../shared/folo-cli.js";
 import { isRecord } from "../shared/guards.js";
-import { FoloLoginResult } from "../types/folo-types.js";
+import { LoginBlockInput, loginToFolo } from "../block/folo/login.js";
+import { SerializedValue } from "../contracts/serialized-value.js";
+import { FoloUser } from "../types/folo-types.js";
+
+export class LoginAppInput {}
+
+export class LoginAppOutput extends SerializedValue {
+  readonly kind = "login-result";
+
+  constructor(
+    readonly name: string,
+    readonly user: FoloUser,
+  ) {
+    super();
+  }
+
+  toJSON(): Record<string, unknown> {
+    return { kind: this.kind, name: this.name, user: this.user };
+  }
+}
 
 /** Extracts the login token from the raw Folo CLI config file content. */
 export function readToken(configText: string): string {
@@ -61,18 +79,20 @@ end tell`;
 }
 
 /** Runs the Folo CLI login, persists its token, and prints the user profile. */
-async function login(): Promise<void> {
-  const data = runFolo(["login"], { timeout: 190_000 }, FoloLoginResult.from);
+export async function login(_input: LoginAppInput): Promise<LoginAppOutput> {
+  const data = loginToFolo(new LoginBlockInput());
 
   const token = readToken(await readFile(data.configPath, "utf8"));
   setWorkflowToken(token);
-  process.stdout.write(JSON.stringify(data.user));
+  return new LoginAppOutput(data.user.name || data.user.handle || "Folo user", data.user);
 }
 
 const entryPath = process.argv[1];
 if (entryPath && import.meta.url === pathToFileURL(entryPath).href) {
-  login().catch((error: unknown) => {
-    console.error(error instanceof Error ? error.message : String(error));
-    process.exitCode = 1;
-  });
+  login(new LoginAppInput())
+    .then((output) => process.stdout.write(output.serialize()))
+    .catch((error: unknown) => {
+      console.error(error instanceof Error ? error.message : String(error));
+      process.exitCode = 1;
+    });
 }

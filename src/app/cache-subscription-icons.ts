@@ -12,8 +12,7 @@
 import { mkdir, open, stat, unlink } from "node:fs/promises";
 import { join } from "node:path";
 import { cacheIcons, iconCacheDirectory } from "../shared/icon-cache.js";
-import { runFolo } from "../shared/folo-cli.js";
-import { FoloSubscriptionsResult } from "../types/folo-types.js";
+import { SubscriptionsBlockInput, getSubscriptions } from "../block/folo/subscriptions.js";
 
 const LOCK_MAX_AGE = 60_000;
 
@@ -25,7 +24,7 @@ async function main(): Promise<void> {
   if (!lock) return;
 
   try {
-    const data = runFolo(["subscription", "list"], {}, FoloSubscriptionsResult.from);
+    const data = getSubscriptions(new SubscriptionsBlockInput());
     const sources = data.subscriptions.flatMap((item) => item.lists ?? item.feeds ?? []);
     await cacheIcons(sources, { cacheDirectory: directory });
   } finally {
