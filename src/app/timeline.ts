@@ -7,7 +7,6 @@
  * - a serialized {@link SubscriptionSelection} or {@link UnreadSelection}, or
  * - an {@link TimelineViewInput} JSON value emitted by an Alfred node, such as
  *   `{"kind": "view-input", "view": "articles"}`, or
- * - a serialized {@link TimelineDirectInput}, or
  * - a standard input JSON object marked with `kind: "standard"` (see
  *   docs/reference/standard-input.md).
  *   Malformed JSON falls back to a query.
@@ -42,7 +41,7 @@ import {
   standardString,
 } from "../shared/standard-input.js";
 import { TimelineBlockInput, getTimeline } from "../block/folo/timeline.js";
-import { SerializedValue, parseRecord } from "../contracts/serialized-value.js";
+import { parseRecord } from "../contracts/serialized-value.js";
 import { SubscriptionSelection } from "../contracts/subscription-selection.js";
 import { UnreadSelection } from "../contracts/unread-selection.js";
 import { AlfredSF, AlfredSFCache, AlfredSFItem, AlfredVariables } from "../types/alfred-types.js";
@@ -65,47 +64,18 @@ const timelineStandardSpec: StandardInputSpec = {
 
 /** argv JSON kinds routed to an existing workflow contract. */
 const workflowContractKinds = new Set([
-  "timeline-input",
   "subscription-selection",
   "unread-selection",
   "view-input",
 ]);
 
 export type TimelineAppInput =
-  | TimelineDirectInput
   | SubscriptionSelection
   | UnreadSelection
   | TimelineViewInput
   | TimelineStandardInput;
 
-export class TimelineDirectInput extends SerializedValue {
-  readonly kind = "timeline-input";
-
-  constructor(
-    readonly query: string,
-    readonly request = new TimelineBlockInput(),
-  ) {
-    super();
-  }
-
-  toJSON(): Record<string, unknown> {
-    return { kind: this.kind, query: this.query, request: this.request };
-  }
-
-  static from(value: unknown): TimelineDirectInput {
-    if (typeof value !== "object" || value === null || Array.isArray(value)) {
-      throw new TypeError("Timeline app input must be an object");
-    }
-    const data = value as Record<string, unknown>;
-    if (data.kind !== "timeline-input") throw new TypeError("Invalid timeline app input kind");
-    return new TimelineDirectInput(
-      typeof data.query === "string" ? data.query : "",
-      TimelineBlockInput.from(data.request ?? {}),
-    );
-  }
-}
-
-/** Standard input for external callers; the constructor validates every field. */
+/** Validated request used for standard calls and normalized workflow inputs. */
 export class TimelineStandardInput {
   readonly query: string;
   readonly view?: string;
@@ -143,9 +113,9 @@ export class TimelineStandardInput {
     return new TimelineStandardInput(value);
   }
 
-  /** Converts the validated input into the timeline execution input. */
-  toDirectInput(): TimelineDirectInput {
-    return new TimelineDirectInput(this.query, new TimelineBlockInput({
+  /** Converts the validated input into the Folo block request. */
+  toBlockInput(): TimelineBlockInput {
+    return new TimelineBlockInput({
       view: this.view,
       limit: this.limit,
       unreadOnly: this.unreadOnly,
@@ -153,8 +123,17 @@ export class TimelineStandardInput {
       feed: this.feed,
       list: this.list,
       category: this.category,
-    }));
+    });
   }
+}
+
+/** Keeps the existing lenient workflow defaults outside standard input mode. */
+function legacyTimelineDefaults(env: NodeJS.ProcessEnv): Pick<TimelineStandardInput, "limit" | "unreadOnly"> {
+  const configured = /^\d+$/.test(env.FRR_TIMELINE_LIMIT ?? "") ? Number(env.FRR_TIMELINE_LIMIT) : 30;
+  return {
+    limit: Number.isInteger(configured) && configured > 0 ? configured : 30,
+    unreadOnly: env.frrTimelineUnreadOnly === "1",
+  };
 }
 
 export function parseTimelineAppInput(
@@ -173,48 +152,33 @@ export function parseTimelineAppInput(
   if (!query.startsWith("{")) {
     const target = parseFoloShareUrl(query);
     return target
-      ? new TimelineDirectInput(
-          "",
-          new TimelineBlockInput(target.type === "list" ? { list: target.id } : { feed: target.id }),
-        )
-      : new TimelineDirectInput(query);
+      ? new TimelineStandardInput({
+          ...legacyTimelineDefaults(env),
+          ...(target.type === "list" ? { list: target.id } : { feed: target.id }),
+        })
+      : new TimelineStandardInput({ ...legacyTimelineDefaults(env), query });
   }
   let data: Record<string, unknown>;
   try {
     data = parseRecord(query, "Timeline app input");
   } catch {
-    return new TimelineDirectInput(query);
+    return new TimelineStandardInput({ ...legacyTimelineDefaults(env), query });
   }
-  if (data.kind === "timeline-input") return TimelineDirectInput.from(data);
   if (data.kind === "subscription-selection") return SubscriptionSelection.from(data);
   if (data.kind === "unread-selection") return UnreadSelection.from(data);
   if (data.kind === "view-input") return TimelineViewInput.from(data);
-  return new TimelineDirectInput(query);
+  return new TimelineStandardInput({ ...legacyTimelineDefaults(env), query });
 }
 
 export function resolveTimelineInput(
   input: TimelineAppInput,
   env: NodeJS.ProcessEnv = process.env,
-): TimelineDirectInput {
-  if (input instanceof TimelineStandardInput) return input.toDirectInput();
-
-  let query = "";
-  let request: TimelineBlockInput;
-  if (input instanceof TimelineDirectInput) {
-    query = input.query;
-    request = input.request;
-  } else if (input instanceof TimelineViewInput) {
-    request = new TimelineBlockInput({ view: input.view });
-  } else {
-    request = new TimelineBlockInput(
-      input.resourceType === "list" ? { list: input.resourceId } : { feed: input.resourceId },
-    );
-  }
-  const limit = /^\d+$/.test(env.FRR_TIMELINE_LIMIT ?? "") ? Number(env.FRR_TIMELINE_LIMIT) : 30;
-  return new TimelineDirectInput(
-    query,
-    request.withDefaultLimit(limit).withDefaultUnreadOnly(env.frrTimelineUnreadOnly === "1"),
-  );
+): TimelineStandardInput {
+  if (input instanceof TimelineStandardInput) return input;
+  const source = input instanceof TimelineViewInput
+    ? { view: input.view }
+    : input.resourceType === "list" ? { list: input.resourceId } : { feed: input.resourceId };
+  return new TimelineStandardInput({ ...legacyTimelineDefaults(env), ...source });
 }
 
 export class TimelineAppOutput extends AlfredSF {
@@ -228,8 +192,8 @@ export class TimelineAppOutput extends AlfredSF {
 }
 
 export async function timeline(input: TimelineAppInput): Promise<TimelineAppOutput> {
-  const directInput = resolveTimelineInput(input);
-  const request = directInput.request;
+  const standardInput = resolveTimelineInput(input);
+  const request = standardInput.toBlockInput();
   const data = getTimeline(request);
   const iconFor = await cacheIcons(data.entries.map((item) => item.feeds));
   const items = timelineItems(data, iconFor);

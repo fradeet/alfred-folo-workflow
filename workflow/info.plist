@@ -340,7 +340,7 @@
 				<key>destinationuid</key>
 				<string>3C69F4F0-BE10-4441-9249-06D93D843E69</string>
 				<key>modifiers</key>
-				<integer>131072</integer>
+				<integer>524288</integer>
 				<key>modifiersubtext</key>
 				<string>View all feeds (include already read)</string>
 				<key>vitoclose</key>
@@ -547,6 +547,34 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>keyword</key>
+				<string>{var:FRR_TIMELINE_KEYWORD}</string>
+				<key>skipuniversalaction</key>
+				<true/>
+				<key>subtext</key>
+				<string>View unread feeds // ⌥↩ View all feed (include already read)</string>
+				<key>text</key>
+				<string>Folo Timeline</string>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>inboundconfig</key>
+			<dict>
+				<key>externalid</key>
+				<string>keyword_timeline</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>DAF6B6DB-684C-47F8-A2E4-D368CAFB141F</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>browser</key>
 				<string></string>
 				<key>skipqueryencode</key>
@@ -562,29 +590,6 @@
 			<string>alfred.workflow.action.openurl</string>
 			<key>uid</key>
 			<string>B85A7A0C-97A4-424D-8310-CC557C79032B</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argumenttype</key>
-				<integer>2</integer>
-				<key>keyword</key>
-				<string>{var:FRR_TIMELINE_KEYWORD}</string>
-				<key>skipuniversalaction</key>
-				<true/>
-				<key>subtext</key>
-				<string>View unread feeds // ⇧↩ View all feed (include already read)</string>
-				<key>text</key>
-				<string>Folo Timeline</string>
-				<key>withspace</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.keyword</string>
-			<key>uid</key>
-			<string>DAF6B6DB-684C-47F8-A2E4-D368CAFB141F</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>

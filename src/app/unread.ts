@@ -46,16 +46,7 @@ const unreadStandardSpec: StandardInputSpec = {
   ],
 };
 
-/** Legacy Alfred input: a filter query applied by Alfred, not by this app. */
-export class UnreadQueryInput {
-  constructor(readonly query: string) {}
-
-  static parse(value: string): UnreadQueryInput {
-    return new UnreadQueryInput(value.trim());
-  }
-}
-
-/** Standard input for external callers; the constructor validates every field. */
+/** Validated input for standard calls and Alfred's plain filter query. */
 export class UnreadStandardInput {
   readonly query: string;
   readonly view?: string;
@@ -73,16 +64,14 @@ export class UnreadStandardInput {
   }
 }
 
-export type UnreadAppInput = UnreadQueryInput | UnreadStandardInput;
-
 /** Parses argv, activating the standard environment variables only when marked. */
 export function parseUnreadAppInput(
   value: string,
   env: NodeJS.ProcessEnv = process.env,
-): UnreadAppInput {
+): UnreadStandardInput {
   const standard = resolveStandardInput(value, env, unreadStandardSpec, () => false);
   if (standard !== undefined) return UnreadStandardInput.from(standard);
-  return UnreadQueryInput.parse(value);
+  return new UnreadStandardInput({ query: value });
 }
 
 export class UnreadAppOutput extends AlfredSF {
@@ -91,10 +80,8 @@ export class UnreadAppOutput extends AlfredSF {
   }
 }
 
-export async function unread(input: UnreadAppInput): Promise<UnreadAppOutput> {
-  const blockInput = input instanceof UnreadStandardInput
-    ? new UnreadBlockInput(input.view)
-    : new UnreadBlockInput();
+export async function unread(input: UnreadStandardInput): Promise<UnreadAppOutput> {
+  const blockInput = new UnreadBlockInput(input.view);
   const data = getUnread(blockInput);
   const iconFor = await loadCachedIcons(data.items);
   const items = unreadItems(data, iconFor);
