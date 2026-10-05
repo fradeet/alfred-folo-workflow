@@ -10,8 +10,9 @@ import { MarkReadBlockInput } from "../src/block/folo/mark-read.js";
 import { SubscriptionsBlockInput } from "../src/block/folo/subscriptions.js";
 import { TimelineBlockInput } from "../src/block/folo/timeline.js";
 import { UnreadBlockInput } from "../src/block/folo/unread.js";
-import { FoloView } from "../src/types/folo-types.js";
+import { FoloTimelineResult, FoloView } from "../src/types/folo-types.js";
 import { readResponseCache, responseCacheFilename, writeResponseCache } from "../src/shared/response-cache.js";
+import { readLastTimelineRequest, readTimelineCache, timelineCacheFilename, writeLastTimelineRequest, writeTimelineCache } from "../src/shared/timeline-cache.js";
 
 test("Folo block inputs own their complete CLI argument mapping", () => {
   assert.deepEqual(
@@ -113,6 +114,56 @@ test("response cache reads stored payloads back and rejects foreign filenames", 
       () => readResponseCache(corrupt, { cacheDirectory: directory }),
       /not valid JSON/,
     );
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test("timeline cache reads fresh entries by complete query and retains the capture time", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "alfred-folo-timeline-cache-"));
+  try {
+    const request = JSON.stringify({ query: "TypeScript", unreadOnly: true, view: "articles", cursor: "" });
+    const otherQuery = JSON.stringify({ query: "JavaScript", unreadOnly: true, view: "articles", cursor: "" });
+    const allEntries = JSON.stringify({ query: "TypeScript", unreadOnly: false, view: "articles", cursor: "" });
+    const nextPage = JSON.stringify({ query: "TypeScript", unreadOnly: true, view: "articles", cursor: "next" });
+    const capturedAt = Date.parse("2026-09-26T10:00:00.000Z");
+    const data = FoloTimelineResult.from({
+      entries: [{
+        entries: { id: "entry-1", media: [{ url: "https://example.com/a", preview_image_url: "https://example.com/p" }],
+          attachments: [{ url: "https://example.com/b", mime_type: "audio/mpeg", duration_in_seconds: 0 }] },
+        feeds: { id: "feed-1" },
+      }],
+      nextCursor: null,
+      hasNext: false,
+    });
+    writeTimelineCache(request, data, { cacheDirectory: directory, now: capturedAt });
+    assert.notEqual(timelineCacheFilename(request), timelineCacheFilename(otherQuery));
+    assert.deepEqual(readTimelineCache(request, { cacheDirectory: directory, now: capturedAt + 59_999 }), {
+      cachedAt: "2026-09-26T10:00:00.000Z",
+      data,
+    });
+    assert.equal(readTimelineCache(otherQuery, { cacheDirectory: directory, now: capturedAt }), undefined);
+    assert.equal(readTimelineCache(allEntries, { cacheDirectory: directory, now: capturedAt }), undefined);
+    assert.equal(readTimelineCache(nextPage, { cacheDirectory: directory, now: capturedAt }), undefined);
+    assert.equal(readTimelineCache(request, { cacheDirectory: directory, now: capturedAt + 60_000 }), undefined);
+    assert.equal(readTimelineCache(request, { cacheDirectory: directory, now: capturedAt - 1 }), undefined);
+
+    await writeFile(join(directory, timelineCacheFilename(request)), "{broken");
+    assert.equal(readTimelineCache(request, { cacheDirectory: directory, now: capturedAt }), undefined);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test("last timeline request survives result expiry and reports missing or invalid records", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "alfred-folo-last-query-"));
+  try {
+    assert.throws(() => readLastTimelineRequest({ cacheDirectory: directory }), /No previous timeline query/);
+    const request = JSON.stringify({ kind: "standard", query: "first", unreadOnly: true });
+    writeLastTimelineRequest(request, { cacheDirectory: directory, now: 1_000 });
+    assert.equal(readLastTimelineRequest({ cacheDirectory: directory, now: 1_000_000 }), request);
+    await writeFile(join(directory, "last-timeline-request.json"), '{"request":42}');
+    assert.throws(() => readLastTimelineRequest({ cacheDirectory: directory }), /previous timeline query is invalid/);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }

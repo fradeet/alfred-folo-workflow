@@ -5,9 +5,11 @@ The public app entry points under `workflow/dist/app/` accept a uniform
 excluded because its sole input is a workflow cache filename passed through argv.
 Standard input is the name of this project's app input protocol; it is not Unix stdin.
 
-The protocol leaves the workflow's internal behavior untouched: Alfred nodes
-keep passing complete serialized contracts through argv, and those calls never
-read the standard input variables described here.
+Alfred nodes normally pass complete serialized contracts through argv. The
+timeline refresh branch uses the protocol's environment form: the Script
+Filter exports the complete `frrTimeline…` field set, and the downstream script
+sets `frrTimelineIsStandardInput=1` before calling timeline without argv. Entry
+selections continue to use their original serialized contracts.
 
 ## JSON format
 
@@ -74,6 +76,7 @@ variable mapping.
 | `mark-read` | `workflow/dist/app/mark-read.js` | [`MarkReadStandardInput` and `markReadStandardSpec`](../../src/app/mark-read.ts) | Workflow selections remain complete contracts and ignore standard business variables. |
 | `mark-read-above` | `workflow/dist/app/mark-read-above.js` | [`MarkReadAboveStandardInput` and `markReadAboveStandardSpec`](../../src/app/mark-read-above.ts) | Requires an accessible cached timeline response; standard input does not create or restore the cache. |
 | `login` | `workflow/dist/app/login.js` | [`LoginStandardInput` and `loginStandardSpec`](../../src/app/login.ts) | Still requires macOS, Alfred, and `osascript`. |
+| `last-timeline-query` | `workflow/dist/app/last-timeline-query.js` | No input ([source](../../src/app/last-timeline-query.ts)) | Terminal helper that prints a saved `TimelineStandardInput` for direct use as timeline argv; it does not consume standard input. |
 
 `cache-subscription-icons` is an internal background worker and does not offer
 standard input.
