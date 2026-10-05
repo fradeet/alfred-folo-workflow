@@ -7,7 +7,7 @@
 	<key>hidelabels</key>
 	<false/>
 	<key>iconid</key>
-	<string>D546776F-C262-499E-817F-D61908692F39</string>
+	<string>E4EDF2DB-E43E-481C-9A19-96000D7F7BE2</string>
 	<key>iconisuserspecified</key>
 	<false/>
 	<key>items</key>
@@ -18,16 +18,33 @@
 				<key>autoworkflowuid</key>
 				<true/>
 				<key>triggerid</key>
-				<string>frr-timeline</string>
+				<string>subscribed_unread_lists</string>
 			</dict>
 			<key>actionuid</key>
 			<string>remote.alfred.runworkflow</string>
 			<key>buttoniconid</key>
-			<string>6E7BCD02-0D48-40D5-883A-58FBBB66829E</string>
+			<string>4C0B4DE5-3300-40A3-926A-442BA2CDF9A7</string>
+			<key>buttonlabel</key>
+			<string>Unread Sub</string>
+			<key>itemuid</key>
+			<string>BD59C803-EDE9-4EB9-ADCB-8E443824CD3E</string>
+		</dict>
+		<dict>
+			<key>actionconfig</key>
+			<dict>
+				<key>autoworkflowuid</key>
+				<true/>
+				<key>triggerid</key>
+				<string>timeline</string>
+			</dict>
+			<key>actionuid</key>
+			<string>remote.alfred.runworkflow</string>
+			<key>buttoniconid</key>
+			<string>DDEBB2CF-0D8A-4BA7-8519-E6BA895C9B84</string>
 			<key>buttonlabel</key>
 			<string>Timeline</string>
 			<key>itemuid</key>
-			<string>D62852F8-CAFB-4D56-A7C4-966BED6DD939</string>
+			<string>79EFF894-F054-467D-B609-FD29426CC99B</string>
 		</dict>
 		<dict>
 			<key>actionconfig</key>
@@ -40,51 +57,36 @@
 			<key>actionuid</key>
 			<string>remote.alfred.runworkflow</string>
 			<key>buttoniconid</key>
-			<string>DBA95262-BB4D-4695-8258-9D54892D79A1</string>
+			<string>F00BBB61-031D-4255-BFA8-C653D278B8CC</string>
 			<key>buttonlabel</key>
-			<string>Timeline view</string>
+			<string>Timeline View</string>
 			<key>itemuid</key>
-			<string>E0C8DEBF-599E-4756-A483-9988C33E6B7D</string>
+			<string>808B28E4-B41B-4B67-A00D-0FFF4D4943FE</string>
 		</dict>
-		<dict/>
 		<dict/>
 		<dict>
 			<key>actionconfig</key>
 			<dict>
 				<key>autoworkflowuid</key>
 				<true/>
+				<key>confirm</key>
+				<false/>
 				<key>triggerid</key>
-				<string>folo-subscribed-unread-lists</string>
+				<string>subscribed_lists</string>
 			</dict>
 			<key>actionuid</key>
 			<string>remote.alfred.runworkflow</string>
 			<key>buttoniconid</key>
-			<string>ACFA11A1-6CBF-445E-9272-7FD78C04180A</string>
+			<string>60FEDA1E-C6A4-4F84-B6DA-D6547BA2C20C</string>
 			<key>buttonlabel</key>
-			<string>Unread Sub</string>
+			<string>Subscription List</string>
 			<key>itemuid</key>
-			<string>5F6C1459-A64E-4B47-B671-278A01215185</string>
+			<string>97B94152-2B17-411F-833A-54377126BCE6</string>
 		</dict>
 		<dict/>
 		<dict/>
 		<dict/>
-		<dict>
-			<key>actionconfig</key>
-			<dict>
-				<key>autoworkflowuid</key>
-				<true/>
-				<key>triggerid</key>
-				<string>folo-subscription-list</string>
-			</dict>
-			<key>actionuid</key>
-			<string>remote.alfred.runworkflow</string>
-			<key>buttoniconid</key>
-			<string>91CDA2FF-F340-4EEE-A2E8-41BAD6BADBBB</string>
-			<key>buttonlabel</key>
-			<string>Sub List</string>
-			<key>itemuid</key>
-			<string>D28493FB-13A9-492B-925F-FEC656B04E48</string>
-		</dict>
+		<dict/>
 		<dict/>
 		<dict/>
 		<dict/>
@@ -101,16 +103,33 @@
 				<key>autoworkflowuid</key>
 				<true/>
 				<key>triggerid</key>
-				<string>frr-timeline</string>
+				<string>subscribed_unread_lists</string>
 			</dict>
 			<key>actionuid</key>
 			<string>remote.alfred.runworkflow</string>
 			<key>buttoniconid</key>
-			<string>6E7BCD02-0D48-40D5-883A-58FBBB66829E</string>
+			<string>4C0B4DE5-3300-40A3-926A-442BA2CDF9A7</string>
+			<key>buttonlabel</key>
+			<string>Unread Sub</string>
+			<key>itemuid</key>
+			<string>BD59C803-EDE9-4EB9-ADCB-8E443824CD3E</string>
+		</dict>
+		<dict>
+			<key>actionconfig</key>
+			<dict>
+				<key>autoworkflowuid</key>
+				<true/>
+				<key>triggerid</key>
+				<string>timeline</string>
+			</dict>
+			<key>actionuid</key>
+			<string>remote.alfred.runworkflow</string>
+			<key>buttoniconid</key>
+			<string>DDEBB2CF-0D8A-4BA7-8519-E6BA895C9B84</string>
 			<key>buttonlabel</key>
 			<string>Timeline</string>
 			<key>itemuid</key>
-			<string>D62852F8-CAFB-4D56-A7C4-966BED6DD939</string>
+			<string>79EFF894-F054-467D-B609-FD29426CC99B</string>
 		</dict>
 		<dict>
 			<key>actionconfig</key>
@@ -123,51 +142,36 @@
 			<key>actionuid</key>
 			<string>remote.alfred.runworkflow</string>
 			<key>buttoniconid</key>
-			<string>DBA95262-BB4D-4695-8258-9D54892D79A1</string>
+			<string>F00BBB61-031D-4255-BFA8-C653D278B8CC</string>
 			<key>buttonlabel</key>
-			<string>Timeline view</string>
+			<string>Timeline View</string>
 			<key>itemuid</key>
-			<string>E0C8DEBF-599E-4756-A483-9988C33E6B7D</string>
+			<string>808B28E4-B41B-4B67-A00D-0FFF4D4943FE</string>
 		</dict>
-		<dict/>
 		<dict/>
 		<dict>
 			<key>actionconfig</key>
 			<dict>
 				<key>autoworkflowuid</key>
 				<true/>
+				<key>confirm</key>
+				<false/>
 				<key>triggerid</key>
-				<string>folo-subscribed-unread-lists</string>
+				<string>subscribed_lists</string>
 			</dict>
 			<key>actionuid</key>
 			<string>remote.alfred.runworkflow</string>
 			<key>buttoniconid</key>
-			<string>ACFA11A1-6CBF-445E-9272-7FD78C04180A</string>
+			<string>60FEDA1E-C6A4-4F84-B6DA-D6547BA2C20C</string>
 			<key>buttonlabel</key>
-			<string>Unread Sub</string>
+			<string>Subscription List</string>
 			<key>itemuid</key>
-			<string>5F6C1459-A64E-4B47-B671-278A01215185</string>
+			<string>97B94152-2B17-411F-833A-54377126BCE6</string>
 		</dict>
 		<dict/>
 		<dict/>
 		<dict/>
-		<dict>
-			<key>actionconfig</key>
-			<dict>
-				<key>autoworkflowuid</key>
-				<true/>
-				<key>triggerid</key>
-				<string>folo-subscription-list</string>
-			</dict>
-			<key>actionuid</key>
-			<string>remote.alfred.runworkflow</string>
-			<key>buttoniconid</key>
-			<string>91CDA2FF-F340-4EEE-A2E8-41BAD6BADBBB</string>
-			<key>buttonlabel</key>
-			<string>Sub List</string>
-			<key>itemuid</key>
-			<string>D28493FB-13A9-492B-925F-FEC656B04E48</string>
-		</dict>
+		<dict/>
 		<dict/>
 		<dict/>
 		<dict/>
