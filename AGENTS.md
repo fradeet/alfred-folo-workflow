@@ -76,9 +76,10 @@ contracts -> types/shared
   so they can be tested without executing the entry point.
 - If an app module is imported by another module, guard its CLI entry point with
   an `import.meta.url`/`pathToFileURL` direct-execution check.
-- App orchestration may convert an app input into a block input once and convert
-  block outputs into the app output once. Do not repeatedly extract fields and
-  rebuild ad-hoc intermediate objects.
+- App orchestration converts an app input into block inputs in one place and
+  converts block outputs into the app output in one place. Calling a block
+  operation in a loop over a list computed once is fine; repeatedly extracting
+  fields and rebuilding ad-hoc intermediate objects is not.
 - Catch entry-point failures at the outer boundary. Script Filters should emit
   an Alfred error item; action scripts should report the error on stderr and set
   a non-zero exit code.

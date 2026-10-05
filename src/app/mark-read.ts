@@ -27,15 +27,16 @@ export class MarkReadAppOutput extends SerializedValue {
 }
 
 /** Marks the selected Folo entry as read. */
-export function markRead(input: TimelineSelection): MarkReadAppOutput {
-  const result: MarkReadBlockOutput = markEntryRead(new MarkReadBlockInput(input.entryId));
+export async function markRead(input: TimelineSelection): Promise<MarkReadAppOutput> {
+  const result: MarkReadBlockOutput = await markEntryRead(new MarkReadBlockInput(input.entryId));
   return new MarkReadAppOutput(result.entryId);
 }
 
-function main(): void {
+async function main(): Promise<void> {
   try {
     const input = TimelineSelection.parse(process.argv.slice(2).join(" "));
-    process.stdout.write(markRead(input).serialize());
+    const output = await markRead(input);
+    process.stdout.write(output.serialize());
   } catch (error: unknown) {
     console.error(error instanceof Error ? error.message : String(error));
     process.exitCode = 1;

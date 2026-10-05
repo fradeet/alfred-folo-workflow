@@ -61,7 +61,7 @@ export class TimelineBlockInput {
 }
 
 export function getTimeline(input: TimelineBlockInput): FoloTimelineResult {
-  return runFolo(input.toArguments(), {}, FoloTimelineResult.from);
+  return runFolo(input.toArguments(), { cache: true }, FoloTimelineResult.from);
 }
 
 function optionalString(value: unknown): string | undefined {
