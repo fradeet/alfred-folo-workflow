@@ -263,7 +263,7 @@ export async function timeline(
       ? en.timeline.emptySubscription
       : request.view
         ? en.timeline.emptyView
-        : en.common.tryAnotherQuery;
+        : en.timeline.emptyTimeline;
   const output = new TimelineAppOutput(
     items.length ? items : [new AlfredSFItem(en.timeline.emptyTitle, {
       subtitle: emptySubtitle,

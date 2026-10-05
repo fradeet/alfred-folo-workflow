@@ -277,7 +277,7 @@
 				<key>modifiers</key>
 				<integer>262144</integer>
 				<key>modifiersubtext</key>
-				<string>Open In Folo</string>
+				<string>Open in Folo</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -504,7 +504,7 @@
 				<key>modifiers</key>
 				<integer>524288</integer>
 				<key>modifiersubtext</key>
-				<string>View all entry (include already read)</string>
+				<string>Show all entries</string>
 				<key>vitoclose</key>
 				<true/>
 			</dict>
@@ -573,7 +573,7 @@
 				<key>modifiers</key>
 				<integer>262144</integer>
 				<key>modifiersubtext</key>
-				<string>Open In Folo</string>
+				<string>Open in Folo</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -1457,7 +1457,7 @@
 				<key>queuemode</key>
 				<integer>1</integer>
 				<key>runningsubtext</key>
-				<string>Loading Unread......</string>
+				<string>Loading unread subscriptions…</string>
 				<key>script</key>
 				<string></string>
 				<key>scriptargtype</key>
@@ -1467,9 +1467,9 @@
 				<key>skipuniversalaction</key>
 				<true/>
 				<key>subtext</key>
-				<string>Retrieve unread feed</string>
+				<string>Browse feeds and lists with unread entries</string>
 				<key>title</key>
-				<string>Folo Unread Feed</string>
+				<string>Unread subscriptions</string>
 				<key>type</key>
 				<integer>8</integer>
 				<key>withspace</key>
@@ -2062,7 +2062,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		<key>B85A7A0C-97A4-424D-8310-CC557C79032B</key>
 		<dict>
 			<key>note</key>
-			<string>Open In Folo</string>
+			<string>Open in Folo</string>
 			<key>xpos</key>
 			<real>2240</real>
 			<key>ypos</key>

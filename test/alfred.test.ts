@@ -335,6 +335,7 @@ test("timeline app renders a fresh query cache and restores the action response 
     writeTimelineCache(emptyInput.serialize(), FoloTimelineResult.from({ entries: [], nextCursor: null, hasNext: false }));
     const emptyOutput = await timeline(emptyInput);
     assert.equal(emptyOutput.items[0]?.valid, false);
+    assert.equal(emptyOutput.items[0]?.subtitle, "Your timeline has no entries");
     assert.deepEqual(emptyOutput.items[0]?.mods?.shift, { valid: true, subtitle: "Refresh this timeline page" });
   } finally {
     if (previous === undefined) delete process.env.alfred_workflow_cache;

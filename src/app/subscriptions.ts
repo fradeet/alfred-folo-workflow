@@ -89,7 +89,7 @@ export async function subscriptions(input: SubscriptionsStandardInput): Promise<
   const iconFor = await cacheIcons(sources);
   const items = subscriptionItems(data, iconFor);
   return new SubscriptionsAppOutput(
-    items.length ? items : [emptyItem(en.subscriptions.emptyTitle, en.common.tryAnotherQuery)],
+    items.length ? items : [emptyItem(en.subscriptions.emptyTitle, en.subscriptions.emptySubtitle)],
     true,
     { frrResultCacheKey: responseCacheFilename(blockInput.toArguments()) },
   );

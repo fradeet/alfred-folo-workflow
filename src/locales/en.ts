@@ -3,12 +3,13 @@ export const en = {
   timeline: {
     untitledEntry: "Untitled entry",
     unknownFeed: "Unknown feed",
-    noNextPage: "No more page next",
+    noNextPage: "No next page",
     alreadyAtTop: "Already at the top",
     emptyTitle: "No Folo entries",
     emptyUnreadSubscription: "This subscription has no unread entries",
     emptySubscription: "This subscription has no entries",
     emptyView: "This view has no entries",
+    emptyTimeline: "Your timeline has no entries",
     refreshPage: "Refresh this timeline page",
   },
   subscriptions: {
@@ -17,6 +18,7 @@ export const en = {
     untitled: (kind: string): string => `Untitled ${kind.toLowerCase()}`,
     feedCount: (count: number): string => `${count} ${count === 1 ? "feed" : "feeds"}`,
     emptyTitle: "No Folo subscriptions",
+    emptySubtitle: "Follow a feed or list in Folo",
   },
   unread: {
     untitled: (sourceType: string): string => `Untitled ${sourceType}`,
@@ -36,8 +38,5 @@ export const en = {
     emptyToken: "Folo token must not be empty.",
     missingWorkflowId: "Alfred did not provide alfred_workflow_bundleid.",
     saveTokenFailed: "Unable to save the Folo token in Alfred.",
-  },
-  common: {
-    tryAnotherQuery: "Try another query",
   },
 } as const;
