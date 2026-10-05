@@ -689,6 +689,29 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string>dist/app/login.js</string>
+				<key>type</key>
+				<integer>8</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>C1A3E00B-AB1B-40D0-A288-30D4B9443D65</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>tasksettings</key>
 				<dict>
 					<key>key_path</key>
@@ -789,29 +812,6 @@
 			<string>B4EB662E-3F9A-4CFC-A05B-27AB1FF22784</string>
 			<key>version</key>
 			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>0</integer>
-				<key>script</key>
-				<string></string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>scriptfile</key>
-				<string>dist/app/login.js</string>
-				<key>type</key>
-				<integer>8</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>C1A3E00B-AB1B-40D0-A288-30D4B9443D65</string>
-			<key>version</key>
-			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -1370,38 +1370,6 @@
 			<integer>3</integer>
 		</dict>
 		<dict>
-			<key>config</key>
-			<dict>
-				<key>conditions</key>
-				<array>
-					<dict>
-						<key>inputstring</key>
-						<string>{var:FRR_MARK_WHEN_READ}</string>
-						<key>matchcasesensitive</key>
-						<false/>
-						<key>matchmode</key>
-						<integer>5</integer>
-						<key>matchstring</key>
-						<string></string>
-						<key>outputlabel</key>
-						<string>Mark when reading</string>
-						<key>uid</key>
-						<string>1C29B40A-51AF-45FB-BC87-A9DFDC041215</string>
-					</dict>
-				</array>
-				<key>elselabel</key>
-				<string>else</string>
-				<key>hideelse</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.conditional</string>
-			<key>uid</key>
-			<string>5C3BDC35-C9A5-4A3C-B255-1FAC11321760</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
 			<key>type</key>
 			<string>alfred.workflow.utility.junction</string>
 			<key>uid</key>
@@ -1431,6 +1399,38 @@
 			<string>alfred.workflow.utility.argument</string>
 			<key>uid</key>
 			<string>F1C0B4DD-5662-43BE-8CFA-636D79CCF30F</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>conditions</key>
+				<array>
+					<dict>
+						<key>inputstring</key>
+						<string>{var:FRR_MARK_WHEN_READ}</string>
+						<key>matchcasesensitive</key>
+						<false/>
+						<key>matchmode</key>
+						<integer>5</integer>
+						<key>matchstring</key>
+						<string></string>
+						<key>outputlabel</key>
+						<string>Mark when reading</string>
+						<key>uid</key>
+						<string>1C29B40A-51AF-45FB-BC87-A9DFDC041215</string>
+					</dict>
+				</array>
+				<key>elselabel</key>
+				<string>else</string>
+				<key>hideelse</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.conditional</string>
+			<key>uid</key>
+			<string>5C3BDC35-C9A5-4A3C-B255-1FAC11321760</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -2241,12 +2241,12 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 				<key>placeholder</key>
 				<string>e.g. Zw8MDw70......</string>
 				<key>required</key>
-				<true/>
+				<false/>
 				<key>trim</key>
 				<true/>
 			</dict>
 			<key>description</key>
-			<string>Run the 'folologin' keyword to fill this field, or see “Manual Folo Token Retrieval” in the README.</string>
+			<string>Required. Run the 'folologin' keyword to fill this field, or see “Manual Folo Token Retrieval” in the README.</string>
 			<key>label</key>
 			<string>Folo Auth Token</string>
 			<key>type</key>
@@ -2382,7 +2382,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		</dict>
 	</array>
 	<key>version</key>
-	<string>26.10.0</string>
+	<string>26.10.1</string>
 	<key>webaddress</key>
 	<string>https://github.com/fradeet/alfred-folo-workflow</string>
 </dict>
