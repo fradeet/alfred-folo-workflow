@@ -32,7 +32,7 @@ import {
   FoloUser,
   FoloView,
 } from "../src/types/folo-types.js";
-import { readToken, setWorkflowToken } from "../src/app/login.js";
+import { LoginAppErrorOutput, LoginAppOutput, readToken, setWorkflowToken } from "../src/app/login.js";
 import { resolveTimelineInput, timeline, timelineResultVariables, TimelineAppOutput, TimelineStandardInput, parseTimelineAppInput } from "../src/app/timeline.js";
 import { parseFoloShareUrl } from "../src/shared/folo-url.js";
 import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/shared/icon-cache.js";
@@ -335,6 +335,7 @@ test("timeline app renders a fresh query cache and restores the action response 
     writeTimelineCache(emptyInput.serialize(), FoloTimelineResult.from({ entries: [], nextCursor: null, hasNext: false }));
     const emptyOutput = await timeline(emptyInput);
     assert.equal(emptyOutput.items[0]?.valid, false);
+    assert.equal(emptyOutput.items[0]?.subtitle, "Your timeline has no entries");
     assert.deepEqual(emptyOutput.items[0]?.mods?.shift, { valid: true, subtitle: "Refresh this timeline page" });
   } finally {
     if (previous === undefined) delete process.env.alfred_workflow_cache;
@@ -551,6 +552,19 @@ test("login helpers read and validate the saved token", () => {
   assert.throws(() => readToken("{}"), /token/i);
   assert.throws(() => setWorkflowToken(""), /empty/i);
   assert.throws(() => setWorkflowToken("secret", {}), /alfred_workflow_bundleid/i);
+});
+
+test("login results provide Alfred's ok and error.message paths", () => {
+  const user = new FoloUser({
+    id: "user-1", name: "Ada", handle: "ada", email: "ada@example.com",
+    createdAt: "2026-01-01T00:00:00.000Z", updatedAt: "2026-01-02T00:00:00.000Z",
+  });
+  assert.deepEqual(JSON.parse(new LoginAppOutput(user).serialize()), {
+    kind: "login-result", ok: true, user: JSON.parse(JSON.stringify(user)), error: null,
+  });
+  assert.deepEqual(JSON.parse(new LoginAppErrorOutput("Login timed out").serialize()), {
+    kind: "login-result", ok: false, error: { message: "Login timed out" },
+  });
 });
 
 test("FoloLoginResult exposes the user returned by login", () => {

@@ -35,6 +35,7 @@ import { pathToFileURL } from "node:url";
 import { errorItem, timelineItems } from "../shared/alfred.js";
 import { cacheIcons } from "../shared/icon-cache.js";
 import { parseFoloShareUrl } from "../shared/folo-url.js";
+import { en } from "../locales/en.js";
 import { responseCacheFilename, writeResponseCache } from "../shared/response-cache.js";
 import { readTimelineCache, writeLastTimelineRequest, writeTimelineCache } from "../shared/timeline-cache.js";
 import {
@@ -257,17 +258,17 @@ export async function timeline(
   const latestPageArg = standardInput.cursor ? standardInput.withCursor("").serialize() : "";
   const items = timelineItems(data, iconFor, nextPageArg, latestPageArg);
   const emptySubtitle = request.unreadOnly
-    ? "This subscription has no unread entries"
+    ? en.timeline.emptyUnreadSubscription
     : request.feed || request.list
-      ? "This subscription has no entries"
+      ? en.timeline.emptySubscription
       : request.view
-        ? "This view has no entries"
-        : "Try another query";
+        ? en.timeline.emptyView
+        : en.timeline.emptyTimeline;
   const output = new TimelineAppOutput(
-    items.length ? items : [new AlfredSFItem("No Folo entries", {
+    items.length ? items : [new AlfredSFItem(en.timeline.emptyTitle, {
       subtitle: emptySubtitle,
       valid: false,
-      mods: { shift: { valid: true, subtitle: "Refresh this timeline page" } },
+      mods: { shift: { valid: true, subtitle: en.timeline.refreshPage } },
     })],
     false,
     timelineResultVariables(standardInput, request),

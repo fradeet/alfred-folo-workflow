@@ -26,6 +26,7 @@
 import { spawn } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { emptyItem, errorItem, unreadItems } from "../shared/alfred.js";
+import { en } from "../locales/en.js";
 import { loadCachedIcons } from "../shared/icon-cache.js";
 import { responseCacheFilename } from "../shared/response-cache.js";
 import {
@@ -89,7 +90,7 @@ export async function unread(input: UnreadStandardInput): Promise<UnreadAppOutpu
     warmSubscriptionIcons();
   }
   return new UnreadAppOutput(
-    items.length ? items : [emptyItem("No unread subscriptions", "You're all caught up")],
+    items.length ? items : [emptyItem(en.unread.emptyTitle, en.unread.emptySubtitle)],
     true,
     { frrResultCacheKey: responseCacheFilename(blockInput.toArguments()) },
   );

@@ -459,7 +459,7 @@ The shared parsing utility must also cover:
 After implementation, run:
 
 ```bash
-pnpm run check
+npm run check
 git diff --check
 ```
 
@@ -490,7 +490,7 @@ The requirement is accepted when all of the following are true:
 7. Contracts passed between Alfred nodes and routing in `workflow/info.plist` remain unchanged.
 8. App orchestration receives a validated class and does not read standard environment variables itself.
 9. All new parsing and merging behavior has automated test coverage.
-10. `pnpm run check` and `git diff --check` pass.
+10. `npm run check` and `git diff --check` pass.
 11. The shared parser contains no app-specific branches; a new entry point can integrate by declaring a mapping and input class.
 12. `AGENTS.md` establishes standard input as the default requirement for new Alfred app entry points and records the allowed exemption scope.
 
@@ -546,7 +546,7 @@ The `AGENTS.md` update must ship with the shared capability so rules do not prec
 
 1. Update the README and standard-input reference.
 2. Confirm that `workflow/info.plist` does not need to switch to standard input.
-3. Run all new tests, `pnpm run check`, and `git diff --check`.
+3. Run all new tests, `npm run check`, and `git diff --check`.
 4. Exercise each app's argv-only, environment-only, and mixed-input examples against the built artifacts.
 
 ## 17. Future Extensions

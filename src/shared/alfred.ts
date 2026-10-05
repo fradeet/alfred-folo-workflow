@@ -1,4 +1,5 @@
 import { isRecord } from "./guards.js";
+import { en } from "../locales/en.js";
 import { AlfredSFItem, AlfredSFItemAction, AlfredSFItemIcon, AlfredSFItemText } from "../types/alfred-types.js";
 import { IconResolver } from "./icon-cache.js";
 import { SubscriptionSelection } from "../contracts/subscription-selection.js";
@@ -37,8 +38,8 @@ export function timelineItems(
   return data.entries.flatMap((item): AlfredSFItem[] => {
     const entry = item.entries;
     const feed = item.feeds;
-    const title = text(entry.title, "Untitled entry");
-    const feedTitle = text(feed.title, "Unknown feed");
+    const title = text(entry.title, en.timeline.untitledEntry);
+    const feedTitle = text(feed.title, en.timeline.unknownFeed);
     const author = text(entry.author);
     const date = formatDate(entry.publishedAt);
     const subtitle = [feedTitle, author, date].filter(Boolean).join(" · ");
@@ -53,10 +54,10 @@ export function timelineItems(
       mods: {
         alt: nextPageArg
           ? { arg: nextPageArg }
-          : { arg: "", subtitle: "No next page", valid: false },
+          : { arg: "", subtitle: en.timeline.noNextPage, valid: false },
         "shift+alt": latestPageArg
           ? { arg: latestPageArg }
-          : { arg: "", subtitle: "Already at the top", valid: false },
+          : { arg: "", subtitle: en.timeline.alreadyAtTop, valid: false },
       },
       icon: icon(feed, iconFor),
       uid: entryId,
@@ -74,14 +75,14 @@ export function subscriptionItems(data: FoloSubscriptionsResult, iconFor?: IconR
     if (!target) return [];
 
     const selection = new SubscriptionSelection(subscription);
-    const kind = selection.resourceType === "list" ? "List" : "Feed";
+    const kind = selection.resourceType === "list" ? en.subscriptions.list : en.subscriptions.feed;
     const id = selection.resourceId;
 
-    const title = text(optionalString(subscription.title) ?? target.title, `Untitled ${kind.toLowerCase()}`);
+    const title = text(optionalString(subscription.title) ?? target.title, en.subscriptions.untitled(kind));
     const description = text(target.description);
     const category = text(subscription.category);
     const feedCount = list ? list.feedIds.length : undefined;
-    const detail = feedCount === undefined ? undefined : `${feedCount} ${feedCount === 1 ? "feed" : "feeds"}`;
+    const detail = feedCount === undefined ? undefined : en.subscriptions.feedCount(feedCount);
     const subtitle = [kind, category, detail, description]
       .filter(Boolean)
       .join(" · ");
@@ -93,7 +94,7 @@ export function subscriptionItems(data: FoloSubscriptionsResult, iconFor?: IconR
       subtitle,
       arg: serializedSelection,
       icon: icon(target, iconFor),
-      uid: `${kind.toLocaleLowerCase()}-${id}`,
+      uid: `${selection.resourceType}-${id}`,
       quicklookurl: foloUrl,
       text: new AlfredSFItemText(foloUrl, title),
     })];
@@ -107,10 +108,10 @@ export function unreadItems(data: FoloUnreadResult, iconFor?: IconResolver): Alf
     const selection = new UnreadSelection(source);
 
     const kind = sourceType[0]!.toUpperCase() + sourceType.slice(1);
-    const title = text(source.title, `Untitled ${sourceType}`);
+    const title = text(source.title, en.unread.untitled(sourceType));
     const category = text(source.category);
     const unreadCount = source.unreadCount;
-    const unreadDetail = `${unreadCount} unread`;
+    const unreadDetail = en.unread.count(unreadCount);
     const subtitle = [unreadDetail, kind, category].filter(Boolean).join(" · ");
     const foloUrl = selection.shareUrl;
     const serializedSelection = selection.serialize();
@@ -133,12 +134,12 @@ export function errorItem(error: unknown): AlfredSFItem {
   const timedOut = code === "TIMEOUT";
   const message = isRecord(error) ? error.message : undefined;
 
-  return new AlfredSFItem(unauthorized ? "Folo authentication required" : "Unable to load Folo", {
+  return new AlfredSFItem(unauthorized ? en.errors.authenticationRequired : en.errors.unableToLoad, {
     subtitle: unauthorized
-      ? "Run folologin to authenticate"
+      ? en.errors.authenticate
       : timedOut
-        ? "The Folo request timed out; check your network and try again"
-        : text(message, "Open Alfred's debugger for details"),
+        ? en.errors.timeout
+        : text(message, en.errors.debugger),
     valid: false,
   });
 }
