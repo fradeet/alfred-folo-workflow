@@ -1044,7 +1044,7 @@
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
-				<string>Folo Timeline (Unread)</string>
+				<string>Folo Timeline</string>
 				<key>type</key>
 				<integer>8</integer>
 				<key>withspace</key>
@@ -1557,8 +1557,7 @@ Alternatively, run this command in Terminal to get a token manually:
 npx --yes folocli@0.0.5 login
 ```
 
-After signing in, open the `configPath` shown in the command output. Copy its `token` value into **Folo Auth Token** in the Workflow’s Configuration.
-</string>
+After signing in, open the `configPath` shown in the command output. Copy its `token` value into **Folo Auth Token** in the Workflow’s Configuration.</string>
 	<key>uidata</key>
 	<dict>
 		<key>00633B4B-32B3-45F9-84AD-17E10EA1D712</key>
@@ -1953,21 +1952,25 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>default</key>
-				<string>20</string>
-				<key>placeholder</key>
-				<string>20</string>
-				<key>required</key>
-				<true/>
-				<key>trim</key>
+				<key>defaultvalue</key>
+				<integer>20</integer>
+				<key>markercount</key>
+				<integer>10</integer>
+				<key>maxvalue</key>
+				<integer>100</integer>
+				<key>minvalue</key>
+				<integer>10</integer>
+				<key>onlystoponmarkers</key>
+				<false/>
+				<key>showmarkers</key>
 				<true/>
 			</dict>
 			<key>description</key>
 			<string></string>
 			<key>label</key>
-			<string>Timeline Result Limit</string>
+			<string>Timeline Result Per Page</string>
 			<key>type</key>
-			<string>textfield</string>
+			<string>slider</string>
 			<key>variable</key>
 			<string>FRR_TIMELINE_LIMIT</string>
 		</dict>
