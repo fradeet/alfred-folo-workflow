@@ -297,7 +297,7 @@
 				<key>modifiers</key>
 				<integer>1048576</integer>
 				<key>modifiersubtext</key>
-				<string>Mark all read</string>
+				<string>Mark all as read</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -514,7 +514,7 @@
 				<key>modifiers</key>
 				<integer>1048576</integer>
 				<key>modifiersubtext</key>
-				<string>Mark all read</string>
+				<string>Mark all as read</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -547,7 +547,7 @@
 				<key>modifiers</key>
 				<integer>524288</integer>
 				<key>modifiersubtext</key>
-				<string>View all feeds</string>
+				<string>Show all entries</string>
 				<key>vitoclose</key>
 				<true/>
 			</dict>
@@ -1420,7 +1420,7 @@
 				<key>triggerid</key>
 				<string>subscribed_unread_lists</string>
 				<key>triggername</key>
-				<string>Unread Sub</string>
+				<string>Unread subscriptions</string>
 				<key>workflowonly</key>
 				<false/>
 			</dict>
@@ -1644,7 +1644,7 @@
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
-				<string>List Folo Subscriptions</string>
+				<string>Folo subscriptions</string>
 				<key>type</key>
 				<integer>8</integer>
 				<key>withspace</key>
@@ -1847,7 +1847,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		<key>22035A2E-6574-4D37-98F6-BB61471BB4D6</key>
 		<dict>
 			<key>note</key>
-			<string>Mark all read</string>
+			<string>Mark all as read</string>
 			<key>xpos</key>
 			<real>480</real>
 			<key>ypos</key>
@@ -1922,7 +1922,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		<key>66EA0DBB-F55D-42DC-AEF8-CD31FA1844D8</key>
 		<dict>
 			<key>note</key>
-			<string>Mark all read</string>
+			<string>Mark all as read</string>
 			<key>xpos</key>
 			<real>1800</real>
 			<key>ypos</key>
@@ -2190,7 +2190,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 				<true/>
 			</dict>
 			<key>description</key>
-			<string>Log in Folo with fill this field via the 'folologin' keyword, or refer 'Manual Folo Token Retrieval' section in README.</string>
+			<string>Run the 'folologin' keyword to fill this field, or see “Manual Folo Token Retrieval” in the README.</string>
 			<key>label</key>
 			<string>Folo Auth Token</string>
 			<key>type</key>
