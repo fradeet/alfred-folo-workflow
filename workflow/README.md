@@ -14,9 +14,9 @@ Browse timeline via the `ftl` keyword.
 
 ![Folo timeline keyword](assets/imgs/keyword.png)
 
-- <kbd>↩</kbd> Open unread timeline.
-- <kbd>⌥</kbd><kbd>↩</kbd> Open all timeline.
-- <kbd>⌘</kbd><kbd>↩</kbd> Reopen last read position.
+- <kbd>↩</kbd> Open the unread timeline.
+- <kbd>⌥</kbd><kbd>↩</kbd> Open the all timeline.
+- <kbd>⌘</kbd><kbd>↩</kbd> Reopen the last read page.
 
 ![Browsing Folo timeline entries](assets/imgs/show1.png)
 
@@ -38,7 +38,7 @@ Search your followed feeds and lists via the `fsub` keyword.
 
 ![Folo followed feeds keyword](assets/imgs/subscriptions.png)
 
-- <kbd>↩</kbd> Browse entries in the selected feed or list.
+- <kbd>↩</kbd> Browse entries in the selected subscription.
 - <kbd>⌥</kbd><kbd>↩</kbd> Show only unread entries.
 
 ## References

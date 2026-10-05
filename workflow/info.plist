@@ -1740,9 +1740,9 @@ Browse timeline via the `ftl` keyword.
 
 ![Folo timeline keyword](assets/imgs/keyword.png)
 
-- &lt;kbd&gt;↩&lt;/kbd&gt; Open unread timeline.
-- &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Open all timeline.
-- &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Reopen last read position.
+- &lt;kbd&gt;↩&lt;/kbd&gt; Open the unread timeline.
+- &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Open the all timeline.
+- &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Reopen the last read page.
 
 ![Browsing Folo timeline entries](assets/imgs/show1.png)
 
