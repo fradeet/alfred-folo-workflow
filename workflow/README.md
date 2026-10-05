@@ -30,9 +30,9 @@ Find subscriptions with unread entries via the `fun` keyword.
 
 ![Folo unread entries keyword](assets/imgs/unreads.png)
 
-- <kbd>↩</kbd> Browse unread entries in the selected feed or list.
+- <kbd>↩</kbd> Browse unread entries in the selected subscription.
 - <kbd>⌥</kbd><kbd>↩</kbd> Include entries you have already read.
-- <kbd>⌘</kbd><kbd>↩</kbd> Mark all entries in the selected feed or list as read.
+- <kbd>⌘</kbd><kbd>↩</kbd> Mark all entries in the selected subscription as read.
 
 Search your followed feeds and lists via the `fsub` keyword.
 

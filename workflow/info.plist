@@ -1467,7 +1467,7 @@
 				<key>skipuniversalaction</key>
 				<true/>
 				<key>subtext</key>
-				<string>Browse feeds and lists with unread entries</string>
+				<string>Browse subscriptions with unread entries</string>
 				<key>title</key>
 				<string>Unread subscriptions</string>
 				<key>type</key>
@@ -1672,7 +1672,7 @@
 				<key>triggerid</key>
 				<string>subscribed_lists</string>
 				<key>triggername</key>
-				<string>Subscription List</string>
+				<string>Subscriptions</string>
 				<key>workflowonly</key>
 				<false/>
 			</dict>
@@ -1756,9 +1756,9 @@ Find subscriptions with unread entries via the `fun` keyword.
 
 ![Folo unread entries keyword](assets/imgs/unreads.png)
 
-- &lt;kbd&gt;↩&lt;/kbd&gt; Browse unread entries in the selected feed or list.
+- &lt;kbd&gt;↩&lt;/kbd&gt; Browse unread entries in the selected subscription.
 - &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Include entries you have already read.
-- &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Mark all entries in the selected feed or list as read.
+- &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Mark all entries in the selected subscription as read.
 
 Search your followed feeds and lists via the `fsub` keyword.
 
@@ -1897,7 +1897,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 			<key>colorindex</key>
 			<integer>4</integer>
 			<key>note</key>
-			<string>Subscription List</string>
+			<string>Subscriptions</string>
 			<key>xpos</key>
 			<real>260</real>
 			<key>ypos</key>
@@ -2019,7 +2019,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 			<key>colorindex</key>
 			<integer>3</integer>
 			<key>note</key>
-			<string>Mark Read</string>
+			<string>Mark as Read</string>
 			<key>xpos</key>
 			<real>2020</real>
 			<key>ypos</key>
