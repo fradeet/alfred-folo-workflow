@@ -481,7 +481,7 @@
 				<key>modifiers</key>
 				<integer>524288</integer>
 				<key>modifiersubtext</key>
-				<string>View all feeds (include already read)</string>
+				<string>View all feeds</string>
 				<key>vitoclose</key>
 				<true/>
 			</dict>
@@ -750,7 +750,7 @@
 				<key>skipuniversalaction</key>
 				<true/>
 				<key>subtext</key>
-				<string>View unread feeds // ⌥↩ View all feed (include already read) // ⌘↩ Last</string>
+				<string>View unread // ⌥↩ View all // ⌘↩ Last</string>
 				<key>text</key>
 				<string>Folo Timeline</string>
 				<key>withspace</key>
@@ -1502,33 +1502,37 @@
 		</dict>
 	</array>
 	<key>readme</key>
-	<string>## Setup
+	<string># Folo RSS Reader
 
-Run the `folologin` keyword and complete sign-in in your browser. The workflow saves your Folo token in the Workflow’s Configuration.
+Read your [Folo](https://folo.is) timeline entries with Alfred.
 
-Alternatively, run this command in Terminal to get a token manually:
+## Setup
 
-```sh
-npx --yes folocli@latest login
-```
+Run the `folologin` keyword and complete sign-in in your browser. The workflow saves your Folo token in the Workflow's Configuration.
 
-After signing in, open the `configPath` shown in the command output. Copy its `token` value into **Folo Auth Token** in the Workflow’s Configuration.
+Alternatively, see _Appendix 1_ for manual token retrieval.
 
 ## Usage
 
-Browse unread Folo entries via the `ftl` keyword.
+Browse timeline via the `ftl` keyword.
+
+![Folo timeline keyword](assets/imgs/keyword.png)
+
+- &lt;kbd&gt;↩&lt;/kbd&gt; Open unread timeline.
+- &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Open all timeline.
+- &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Reopen last read position.
 
 ![Browsing Folo timeline entries](assets/imgs/show1.png)
 
-- &lt;kbd&gt;↩&lt;/kbd&gt; Open the article and mark it as read.
-- &lt;kbd&gt;⌃&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Open the entry in Folo.
+- &lt;kbd&gt;↩&lt;/kbd&gt; Open the article.
 - &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Show the next page of entries.
 - &lt;kbd&gt;⇧&lt;/kbd&gt;&lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Return to the first page.
 - &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Mark all entries in the current timeline as read.
+- &lt;kbd&gt;⌃&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Open the entry in Folo.
 
-Use &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; on the `ftl` keyword to include entries you have already read. Use &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; on the keyword to reopen your last timeline view.
+Find subscriptions with unread entries via the `fun` keyword.
 
-Find subscriptions with unread entries via the `fun` keyword. Select a feed or list to browse its unread entries.
+![Folo unread entries keyword](assets/imgs/unreads.png)
 
 - &lt;kbd&gt;↩&lt;/kbd&gt; Browse unread entries in the selected feed or list.
 - &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Include entries you have already read.
@@ -1536,10 +1540,24 @@ Find subscriptions with unread entries via the `fun` keyword. Select a feed or l
 
 Search your followed feeds and lists via the `fsub` keyword.
 
+![Folo followed feeds keyword](assets/imgs/subscriptions.png)
+
 - &lt;kbd&gt;↩&lt;/kbd&gt; Browse entries in the selected feed or list.
 - &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Show only unread entries.
 
-Change the three keywords and the number of timeline results in the Workflow’s Configuration.
+## References
+
+[GitHub Repo](https://github.com/fradeet/alfred-folo-workflow)
+
+## Appendix 1: Manual Folo Token Retrieval
+
+Alternatively, run this command in Terminal to get a token manually:
+
+```sh
+npx --yes folocli@0.0.5 login
+```
+
+After signing in, open the `configPath` shown in the command output. Copy its `token` value into **Folo Auth Token** in the Workflow’s Configuration.
 </string>
 	<key>uidata</key>
 	<dict>
@@ -1603,7 +1621,7 @@ Change the three keywords and the number of timeline results in the Workflow’s
 			<key>xpos</key>
 			<real>480</real>
 			<key>ypos</key>
-			<real>630</real>
+			<real>625</real>
 		</dict>
 		<key>283BC7D9-A99A-450B-ACEB-8E90B50EE6D8</key>
 		<dict>
@@ -1881,7 +1899,7 @@ Change the three keywords and the number of timeline results in the Workflow’s
 		<key>FB9E9180-6AAC-4AEF-BA50-1CEACB9FF7B5</key>
 		<dict>
 			<key>note</key>
-			<string>Recent</string>
+			<string>Last</string>
 			<key>xpos</key>
 			<real>480</real>
 			<key>ypos</key>
@@ -1903,7 +1921,7 @@ Change the three keywords and the number of timeline results in the Workflow’s
 				<true/>
 			</dict>
 			<key>description</key>
-			<string>Use the keyword 'folologin' to log in Folo with fill this field, or refer 'Get Token Manually' section in README to fill in the user token.</string>
+			<string>Log in Folo with fill this field via the 'folologin' keyword, or refer 'Manual Folo Token Retrieval' section in README.</string>
 			<key>label</key>
 			<string>Folo Auth Token</string>
 			<key>type</key>
