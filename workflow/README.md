@@ -20,7 +20,7 @@ Browse timeline via the `ftl` keyword.
 
 ![Browsing Folo timeline entries](assets/imgs/show1.png)
 
-- <kbd>↩</kbd> Open the article.
+- <kbd>↩</kbd> Open the entry.
 - <kbd>⌥</kbd><kbd>↩</kbd> Show the next page of entries.
 - <kbd>⇧</kbd><kbd>⌥</kbd><kbd>↩</kbd> Return to the first page.
 - <kbd>⌘</kbd><kbd>↩</kbd> Mark all entries in the current timeline as read.
