@@ -266,12 +266,12 @@ test("timeline app input resolves an Alfred node config into a view request", ()
   const parsed = parseTimelineAppInput('{"kind": "view-input", "view": "articles"}');
   assert.ok(parsed instanceof TimelineViewInput);
   assert.deepEqual(parsed, new TimelineViewInput("articles"));
-  assert.deepEqual(parseTimelineAppInput('{"view": "articles"}'), new TimelineDirectInput(
+  assert.deepEqual(parseTimelineAppInput('{"view": "articles"}', {}), new TimelineDirectInput(
     '{"view": "articles"}',
   ));
-  assert.deepEqual(resolveTimelineInput(parsed), new TimelineDirectInput(
+  assert.deepEqual(resolveTimelineInput(parsed, {}), new TimelineDirectInput(
     "",
-    new TimelineBlockInput({ view: "articles" }),
+    new TimelineBlockInput({ view: "articles", limit: 30 }),
   ));
 });
 

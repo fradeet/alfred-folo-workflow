@@ -5,6 +5,10 @@
  * Input: none (no arguments, no stdin); runs with the spawning process's
  * environment.
  *
+ * This worker is exempt from the standard input protocol: it is started
+ * internally by the unread app, is never called by Alfred directly, and has no
+ * external callers to offer a stable interface to.
+ *
  * Output: none. Fetches the subscription list and downloads icons into the icon
  * cache directory. A lock file (stale after 60s) prevents concurrent runs, and
  * all errors are swallowed so the detached process stays silent.

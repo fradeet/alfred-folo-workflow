@@ -98,6 +98,27 @@ node workflow/dist/app/timeline.js "https://app.folo.is/share/feeds/<id>"
 node workflow/dist/app/timeline.js '{"view": "articles"}'
 ```
 
+## Standard input
+
+Every app entry point Alfred calls directly (`timeline`, `subscriptions`,
+`unread`, `mark-read`, `mark-read-above`, `login`) also accepts a uniform
+external calling convention: one JSON object as argv marked with
+`kind: "standard"`, the app's `frr<AppId>…` environment variables, or both —
+argv always wins:
+
+```bash
+node workflow/dist/app/mark-read.js \
+  '{"kind":"standard","version":1,"entryId":"entry-1"}'
+
+frrMarkReadIsStandardInput=1 frrMarkReadEntryId=entry-1 \
+  node workflow/dist/app/mark-read.js
+```
+
+Workflow-internal calls are unchanged: node contracts keep flowing through
+argv and never read the standard variables. Protocol rules, implementation
+links, and per-app caveats live in
+[docs/reference/standard-input.md](docs/reference/standard-input.md).
+
 Then open `Folo.alfredworkflow` to install it in Alfred.
 
 ## CLI behavior

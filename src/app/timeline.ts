@@ -7,10 +7,17 @@
  * - a serialized {@link SubscriptionSelection} or {@link UnreadSelection}, or
  * - an {@link TimelineViewInput} JSON value emitted by an Alfred node, such as
  *   `{"kind": "view-input", "view": "articles"}`, or
- * - a serialized {@link TimelineDirectInput}. Malformed JSON falls back to a query.
+ * - a serialized {@link TimelineDirectInput}, or
+ * - a standard input JSON object marked with `kind: "standard"` (see
+ *   docs/reference/standard-input.md).
+ *   Malformed JSON falls back to a query.
  *
- * Environment: `FRR_TIMELINE_LIMIT` sets the default entry limit (digits only, otherwise 30).
- * `frrTimelineUnreadOnly` set to `1` adds the unread-only flag to the request.
+ * Environment: `frrTimelineIsStandardInput=1` enables standard input when argv
+ * is empty. `FRR_TIMELINE_LIMIT` sets the default entry limit (digits only,
+ * otherwise 30). `frrTimelineUnreadOnly` set to `1` adds the unread-only flag
+ * to the request. In standard input mode both variables are merged by priority
+ * behind argv and the `frrTimelineLimit` / `frrTimelineUnreadOnly` standard
+ * variables, and invalid values are reported instead of ignored.
  *
  * Output:
  * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` carries a
@@ -26,6 +33,14 @@ import { emptyItem, errorItem, timelineItems } from "../shared/alfred.js";
 import { cacheIcons } from "../shared/icon-cache.js";
 import { parseFoloShareUrl } from "../shared/folo-url.js";
 import { responseCacheFilename } from "../shared/response-cache.js";
+import {
+  StandardInputSpec,
+  resolveStandardInput,
+  standardBoolean,
+  standardOptionalString,
+  standardPositiveInteger,
+  standardString,
+} from "../shared/standard-input.js";
 import { TimelineBlockInput, getTimeline } from "../block/folo/timeline.js";
 import { SerializedValue, parseRecord } from "../contracts/serialized-value.js";
 import { SubscriptionSelection } from "../contracts/subscription-selection.js";
@@ -33,11 +48,35 @@ import { UnreadSelection } from "../contracts/unread-selection.js";
 import { AlfredSF, AlfredSFCache, AlfredSFItem, AlfredVariables } from "../types/alfred-types.js";
 import { TimelineViewInput } from "../types/alfred-node-types.js";
 
+/** Standard input declaration for the timeline app. */
+const timelineStandardSpec: StandardInputSpec = {
+  isStandardEnv: "frrTimelineIsStandardInput",
+  fields: [
+    { field: "query", env: "frrTimelineQuery", type: "string" },
+    { field: "view", env: "frrTimelineView", type: "string" },
+    { field: "limit", env: "frrTimelineLimit", type: "integer", global: "FRR_TIMELINE_LIMIT" },
+    { field: "unreadOnly", env: "frrTimelineUnreadOnly", type: "boolean" },
+    { field: "cursor", env: "frrTimelineCursor", type: "string" },
+    { field: "feed", env: "frrTimelineFeed", type: "string" },
+    { field: "list", env: "frrTimelineList", type: "string" },
+    { field: "category", env: "frrTimelineCategory", type: "string" },
+  ],
+};
+
+/** argv JSON kinds routed to an existing workflow contract. */
+const workflowContractKinds = new Set([
+  "timeline-input",
+  "subscription-selection",
+  "unread-selection",
+  "view-input",
+]);
+
 export type TimelineAppInput =
   | TimelineDirectInput
   | SubscriptionSelection
   | UnreadSelection
-  | TimelineViewInput;
+  | TimelineViewInput
+  | TimelineStandardInput;
 
 export class TimelineDirectInput extends SerializedValue {
   readonly kind = "timeline-input";
@@ -66,7 +105,70 @@ export class TimelineDirectInput extends SerializedValue {
   }
 }
 
-export function parseTimelineAppInput(value: string): TimelineAppInput {
+/** Standard input for external callers; the constructor validates every field. */
+export class TimelineStandardInput {
+  readonly query: string;
+  readonly view?: string;
+  readonly limit: number;
+  readonly unreadOnly: boolean;
+  readonly cursor?: string;
+  readonly feed?: string;
+  readonly list?: string;
+  readonly category?: string;
+
+  constructor(options: {
+    query?: unknown;
+    view?: unknown;
+    limit?: unknown;
+    unreadOnly?: unknown;
+    cursor?: unknown;
+    feed?: unknown;
+    list?: unknown;
+    category?: unknown;
+  } = {}) {
+    this.query = standardString(options.query, "query", "");
+    this.view = standardOptionalString(options.view, "view");
+    this.limit = standardPositiveInteger(options.limit, "limit", 30);
+    this.unreadOnly = standardBoolean(options.unreadOnly, "unreadOnly", false);
+    this.cursor = standardOptionalString(options.cursor, "cursor");
+    this.feed = standardOptionalString(options.feed, "feed");
+    this.list = standardOptionalString(options.list, "list");
+    this.category = standardOptionalString(options.category, "category");
+  }
+
+  static from(value: unknown): TimelineStandardInput {
+    if (typeof value !== "object" || value === null || Array.isArray(value)) {
+      throw new TypeError("Timeline standard input must be an object");
+    }
+    return new TimelineStandardInput(value);
+  }
+
+  /** Converts the validated input into the timeline execution input. */
+  toDirectInput(): TimelineDirectInput {
+    return new TimelineDirectInput(this.query, new TimelineBlockInput({
+      view: this.view,
+      limit: this.limit,
+      unreadOnly: this.unreadOnly,
+      cursor: this.cursor,
+      feed: this.feed,
+      list: this.list,
+      category: this.category,
+    }));
+  }
+}
+
+export function parseTimelineAppInput(
+  value: string,
+  env: NodeJS.ProcessEnv = process.env,
+): TimelineAppInput {
+  const standard = resolveStandardInput(
+    value,
+    env,
+    timelineStandardSpec,
+    (data) => typeof data.kind === "string" && workflowContractKinds.has(data.kind),
+  );
+  if (standard !== undefined) return TimelineStandardInput.from(standard);
+
   const query = value.trim();
   if (!query.startsWith("{")) {
     const target = parseFoloShareUrl(query);
@@ -90,18 +192,28 @@ export function parseTimelineAppInput(value: string): TimelineAppInput {
   return new TimelineDirectInput(query);
 }
 
-export function resolveTimelineInput(input: TimelineAppInput): TimelineDirectInput {
-  if (input instanceof TimelineDirectInput) return input;
-  if (input instanceof TimelineViewInput) {
-    return new TimelineDirectInput("", new TimelineBlockInput({ view: input.view }));
+export function resolveTimelineInput(
+  input: TimelineAppInput,
+  env: NodeJS.ProcessEnv = process.env,
+): TimelineDirectInput {
+  if (input instanceof TimelineStandardInput) return input.toDirectInput();
+
+  let query = "";
+  let request: TimelineBlockInput;
+  if (input instanceof TimelineDirectInput) {
+    query = input.query;
+    request = input.request;
+  } else if (input instanceof TimelineViewInput) {
+    request = new TimelineBlockInput({ view: input.view });
+  } else {
+    request = new TimelineBlockInput(
+      input.resourceType === "list" ? { list: input.resourceId } : { feed: input.resourceId },
+    );
   }
+  const limit = /^\d+$/.test(env.FRR_TIMELINE_LIMIT ?? "") ? Number(env.FRR_TIMELINE_LIMIT) : 30;
   return new TimelineDirectInput(
-    "",
-    new TimelineBlockInput(
-      input.resourceType === "list"
-        ? { list: input.resourceId }
-        : { feed: input.resourceId },
-    ),
+    query,
+    request.withDefaultLimit(limit).withDefaultUnreadOnly(env.frrTimelineUnreadOnly === "1"),
   );
 }
 
@@ -117,10 +229,7 @@ export class TimelineAppOutput extends AlfredSF {
 
 export async function timeline(input: TimelineAppInput): Promise<TimelineAppOutput> {
   const directInput = resolveTimelineInput(input);
-  const limit = /^\d+$/.test(process.env.FRR_TIMELINE_LIMIT ?? "") ? Number(process.env.FRR_TIMELINE_LIMIT) : 30;
-  const request = directInput.request
-    .withDefaultLimit(limit)
-    .withDefaultUnreadOnly(process.env.frrTimelineUnreadOnly === "1");
+  const request = directInput.request;
   const data = getTimeline(request);
   const iconFor = await cacheIcons(data.entries.map((item) => item.feeds));
   const items = timelineItems(data, iconFor);

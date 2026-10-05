@@ -84,6 +84,51 @@ contracts -> types/shared
   an Alfred error item; action scripts should report the error on stderr and set
   a non-zero exit code.
 
+## Standard input
+
+Every app entry point called directly by Alfred offers the standard input
+protocol for external callers, built on the shared parser in
+`src/shared/standard-input.ts` (see `docs/reference/standard-input.md`).
+
+- A new Alfred-called app must document a stable app ID, define and export one
+  standard input class whose constructor validates every field, and parse
+  standard argv/environment through the shared module by declaring a spec; the
+  shared module never branches on specific apps.
+- Standard external input is the one exception to passing an app's primary
+  input through argv. The exception applies only after the call is recognized
+  as standard input via `kind === "standard"` (or the app's
+  `frr<AppId>IsStandardInput` marker when argv is empty).
+- Non-standard inputs — workflow contracts, plain queries, share URLs, view
+  inputs — keep their original parsing path and never read or merge standard
+  business environment variables. Existing complete contracts keep flowing
+  through argv unchanged, and `workflow/info.plist` never switches to standard
+  input.
+- Standard environment variable names are hardcoded in each app's spec. Never
+  generate them from filenames, app IDs, or field names.
+- Fields merge by priority: argv JSON, the app's camelCase standard variables,
+  explicitly linked global configuration, then the input class defaults. Merge
+  by field presence, not truthiness, so `false`, `0`, `""`, and `null` from
+  argv are preserved; whether such a value is valid is the class's decision.
+- When adding an app, register its app ID, executable, standard input class/spec
+  location, and important caveats in the standard input reference. Add four
+  test classes: argv-only, environment-only, mixed input, and non-standard
+  isolation.
+- Internal background workers not called by Alfred directly are exempt; any
+  other exemption must state its reason in a code comment or a design document.
+
+## Environment variable layers
+
+- `UPPER_SNAKE_CASE` variables are global workflow or user configuration,
+  usable by several nodes or apps (`FRR_TIMELINE_LIMIT`).
+- lowerCamelCase variables are stable values produced by Alfred nodes or set by
+  callers for one app, including every standard input variable
+  (`frrTimelineUnreadOnly`). `UPPER_SNAKE_CASE` must not carry one call's
+  standard input fields.
+- `lower_snake_case` variables are non-public, short-lived workflow internals
+  (`result_cache_key`) and never a public interface.
+- Alfred's own variables keep their platform-defined names
+  (`alfred_workflow_bundleid`, `alfred_workflow_cache`).
+
 ## Cross-app JSON contracts
 
 - Values passed between Alfred nodes are serialized class contracts, not raw
@@ -152,3 +197,7 @@ pnpm run check
 
 This performs the TypeScript check, all Node tests, a clean build, and
 `plutil -lint workflow/info.plist`. Also run `git diff --check` after editing.
+
+When changing or adding app inputs, also verify the hardcoded standard variable
+table, that non-standard inputs stay isolated from standard environment
+variables, and that argv fields still override the environment.
