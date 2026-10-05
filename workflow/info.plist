@@ -257,7 +257,7 @@
 				<key>modifiers</key>
 				<integer>655360</integer>
 				<key>modifiersubtext</key>
-				<string>Back to top</string>
+				<string>Return to the first page</string>
 				<key>vitoclose</key>
 				<true/>
 			</dict>
@@ -267,7 +267,7 @@
 				<key>modifiers</key>
 				<integer>524288</integer>
 				<key>modifiersubtext</key>
-				<string>Next Page</string>
+				<string>Next page</string>
 				<key>vitoclose</key>
 				<true/>
 			</dict>
@@ -297,7 +297,7 @@
 				<key>modifiers</key>
 				<integer>1048576</integer>
 				<key>modifiersubtext</key>
-				<string>Mark all as read</string>
+				<string>Mark all entries in the current timeline as read</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -514,7 +514,7 @@
 				<key>modifiers</key>
 				<integer>1048576</integer>
 				<key>modifiersubtext</key>
-				<string>Mark all as read</string>
+				<string>Mark this subscription as read</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -527,7 +527,7 @@
 				<key>modifiers</key>
 				<integer>1048576</integer>
 				<key>modifiersubtext</key>
-				<string>Last</string>
+				<string>Show last read page</string>
 				<key>vitoclose</key>
 				<true/>
 			</dict>
@@ -593,7 +593,7 @@
 				<key>modifiers</key>
 				<integer>655360</integer>
 				<key>modifiersubtext</key>
-				<string>Back to Top</string>
+				<string>Return to the first page</string>
 				<key>vitoclose</key>
 				<true/>
 			</dict>
@@ -603,7 +603,7 @@
 				<key>modifiers</key>
 				<integer>524288</integer>
 				<key>modifiersubtext</key>
-				<string>Next Page</string>
+				<string>Next page</string>
 				<key>vitoclose</key>
 				<true/>
 			</dict>
@@ -720,7 +720,7 @@
 				<key>text</key>
 				<string>Welcome, {query}</string>
 				<key>title</key>
-				<string>Info - {const:alfred_workflow_name}</string>
+				<string>{const:alfred_workflow_name}</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.output.notification</string>
@@ -987,7 +987,7 @@
 				<key>text</key>
 				<string>Login failed, {query}</string>
 				<key>title</key>
-				<string>Error - {const:alfred_workflow_name}</string>
+				<string>{const:alfred_workflow_name}</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.output.notification</string>
@@ -1046,7 +1046,7 @@
 				<key>skipuniversalaction</key>
 				<true/>
 				<key>subtext</key>
-				<string>View unread // ⌥↩ View all // ⌘↩ Last</string>
+				<string>Show unread entries · ⌥↩ Show all · ⌘↩ Show last</string>
 				<key>text</key>
 				<string>Folo Timeline</string>
 				<key>withspace</key>
@@ -1764,7 +1764,7 @@ Search your followed feeds and lists via the `fsub` keyword.
 
 ![Folo followed feeds keyword](assets/imgs/subscriptions.png)
 
-- &lt;kbd&gt;↩&lt;/kbd&gt; Browse entries in the selected feed or list.
+- &lt;kbd&gt;↩&lt;/kbd&gt; Browse entries in the selected subscription.
 - &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Show only unread entries.
 
 ## References
