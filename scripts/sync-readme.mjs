@@ -16,6 +16,7 @@ if (matches.length !== 1) {
 }
 
 const escapedReadme = readme
+  .trim()
   .replaceAll("&", "&amp;")
   .replaceAll("<", "&lt;")
   .replaceAll(">", "&gt;");
