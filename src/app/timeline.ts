@@ -246,7 +246,6 @@ export async function timeline(
   const cached = options.refresh ? undefined : readTimelineCache(cacheRequest);
   const data = cached?.data ?? (options.fetchTimeline ?? getTimeline)(request);
   if (cached) {
-    // Downstream mark-read actions still need the response cache for the shown list.
     writeResponseCache(request.toArguments(), data);
   } else {
     writeTimelineCache(cacheRequest, data);

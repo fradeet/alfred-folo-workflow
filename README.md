@@ -19,25 +19,26 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
   JSON value in each item's `arg` for the timeline app.
 - Timeline results pass a complete `TimelineSelection` JSON value downstream. Both the URL
   action and mark-read action parse the same value without intermediate field extraction.
-  Hold Command and press Enter to mark the selected entry and every unread entry above it
-  in the rendered list as read. Hold Option and press Enter to load the next page; Option
-  shows “No next page” when there is no next cursor. Hold Shift and Option, then press
-  Enter to return to the latest entries; it shows “Already at the top” when the
-  current page has no cursor. In the unread timeline, Command and Shift
-  send the next-page input to Timeline and the current cache key to Mark Page as Read
-  on parallel workflow branches.
+  Hold Option and press Enter to load the next page; Option shows “No next page”
+  when there is no next cursor. Hold Shift and Option, then press Enter to return
+  to the latest entries; it shows “Already at the top” when the current page
+  has no cursor.
 - Shift and Enter on a timeline item refreshes the current page's cache from Folo.
   The Script Filter exports the current query through the `frrTimeline…` standard
   input variables; the downstream script reads them without using the item `arg`.
 - Every Folo CLI request made by a Script Filter stores its response as a JSON file in
   Alfred's workflow cache (`folo-requests/`). The filename is a stable hash of the CLI
   arguments, and each Script Filter response reports it in the `frrResultCacheKey`
-  workflow variable. The mark-read-above action reads the stored timeline response named
-  by this variable so it marks exactly the entries the user saw above the selection.
+  workflow variable for consumers of cached CLI responses.
 - Timeline output includes all eight standard input field variables. These preserve
   the current keyword, view, limit, unread setting, cursor, feed, list, and category
   for downstream actions. The refresh script enables standard input mode.
-- Timeline reads reuse a timestamped cache for 60 seconds. The cache key includes the
+- `workflow/script/timeline-mark-all-read.sh` enables standard input for the
+  timeline bulk-read action using timeline's existing scope variables. A category
+  timeline is rejected because the CLI cannot mark only that category read.
+  When a timeline has a feed or list scope, bulk read uses that source and ignores
+  the view scope.
+- Timeline reads reuse a timestamped cache for 5 minutes. The cache key includes the
   full normalized request, so a different keyword, unread setting, view, source, or
   page has its own entry. Expired or invalid entries are fetched again from Folo.
 - After a successful timeline query, the workflow remembers its complete input. To
@@ -48,7 +49,7 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
   ```
 
   The helper returns an error when there is no previous query. The saved input remains
-  available after the 60-second result cache expires.
+  available after the 5-minute result cache expires.
 
 To refresh from a downstream Run Script, use the exported standard input
 variables with the provided adapter:
@@ -111,22 +112,13 @@ serialized mark-read result after a successful update:
 node workflow/dist/app/mark-read.js "$TIMELINE_SELECTION_JSON"
 ```
 
-The mark-read-above action takes the same selection plus the `frrResultCacheKey`
-variable naming the stored timeline response, and reports every entry it marked.
-Entries are marked through concurrent CLI requests, bounded at six in flight:
+The bulk-read action accepts a complete subscription or unread selection, or
+standard input for a feed, list, view, or all entries:
 
 ```bash
-frrResultCacheKey="$RESULT_CACHE_KEY" \
-  node workflow/dist/app/mark-read-above.js "$TIMELINE_SELECTION_JSON"
-```
-
-The `Mark Page as Read` action takes the timeline response cache filename as its
-argument. It marks every unread entry in that cached page and emits the same result
-shape as `mark-read-above`, using the page's last entry as `anchorEntryId`. Its Alfred
-action node is ready for a cache-key argument and has no incoming connection yet:
-
-```bash
-node workflow/dist/app/mark-page-read.js "$RESULT_CACHE_KEY"
+node workflow/dist/app/mark-all-read.js "$SUBSCRIPTION_SELECTION_JSON"
+node workflow/dist/app/mark-all-read.js '{"kind":"standard","view":"articles"}'
+node workflow/dist/app/timeline-mark-all-read.js '{"kind":"standard","feed":"feed-1"}'
 ```
 
 The timeline app accepts Folo share URLs, serialized resource selections, and Alfred
@@ -140,7 +132,7 @@ node workflow/dist/app/timeline.js '{"view": "articles"}'
 ## Standard input
 
 The public app entry points Alfred calls directly (`timeline`, `subscriptions`,
-`unread`, `mark-read`, `mark-read-above`, `login`) also accepts a uniform
+`unread`, `mark-read`, `mark-all-read`, `timeline-mark-all-read`, `login`) also accept a uniform
 external calling convention: one JSON object as argv marked with
 `kind: "standard"`, the app's `frr<AppId>…` environment variables, or both —
 argv always wins:

@@ -54,9 +54,6 @@ export function timelineItems(
         alt: nextPageArg
           ? { arg: nextPageArg }
           : { arg: "", subtitle: "No next page", valid: false },
-        "cmd+shift": nextPageArg
-          ? { arg: nextPageArg }
-          : { arg: "", subtitle: "No next page", valid: false },
         "shift+alt": latestPageArg
           ? { arg: latestPageArg }
           : { arg: "", subtitle: "Already at the top", valid: false },

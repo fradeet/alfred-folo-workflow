@@ -23,10 +23,6 @@ import {
   MarkReadStandardInput,
 } from "../src/app/mark-read.js";
 import {
-  parseMarkReadAboveAppInput,
-  MarkReadAboveStandardInput,
-} from "../src/app/mark-read-above.js";
-import {
   parseLoginAppInput,
   LoginAlfredInput,
   LoginStandardInput,
@@ -388,64 +384,6 @@ test("mark-read standard input rejects missing or malformed entry IDs", () => {
   assert.throws(() => parseMarkReadAppInput('{"kind":"standard","entryId":"e","extra":1}', {}), /Unknown standard input field/);
 });
 
-test("mark-read-above standard input parses from argv, environment, and both combined", () => {
-  assert.deepEqual(
-    parseMarkReadAboveAppInput('{"kind":"standard","entryId":"entry-1","resultCacheKey":"timeline-abc.json"}', {}),
-    new MarkReadAboveStandardInput({ entryId: "entry-1", resultCacheKey: "timeline-abc.json" }),
-  );
-  assert.deepEqual(
-    parseMarkReadAboveAppInput("", {
-      frrMarkReadAboveIsStandardInput: "1",
-      frrMarkReadAboveEntryId: "entry-1",
-      frrMarkReadAboveResultCacheKey: "timeline-abc.json",
-    }),
-    new MarkReadAboveStandardInput({ entryId: "entry-1", resultCacheKey: "timeline-abc.json" }),
-  );
-  assert.deepEqual(
-    parseMarkReadAboveAppInput('{"kind":"standard","entryId":"entry-1"}', {
-      frrMarkReadAboveEntryId: "from-env",
-      frrMarkReadAboveResultCacheKey: "timeline-abc.json",
-    }),
-    new MarkReadAboveStandardInput({ entryId: "entry-1", resultCacheKey: "timeline-abc.json" }),
-  );
-});
-
-test("mark-read-above keeps the selection plus frrResultCacheKey legacy input", () => {
-  const selection = timelineSelection("entry-1");
-  const parsed = parseMarkReadAboveAppInput(selection.serialize(), {
-    frrResultCacheKey: "timeline-abc.json",
-    frrMarkReadAboveIsStandardInput: "1",
-    frrMarkReadAboveEntryId: "hijacked",
-    frrMarkReadAboveResultCacheKey: "hijacked.json",
-  });
-  assert.deepEqual(parsed, new MarkReadAboveStandardInput({
-    entryId: "entry-1",
-    resultCacheKey: "timeline-abc.json",
-  }));
-  assert.throws(
-    () => parseMarkReadAboveAppInput(selection.serialize(), {}),
-    /frrResultCacheKey is required/,
-  );
-});
-
-test("mark-read-above standard input rejects missing or malformed fields", () => {
-  assert.throws(() => parseMarkReadAboveAppInput('{"kind":"standard","entryId":"entry-1"}', {}), /resultCacheKey.*non-empty string/i);
-  assert.throws(
-    () => parseMarkReadAboveAppInput("", { frrMarkReadAboveIsStandardInput: "1", frrMarkReadAboveEntryId: "entry-1" }),
-    /resultCacheKey.*non-empty string/i,
-  );
-  assert.throws(
-    () => parseMarkReadAboveAppInput('{"kind":"standard","entryId":"entry-1","resultCacheKey":null}', {}),
-    /resultCacheKey.*non-empty string/i,
-  );
-  assert.throws(
-    () => parseMarkReadAboveAppInput('{"kind":"standard","entryId":"entry-1","resultCacheKey":" "}', {}),
-    /resultCacheKey.*non-empty string/i,
-  );
-  assert.throws(() => parseMarkReadAboveAppInput('{"kind":"standard","entryId":"e","cache":"x"}', {}), /Unknown standard input field/);
-  assert.throws(() => parseMarkReadAboveAppInput('{"kind":"standard","version":2}', {}), /Unsupported standard input version/);
-});
-
 test("login standard input parses from argv, environment, and both combined", () => {
   assert.deepEqual(
     parseLoginAppInput('{"kind":"standard","workflowBundleId":"dev.fradeet.folo"}', {}),
@@ -474,4 +412,49 @@ test("login standard input rejects missing or malformed workflow bundle IDs", ()
   assert.throws(() => parseLoginAppInput('{"kind":"standard","workflowBundleId":""}', {}), /workflowBundleId.*non-empty string/i);
   assert.throws(() => parseLoginAppInput('{"kind":"standard","workflowBundleId":7}', {}), /workflowBundleId.*non-empty string/i);
   assert.throws(() => parseLoginAppInput('{"kind":"standard","bundleId":"x"}', {}), /Unknown standard input field/);
+});
+
+// Mark-all-read actions accept workflow selections and the public standard protocol.
+test("mark-all-read standard input merges argv and environment and isolates selections", async () => {
+  const { parseMarkAllReadAppInput, MarkAllReadStandardInput } = await import("../src/app/mark-all-read.js");
+  const { UnreadSelection } = await import("../src/contracts/unread-selection.js");
+  const { FoloUnreadItem } = await import("../src/types/folo-types.js");
+  const env = { frrMarkAllReadIsStandardInput: "1", frrMarkAllReadFeed: "env-feed", frrMarkAllReadView: "articles" };
+  assert.deepEqual(parseMarkAllReadAppInput('{"kind":"standard","feed":"argv-feed"}', env),
+    new MarkAllReadStandardInput({ feed: "argv-feed", view: "articles" }));
+  assert.deepEqual(parseMarkAllReadAppInput("", env),
+    new MarkAllReadStandardInput({ feed: "env-feed", view: "articles" }));
+  const selection = new SubscriptionSelection(new FoloSubscription({ feedId: "selected", feeds: { id: "selected" } }));
+  assert.deepEqual(parseMarkAllReadAppInput(selection.serialize(), env), selection);
+  const unread = new UnreadSelection(new FoloUnreadItem({ sourceType: "list", sourceId: "list-1" }));
+  assert.deepEqual(parseMarkAllReadAppInput(unread.serialize(), env), unread);
+  assert.throws(() => parseMarkAllReadAppInput('{"kind":"standard","feed":"a","list":"b"}', {}), /only one/i);
+});
+
+test("timeline mark-all-read accepts its scope contract and standard input", async () => {
+  const { TimelineMarkAllReadInput, parseTimelineMarkAllReadInput, resolveTimelineMarkAllReadScope } = await import("../src/app/timeline-mark-all-read.js");
+  const env = { frrTimelineMarkAllReadIsStandardInput: "1", frrTimelineFeed: "env-feed", frrTimelineView: "social" };
+  assert.deepEqual(parseTimelineMarkAllReadInput("", env), new TimelineMarkAllReadInput({ feed: "env-feed", view: "social" }));
+  assert.deepEqual(parseTimelineMarkAllReadInput('{"kind":"standard","feed":"argv-feed"}', env),
+    new TimelineMarkAllReadInput({ feed: "argv-feed", view: "social" }));
+  const contract = new TimelineMarkAllReadInput({ list: "list-1", view: "articles" });
+  assert.deepEqual(parseTimelineMarkAllReadInput(contract.serialize(), env), contract);
+  assert.throws(() => resolveTimelineMarkAllReadScope(new TimelineMarkAllReadInput({ category: "Tech" })), /cannot target.*category/i);
+});
+
+test("mark-all-read maps selected sources and timeline scope to CLI arguments", async () => {
+  const { markAllReadBlockInput } = await import("../src/app/mark-all-read.js");
+  const { TimelineMarkAllReadInput, resolveTimelineMarkAllReadScope } = await import("../src/app/timeline-mark-all-read.js");
+  const { UnreadSelection } = await import("../src/contracts/unread-selection.js");
+  const { FoloUnreadItem } = await import("../src/types/folo-types.js");
+  const subscription = new SubscriptionSelection(new FoloSubscription({ feedId: "feed-1", feeds: { id: "feed-1" } }));
+  assert.deepEqual(markAllReadBlockInput(subscription).toArguments(), ["entry", "mark-all-read", "--feed", "feed-1"]);
+  const unread = new UnreadSelection(new FoloUnreadItem({ sourceType: "list", sourceId: "list-1" }));
+  assert.deepEqual(markAllReadBlockInput(unread).toArguments(), ["entry", "mark-all-read", "--list", "list-1"]);
+  assert.deepEqual(markAllReadBlockInput(new TimelineMarkAllReadInput({ view: "articles" })).toArguments(),
+    ["entry", "mark-all-read", "--view", "articles"]);
+  assert.deepEqual(markAllReadBlockInput(resolveTimelineMarkAllReadScope(new TimelineMarkAllReadInput({ feed: "feed-1", view: "articles" }))).toArguments(),
+    ["entry", "mark-all-read", "--feed", "feed-1"]);
+  assert.deepEqual(markAllReadBlockInput(resolveTimelineMarkAllReadScope(new TimelineMarkAllReadInput({ list: "list-1", view: "social" }))).toArguments(),
+    ["entry", "mark-all-read", "--list", "list-1"]);
 });
