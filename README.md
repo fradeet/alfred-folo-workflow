@@ -4,12 +4,20 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
 
 ## Features
 
-- `folo [query or Folo URL]` — browse the latest timeline entries, optionally filtered by a Feed/List URL.
+- `folo [query]` — browse the latest timeline entries, optionally filtered by a local query.
+  The timeline entry also accepts a JSON argument (e.g. `{"feed":"<id>","unreadOnly":true}`)
+  that maps onto the Folo CLI `timeline` options (`view`, `limit`, `unreadOnly`, `cursor`,
+  `feed`, `list`, `category`); subscription and unread results pass their target this way.
+- Folo share URLs convert into that JSON upstream via the params converter
+  (`https://app.folo.is/share/lists/<id>` → `{"list":"<id>"}`),
+  so URL entry points never need parsing inside the timeline entry.
 - `flists [query]` — list and locally filter Feed/List subscriptions; Inbox subscriptions are hidden.
 - `funread [query]` — list and locally filter subscriptions that contain unread entries.
 - `flogin` — open the browser, save the token through Alfred, and notify on successful login.
-- Subscription results use their Folo URL; hold Option to open a Feed's original site URL.
-- Timeline results expose their entry ID to downstream actions as `FOLO_ENTRY_ID`.
+- Subscription and unread results hand a JSON timeline argument to `folo`; hold Option to open
+  a Feed's original site URL or the Folo share URL.
+- Timeline results pass each entry's complete JSON (`url`, `entryId`, `entry`, `feed`,
+  `subscriptions`) downstream.
 - Feed and list icons use Folo's `image` field. Feeds without one fall back to
   `icons.folo.is/<site-domain>` and are cached by feed/list ID in Alfred's
   workflow cache. Folo fallback icons follow the service's 30-day cache policy;
@@ -61,6 +69,14 @@ successful update:
 
 ```bash
 node workflow/dist/app/mark-read.js "$FOLO_ENTRY_ID"
+```
+
+The params converter accepts a URL on argv and prints the timeline JSON params
+(unrecognized values pass through unchanged):
+
+```bash
+node workflow/dist/app/params-converter.js "https://app.folo.is/share/feeds/<id>"
+# {"feed":"<id>"}
 ```
 
 Then open `Folo.alfredworkflow` to install it in Alfred.

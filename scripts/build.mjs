@@ -12,6 +12,14 @@ execFileSync("tsc", ["-p", join(projectDirectory, "tsconfig.build.json")], {
   stdio: "inherit",
 });
 
-for (const entryPoint of ["app/login.js", "app/mark-read.js", "app/subscriptions.js", "app/timeline.js", "app/unread.js"]) {
+for (const entryPoint of [
+  "app/login.js",
+  "app/mark-read.js",
+  "app/timeline-params-converter.js",
+  "app/subscriptions.js",
+  "app/timeline.js",
+  "app/unread.js",
+  "app/resource-url.js",
+]) {
   chmodSync(join(outputDirectory, entryPoint), 0o755);
 }

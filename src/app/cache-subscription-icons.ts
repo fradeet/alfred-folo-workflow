@@ -1,4 +1,14 @@
 #!/usr/bin/env node
+/**
+ * Background worker: pre-caches subscription icons.
+ *
+ * Input: none (no arguments, no stdin); runs with the spawning process's
+ * environment.
+ *
+ * Output: none. Fetches the subscription list and downloads icons into the icon
+ * cache directory. A lock file (stale after 60s) prevents concurrent runs, and
+ * all errors are swallowed so the detached process stays silent.
+ */
 import { mkdir, open, stat, unlink } from "node:fs/promises";
 import { join } from "node:path";
 import { cacheIcons, iconCacheDirectory } from "../shared/icon-cache.js";
