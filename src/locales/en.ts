@@ -3,7 +3,7 @@ export const en = {
   timeline: {
     untitledEntry: "Untitled entry",
     unknownFeed: "Unknown feed",
-    noNextPage: "No next page",
+    noNextPage: "No more page next",
     alreadyAtTop: "Already at the top",
     emptyTitle: "No Folo entries",
     emptyUnreadSubscription: "This subscription has no unread entries",
