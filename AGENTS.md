@@ -192,7 +192,7 @@ Run the smallest relevant test while iterating, then run the complete check
 before handing off a change:
 
 ```bash
-pnpm run check
+npm run check
 ```
 
 This performs the TypeScript check, all Node tests, a clean build, and

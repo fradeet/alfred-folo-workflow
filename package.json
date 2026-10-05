@@ -2,18 +2,18 @@
   "name": "folo-workflow",
   "version": "0.4.2",
   "private": true,
-  "packageManager": "pnpm@10.34.5",
+  "packageManager": "npm@11.13.0",
   "type": "module",
   "description": "An Alfred workflow for browsing and managing Folo feeds.",
   "engines": {
     "node": ">=24"
   },
   "scripts": {
-    "install:workflow": "npm install --prefix workflow",
+    "install:workflow": "npm ci --prefix workflow",
     "build": "node scripts/build.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "node --import tsx --test test/*.test.ts",
-    "check": "pnpm run typecheck && pnpm test && pnpm run build && plutil -lint workflow/info.plist",
+    "check": "npm run typecheck && npm test && npm run build && plutil -lint workflow/info.plist",
     "package": "./workflow-packager"
   },
   "devDependencies": {

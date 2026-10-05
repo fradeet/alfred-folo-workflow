@@ -16,6 +16,6 @@ find "${temporary_directory}/workflow" -name '.DS_Store' -delete
 rm -rf \
   "${temporary_directory}/workflow/prefs.plist" \
   "${temporary_directory}/workflow/.sync.ffs_db"
-npm install --prefix "${temporary_directory}/workflow" --omit=dev --ignore-scripts --no-audit --no-fund
+npm ci --prefix "${temporary_directory}/workflow" --omit=dev --ignore-scripts --no-audit --no-fund
 DITTONORSRC=1 ditto -ck "${temporary_directory}/workflow" "${workflow_file}"
 echo "Created ${workflow_file}"
