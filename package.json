@@ -11,6 +11,7 @@
   "scripts": {
     "install:workflow": "npm ci --prefix workflow",
     "build": "node scripts/build.mjs",
+    "sync:readme": "node scripts/sync-readme.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "node --import tsx --test test/*.test.ts",
     "check": "npm run typecheck && npm test && npm run build && plutil -lint workflow/info.plist",

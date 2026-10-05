@@ -1502,7 +1502,45 @@
 		</dict>
 	</array>
 	<key>readme</key>
-	<string></string>
+	<string>## Setup
+
+Run the `folologin` keyword and complete sign-in in your browser. The workflow saves your Folo token in the Workflow’s Configuration.
+
+Alternatively, run this command in Terminal to get a token manually:
+
+```sh
+npx --yes folocli@latest login
+```
+
+After signing in, open the `configPath` shown in the command output. Copy its `token` value into **Folo Auth Token** in the Workflow’s Configuration.
+
+## Usage
+
+Browse unread Folo entries via the `ftl` keyword.
+
+![Browsing Folo timeline entries](assets/imgs/show1.png)
+
+- &lt;kbd&gt;↩&lt;/kbd&gt; Open the article and mark it as read.
+- &lt;kbd&gt;⌃&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Open the entry in Folo.
+- &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Show the next page of entries.
+- &lt;kbd&gt;⇧&lt;/kbd&gt;&lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Return to the first page.
+- &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Mark all entries in the current timeline as read.
+
+Use &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; on the `ftl` keyword to include entries you have already read. Use &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; on the keyword to reopen your last timeline view.
+
+Find subscriptions with unread entries via the `fun` keyword. Select a feed or list to browse its unread entries.
+
+- &lt;kbd&gt;↩&lt;/kbd&gt; Browse unread entries in the selected feed or list.
+- &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Include entries you have already read.
+- &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Mark all entries in the selected feed or list as read.
+
+Search your followed feeds and lists via the `fsub` keyword.
+
+- &lt;kbd&gt;↩&lt;/kbd&gt; Browse entries in the selected feed or list.
+- &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Show only unread entries.
+
+Change the three keywords and the number of timeline results in the Workflow’s Configuration.
+</string>
 	<key>uidata</key>
 	<dict>
 		<key>00633B4B-32B3-45F9-84AD-17E10EA1D712</key>
