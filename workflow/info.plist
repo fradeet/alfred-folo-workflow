@@ -3,16 +3,189 @@
 <plist version="1.0">
 <dict>
 	<key>bundleid</key>
-	<string>top.fradeet.alfred-folo</string>
+	<string>top.fradeet.folo</string>
 	<key>category</key>
 	<string>Internet</string>
 	<key>connections</key>
 	<dict>
+		<key>04BE983A-1F0F-4BAE-8855-76D1A3DAB698</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>F1C0B4DD-5662-43BE-8CFA-636D79CCF30F</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>0A1506F8-7EB3-4938-90AE-509944E38B25</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>3E28080B-9C52-443E-AE10-5A8AEF99BC57</string>
+				<string>F1C0B4DD-5662-43BE-8CFA-636D79CCF30F</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>4C57F8FA-E18F-4536-A99C-B1C64D707A7A</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>0FB5FEFB-8E29-4BFA-B232-973DD25330F6</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>497FDFAC-F667-403B-BA5C-4B5F76B2E68E</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>1A66D79F-C777-4559-BEF6-19BD667DFFC8</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>0FB5FEFB-8E29-4BFA-B232-973DD25330F6</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>27D1DE3E-80FD-4FCB-ABF0-3E6129EEA781</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<true/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>3C69F4F0-BE10-4441-9249-06D93D843E69</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>View all entry (include already read)</string>
+				<key>vitoclose</key>
+				<true/>
+			</dict>
+		</array>
+		<key>318AF45B-B2CB-4A05-B082-F4C436780C09</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>528EBBE4-AC53-41B4-BE91-D87A4C9BFB74</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>3C69F4F0-BE10-4441-9249-06D93D843E69</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>04BE983A-1F0F-4BAE-8855-76D1A3DAB698</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>497FDFAC-F667-403B-BA5C-4B5F76B2E68E</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>E3FDCD1D-BC7D-412E-8B33-DDB13C2ACEF5</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>528EBBE4-AC53-41B4-BE91-D87A4C9BFB74</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>View unread only</string>
+				<key>vitoclose</key>
+				<true/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>3C69F4F0-BE10-4441-9249-06D93D843E69</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<true/>
+			</dict>
+		</array>
+		<key>5C6540E6-36D7-4C19-87E6-863F155F29C0</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>3C69F4F0-BE10-4441-9249-06D93D843E69</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<true/>
+			</dict>
+		</array>
+		<key>85EFCDBC-EC08-4BB4-9ECF-03C273BB8FD7</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>1A66D79F-C777-4559-BEF6-19BD667DFFC8</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Open In Folo</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>D0B940A1-75B0-456F-8CBF-D86FF7772231</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -36,62 +209,13 @@
 				<key>modifiers</key>
 				<integer>1048576</integer>
 				<key>modifiersubtext</key>
-				<string>Mark above as read</string>
+				<string>Mark above items as read</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
 		</array>
-		<key>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</key>
+		<key>8AAD2354-8F94-409A-A7FF-D0E8D77D9781</key>
 		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>4C57F8FA-E18F-4536-A99C-B1C64D707A7A</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
-		<key>318AF45B-B2CB-4A05-B082-F4C436780C09</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>528EBBE4-AC53-41B4-BE91-D87A4C9BFB74</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
-		<key>3E28080B-9C52-443E-AE10-5A8AEF99BC57</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>047B6A17-139C-42B0-9653-D90335C28209</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
-		<key>528EBBE4-AC53-41B4-BE91-D87A4C9BFB74</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>3E28080B-9C52-443E-AE10-5A8AEF99BC57</string>
-				<key>modifiers</key>
-				<integer>524288</integer>
-				<key>modifiersubtext</key>
-				<string>Open Website</string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
 			<dict>
 				<key>destinationuid</key>
 				<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
@@ -100,7 +224,20 @@
 				<key>modifiersubtext</key>
 				<string></string>
 				<key>vitoclose</key>
-				<true/>
+				<false/>
+			</dict>
+		</array>
+		<key>8B9D6849-B366-4A77-8AC4-BECCA5ED31A5</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>27D1DE3E-80FD-4FCB-ABF0-3E6129EEA781</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>8EB5D4EF-BC4F-46B0-93F4-9045C8885F8C</key>
@@ -144,6 +281,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>D0B940A1-75B0-456F-8CBF-D86FF7772231</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>1BCA8E54-D2B6-49CE-B1C0-40CFD5AF05C0</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>D59678E1-D29B-4725-B5E3-1E2EEDC90E47</key>
 		<array>
 			<dict>
@@ -155,6 +305,42 @@
 				<string></string>
 				<key>vitoclose</key>
 				<true/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>3C69F4F0-BE10-4441-9249-06D93D843E69</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>View all entry (include already read)</string>
+				<key>vitoclose</key>
+				<true/>
+			</dict>
+		</array>
+		<key>E3FDCD1D-BC7D-412E-8B33-DDB13C2ACEF5</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>B85A7A0C-97A4-424D-8310-CC557C79032B</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>F1C0B4DD-5662-43BE-8CFA-636D79CCF30F</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>85EFCDBC-EC08-4BB4-9ECF-03C273BB8FD7</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>F2D25FAA-6A4D-4ACB-96F5-AEA036D44D38</key>
@@ -249,7 +435,7 @@
 				<key>argumenttype</key>
 				<integer>2</integer>
 				<key>keyword</key>
-				<string>flogin</string>
+				<string>folologin</string>
 				<key>skipuniversalaction</key>
 				<true/>
 				<key>subtext</key>
@@ -262,12 +448,279 @@
 			<key>inboundconfig</key>
 			<dict>
 				<key>externalid</key>
-				<string>folo-login</string>
+				<string>login</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.keyword</string>
 			<key>uid</key>
 			<string>8EB5D4EF-BC4F-46B0-93F4-9045C8885F8C</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string></string>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>triggerid</key>
+				<string>timeline</string>
+				<key>triggername</key>
+				<string>Timeline</string>
+				<key>workflowonly</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.remote</string>
+			<key>uid</key>
+			<string>8AAD2354-8F94-409A-A7FF-D0E8D77D9781</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>tasksettings</key>
+				<dict>
+					<key>key_path</key>
+					<string>feed.id</string>
+				</dict>
+				<key>taskuid</key>
+				<string>com.alfredapp.automation.core/json-processing/json.key-value</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.automation.task</string>
+			<key>uid</key>
+			<string>0FB5FEFB-8E29-4BFA-B232-973DD25330F6</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>tasksettings</key>
+				<dict>
+					<key>key_path</key>
+					<string>entryId</string>
+				</dict>
+				<key>taskuid</key>
+				<string>com.alfredapp.automation.core/json-processing/json.key-value</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.automation.task</string>
+			<key>uid</key>
+			<string>E3FDCD1D-BC7D-412E-8B33-DDB13C2ACEF5</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>keyword</key>
+				<string>{var:FRR_TIMELINE_KEYWORD}a</string>
+				<key>skipuniversalaction</key>
+				<true/>
+				<key>subtext</key>
+				<string>View all entry (include already read)</string>
+				<key>text</key>
+				<string>Folo Timeline (All)</string>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>5C6540E6-36D7-4C19-87E6-863F155F29C0</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>https://app.folo.is/timeline/articles/{var:frr_item_feed_id}/{query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>B85A7A0C-97A4-424D-8310-CC557C79032B</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>{query}</string>
+				<key>passthroughargument</key>
+				<true/>
+				<key>variables</key>
+				<dict>
+					<key>frr_timeline_item</key>
+					<string>{query}</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>1A66D79F-C777-4559-BEF6-19BD667DFFC8</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>{var:frr_timeline_item}</string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict>
+					<key>frr_item_feed_id</key>
+					<string>{query}</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>497FDFAC-F667-403B-BA5C-4B5F76B2E68E</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string></string>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>triggerid</key>
+				<string>timeline_view</string>
+				<key>triggername</key>
+				<string>Timeline View</string>
+				<key>workflowonly</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.remote</string>
+			<key>uid</key>
+			<string>8B9D6849-B366-4A77-8AC4-BECCA5ED31A5</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<true/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>{var:FRR_TIMELINE_KEYWORD}</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Loading......</string>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>script/timeline-filter.sh</string>
+				<key>skipuniversalaction</key>
+				<true/>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Folo Timeline</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>85EFCDBC-EC08-4BB4-9ECF-03C273BB8FD7</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>tasksettings</key>
+				<dict>
+					<key>key_path</key>
+					<string>url</string>
+				</dict>
+				<key>taskuid</key>
+				<string>com.alfredapp.automation.core/json-processing/json.key-value</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.automation.task</string>
+			<key>uid</key>
+			<string>D0B940A1-75B0-456F-8CBF-D86FF7772231</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>fixedorder</key>
+				<false/>
+				<key>items</key>
+				<string>[{"title":"Articles","arg":"{\"kind\": \"view-input\", \"view\": \"articles\"}","subtitle":"View Folo timeline with articles view"},{"title":"Social","arg":"{\"kind\": \"view-input\", \"view\": \"social\"}","subtitle":"View Folo timeline with social view"},{"title":"Pictures","arg":"{\"kind\": \"view-input\", \"view\": \"pictures\"}","subtitle":"View Folo timeline with pictures view"},{"title":"Audio","arg":"{\"kind\": \"view-input\", \"view\": \"audio\"}","subtitle":"View Folo timeline with audio view"},{"title":"Notifications","arg":"{\"kind\": \"view-input\", \"view\": \"notifications\"}","subtitle":"View Folo timeline with notifications view"}]</string>
+				<key>keyword</key>
+				<string>fv</string>
+				<key>matchmode</key>
+				<integer>0</integer>
+				<key>runningsubtext</key>
+				<string></string>
+				<key>subtext</key>
+				<string>View Folo Timeline with '{query}' View</string>
+				<key>title</key>
+				<string>Folo Timeline with View</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>inboundconfig</key>
+			<dict>
+				<key>externalid</key>
+				<string>timeline_view</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.listfilter</string>
+			<key>uid</key>
+			<string>27D1DE3E-80FD-4FCB-ABF0-3E6129EEA781</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -288,165 +741,42 @@
 			<key>type</key>
 			<string>alfred.workflow.action.openurl</string>
 			<key>uid</key>
-			<string>047B6A17-139C-42B0-9653-D90335C28209</string>
+			<string>1BCA8E54-D2B6-49CE-B1C0-40CFD5AF05C0</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
 		<dict>
-			<key>config</key>
-			<dict>
-				<key>alfredfiltersresults</key>
-				<true/>
-				<key>alfredfiltersresultsmatchmode</key>
-				<integer>0</integer>
-				<key>argumenttreatemptyqueryasnil</key>
-				<true/>
-				<key>argumenttrimmode</key>
-				<integer>0</integer>
-				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>escaping</key>
-				<integer>0</integer>
-				<key>keyword</key>
-				<string>{var:FOLO_LISTS_KEYWORD}</string>
-				<key>queuedelaycustom</key>
-				<integer>1</integer>
-				<key>queuedelayimmediatelyinitially</key>
-				<true/>
-				<key>queuedelaymode</key>
-				<integer>0</integer>
-				<key>queuemode</key>
-				<integer>1</integer>
-				<key>runningsubtext</key>
-				<string>Loading Folo subscriptions…</string>
-				<key>script</key>
-				<string></string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string>dist/app/subscriptions.js</string>
-				<key>skipuniversalaction</key>
-				<true/>
-				<key>subtext</key>
-				<string>Search all your subscriptions</string>
-				<key>title</key>
-				<string>Folo Subscriptions</string>
-				<key>type</key>
-				<integer>8</integer>
-				<key>withspace</key>
-				<true/>
-			</dict>
 			<key>inboundconfig</key>
 			<dict>
 				<key>externalid</key>
-				<string>folo-subscribed-lists</string>
+				<string>timeline_unread</string>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
-			<key>uid</key>
-			<string>528EBBE4-AC53-41B4-BE91-D87A4C9BFB74</string>
-			<key>version</key>
-			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>0</integer>
-				<key>script</key>
-				<string></string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string>dist/app/resource-url.js</string>
-				<key>type</key>
-				<integer>8</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>3E28080B-9C52-443E-AE10-5A8AEF99BC57</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argument</key>
-				<string></string>
-				<key>argumenttype</key>
-				<integer>0</integer>
-				<key>triggerid</key>
-				<string>folo-subscribed-lists</string>
-				<key>triggername</key>
-				<string>Sub List</string>
-				<key>workflowonly</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.trigger.remote</string>
-			<key>uid</key>
-			<string>318AF45B-B2CB-4A05-B082-F4C436780C09</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>alfredfiltersresults</key>
-				<true/>
-				<key>alfredfiltersresultsmatchmode</key>
-				<integer>0</integer>
-				<key>argumenttreatemptyqueryasnil</key>
-				<true/>
-				<key>argumenttrimmode</key>
-				<integer>0</integer>
-				<key>argumenttype</key>
-				<integer>2</integer>
-				<key>escaping</key>
-				<integer>0</integer>
-				<key>keyword</key>
-				<string>{var:FOLO_KEYWORD}</string>
-				<key>queuedelaycustom</key>
-				<integer>1</integer>
-				<key>queuedelayimmediatelyinitially</key>
-				<true/>
-				<key>queuedelaymode</key>
-				<integer>0</integer>
-				<key>queuemode</key>
-				<integer>1</integer>
-				<key>runningsubtext</key>
-				<string>Loading Folo timeline…</string>
-				<key>script</key>
-				<string></string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string>script/timeline-filter.sh</string>
-				<key>skipuniversalaction</key>
-				<true/>
-				<key>subtext</key>
-				<string>Search recent entries</string>
-				<key>title</key>
-				<string>Folo Timeline</string>
-				<key>type</key>
-				<integer>8</integer>
-				<key>withspace</key>
-				<false/>
-			</dict>
-			<key>inboundconfig</key>
-			<dict>
-				<key>externalid</key>
-				<string>folo-timeline</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
+			<string>alfred.workflow.utility.junction</string>
 			<key>uid</key>
 			<string>0A1506F8-7EB3-4938-90AE-509944E38B25</string>
 			<key>version</key>
-			<integer>3</integer>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string></string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict>
+					<key>frrTimelineFilter</key>
+					<string>{query}</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>F1C0B4DD-5662-43BE-8CFA-636D79CCF30F</string>
+			<key>version</key>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -456,7 +786,7 @@
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>triggerid</key>
-				<string>folo-subscribed-unread-lists</string>
+				<string>subscribed_unread_lists</string>
 				<key>triggername</key>
 				<string>Unread Sub</string>
 				<key>workflowonly</key>
@@ -485,7 +815,7 @@
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>keyword</key>
-				<string>{var:FOLO_UNREAD_KEYWORD}</string>
+				<string>{var:FRR_UNREAD_KEYWORD}</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -507,7 +837,7 @@
 				<key>subtext</key>
 				<string>Retrieve unread feed</string>
 				<key>title</key>
-				<string>Folo unread</string>
+				<string>Folo Unread Feed</string>
 				<key>type</key>
 				<integer>8</integer>
 				<key>withspace</key>
@@ -516,7 +846,7 @@
 			<key>inboundconfig</key>
 			<dict>
 				<key>externalid</key>
-				<string>folo-subscribed-unread-lists</string>
+				<string>subscribed_unread_lists</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.scriptfilter</string>
@@ -551,6 +881,39 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>argument</key>
+				<string>{query}</string>
+				<key>passthroughargument</key>
+				<true/>
+				<key>variables</key>
+				<dict>
+					<key>frrTimelineUnreadOnly</key>
+					<string>0</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>04BE983A-1F0F-4BAE-8855-76D1A3DAB698</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>inboundconfig</key>
+			<dict>
+				<key>externalid</key>
+				<string>timeline_all</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.junction</string>
+			<key>uid</key>
+			<string>3C69F4F0-BE10-4441-9249-06D93D843E69</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
@@ -574,10 +937,87 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<true/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>{var:FRR_SUBSCRIPTIONS_LISTS_KEYWORD}</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Loading Folo subscriptions…</string>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>dist/app/subscriptions.js</string>
+				<key>skipuniversalaction</key>
+				<true/>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>List Folo Subscriptions</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>inboundconfig</key>
+			<dict>
+				<key>externalid</key>
+				<string>subscribed_lists</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>528EBBE4-AC53-41B4-BE91-D87A4C9BFB74</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string></string>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>triggerid</key>
+				<string>subscribed_lists</string>
+				<key>triggername</key>
+				<string>Sub List</string>
+				<key>workflowonly</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.remote</string>
+			<key>uid</key>
+			<string>318AF45B-B2CB-4A05-B082-F4C436780C09</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>lastpathcomponent</key>
 				<false/>
 				<key>onlyshowifquerypopulated</key>
-				<false/>
+				<true/>
 				<key>removeextension</key>
 				<false/>
 				<key>text</key>
@@ -594,35 +1034,71 @@
 		</dict>
 	</array>
 	<key>readme</key>
-	<string>Use `flogin` to authenticate, `folo` to browse your timeline, and `flists` to browse all subscriptions.</string>
+	<string></string>
 	<key>uidata</key>
 	<dict>
-		<key>047B6A17-139C-42B0-9653-D90335C28209</key>
+		<key>04BE983A-1F0F-4BAE-8855-76D1A3DAB698</key>
 		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
 			<key>xpos</key>
-			<real>920</real>
+			<real>565</real>
 			<key>ypos</key>
-			<real>175</real>
+			<real>505</real>
 		</dict>
 		<key>0A1506F8-7EB3-4938-90AE-509944E38B25</key>
 		<dict>
 			<key>colorindex</key>
 			<integer>3</integer>
 			<key>note</key>
-			<string>View Timeline</string>
+			<string>Unread</string>
 			<key>xpos</key>
-			<real>480</real>
+			<real>520</real>
 			<key>ypos</key>
-			<real>325</real>
+			<real>355</real>
 		</dict>
 		<key>0D3CE19A-1216-4A79-A26D-9AFA948BE47B</key>
 		<dict>
 			<key>note</key>
 			<string>Mark above as read</string>
 			<key>xpos</key>
-			<real>700</real>
+			<real>1140</real>
 			<key>ypos</key>
-			<real>475</real>
+			<real>625</real>
+		</dict>
+		<key>0FB5FEFB-8E29-4BFA-B232-973DD25330F6</key>
+		<dict>
+			<key>xpos</key>
+			<real>1140</real>
+			<key>ypos</key>
+			<real>175</real>
+		</dict>
+		<key>1A66D79F-C777-4559-BEF6-19BD667DFFC8</key>
+		<dict>
+			<key>xpos</key>
+			<real>1090</real>
+			<key>ypos</key>
+			<real>205</real>
+		</dict>
+		<key>1BCA8E54-D2B6-49CE-B1C0-40CFD5AF05C0</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
+			<key>xpos</key>
+			<real>1360</real>
+			<key>ypos</key>
+			<real>325</real>
+		</dict>
+		<key>27D1DE3E-80FD-4FCB-ABF0-3E6129EEA781</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>7</integer>
+			<key>note</key>
+			<string>Timeline View Filter</string>
+			<key>xpos</key>
+			<real>260</real>
+			<key>ypos</key>
+			<real>325</real>
 		</dict>
 		<key>318AF45B-B2CB-4A05-B082-F4C436780C09</key>
 		<dict>
@@ -631,28 +1107,48 @@
 			<key>xpos</key>
 			<real>40</real>
 			<key>ypos</key>
-			<real>175</real>
+			<real>625</real>
 		</dict>
-		<key>3E28080B-9C52-443E-AE10-5A8AEF99BC57</key>
+		<key>3C69F4F0-BE10-4441-9249-06D93D843E69</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
+			<key>note</key>
+			<string>All</string>
+			<key>xpos</key>
+			<real>520</real>
+			<key>ypos</key>
+			<real>505</real>
+		</dict>
+		<key>497FDFAC-F667-403B-BA5C-4B5F76B2E68E</key>
 		<dict>
 			<key>xpos</key>
-			<real>700</real>
+			<real>1310</real>
 			<key>ypos</key>
-			<real>175</real>
+			<real>205</real>
 		</dict>
 		<key>4C57F8FA-E18F-4536-A99C-B1C64D707A7A</key>
 		<dict>
 			<key>xpos</key>
-			<real>920</real>
+			<real>1360</real>
 			<key>ypos</key>
-			<real>475</real>
+			<real>625</real>
 		</dict>
 		<key>528EBBE4-AC53-41B4-BE91-D87A4C9BFB74</key>
 		<dict>
 			<key>colorindex</key>
 			<integer>4</integer>
 			<key>note</key>
-			<string>View Subscription</string>
+			<string>Subscription List</string>
+			<key>xpos</key>
+			<real>260</real>
+			<key>ypos</key>
+			<real>625</real>
+		</dict>
+		<key>5C6540E6-36D7-4C19-87E6-863F155F29C0</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
 			<key>xpos</key>
 			<real>260</real>
 			<key>ypos</key>
@@ -661,7 +1157,7 @@
 		<key>63E2EF96-CB1A-4E6C-8062-D487A9BDDB9A</key>
 		<dict>
 			<key>colorindex</key>
-			<integer>3</integer>
+			<integer>10</integer>
 			<key>note</key>
 			<string>Login Success</string>
 			<key>xpos</key>
@@ -669,10 +1165,39 @@
 			<key>ypos</key>
 			<real>25</real>
 		</dict>
-		<key>8EB5D4EF-BC4F-46B0-93F4-9045C8885F8C</key>
+		<key>85EFCDBC-EC08-4BB4-9ECF-03C273BB8FD7</key>
 		<dict>
 			<key>colorindex</key>
 			<integer>3</integer>
+			<key>note</key>
+			<string>View Timeline</string>
+			<key>xpos</key>
+			<real>920</real>
+			<key>ypos</key>
+			<real>325</real>
+		</dict>
+		<key>8AAD2354-8F94-409A-A7FF-D0E8D77D9781</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
+			<key>xpos</key>
+			<real>40</real>
+			<key>ypos</key>
+			<real>175</real>
+		</dict>
+		<key>8B9D6849-B366-4A77-8AC4-BECCA5ED31A5</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>7</integer>
+			<key>xpos</key>
+			<real>40</real>
+			<key>ypos</key>
+			<real>325</real>
+		</dict>
+		<key>8EB5D4EF-BC4F-46B0-93F4-9045C8885F8C</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>10</integer>
 			<key>note</key>
 			<string>Login via CLI</string>
 			<key>xpos</key>
@@ -687,37 +1212,77 @@
 			<key>xpos</key>
 			<real>40</real>
 			<key>ypos</key>
-			<real>325</real>
+			<real>475</real>
 		</dict>
 		<key>9FCCC6CA-5715-44A6-88E7-113666703284</key>
 		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
 			<key>note</key>
 			<string>Mark Read</string>
 			<key>xpos</key>
-			<real>920</real>
+			<real>1140</real>
 			<key>ypos</key>
-			<real>325</real>
+			<real>475</real>
+		</dict>
+		<key>B85A7A0C-97A4-424D-8310-CC557C79032B</key>
+		<dict>
+			<key>note</key>
+			<string>Open In Folo</string>
+			<key>xpos</key>
+			<real>1580</real>
+			<key>ypos</key>
+			<real>175</real>
 		</dict>
 		<key>C1A3E00B-AB1B-40D0-A288-30D4B9443D65</key>
 		<dict>
 			<key>colorindex</key>
-			<integer>3</integer>
+			<integer>10</integer>
 			<key>xpos</key>
 			<real>260</real>
 			<key>ypos</key>
 			<real>25</real>
 		</dict>
+		<key>D0B940A1-75B0-456F-8CBF-D86FF7772231</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
+			<key>xpos</key>
+			<real>1140</real>
+			<key>ypos</key>
+			<real>325</real>
+		</dict>
 		<key>D59678E1-D29B-4725-B5E3-1E2EEDC90E47</key>
 		<dict>
 			<key>colorindex</key>
 			<integer>6</integer>
+			<key>note</key>
+			<string>Unread</string>
 			<key>xpos</key>
 			<real>260</real>
 			<key>ypos</key>
-			<real>325</real>
+			<real>475</real>
+		</dict>
+		<key>E3FDCD1D-BC7D-412E-8B33-DDB13C2ACEF5</key>
+		<dict>
+			<key>xpos</key>
+			<real>1360</real>
+			<key>ypos</key>
+			<real>175</real>
+		</dict>
+		<key>F1C0B4DD-5662-43BE-8CFA-636D79CCF30F</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>3</integer>
+			<key>xpos</key>
+			<real>870</real>
+			<key>ypos</key>
+			<real>355</real>
 		</dict>
 		<key>F2D25FAA-6A4D-4ACB-96F5-AEA036D44D38</key>
 		<dict>
+			<key>colorindex</key>
+			<integer>10</integer>
 			<key>xpos</key>
 			<real>480</real>
 			<key>ypos</key>
@@ -732,16 +1297,16 @@
 				<key>default</key>
 				<string></string>
 				<key>placeholder</key>
-				<string>Zexf......</string>
+				<string>e.g. Zw8MDw70......</string>
 				<key>required</key>
 				<true/>
 				<key>trim</key>
 				<true/>
 			</dict>
 			<key>description</key>
-			<string>Use 'flogin' to login to Folo, or manually input the user token.</string>
+			<string>Use the keyword 'folologin' to log in Folo with fill this field, or refer 'Get Token Manually' section in README to fill in the user token.</string>
 			<key>label</key>
-			<string>Folo Token</string>
+			<string>Folo Auth Token</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
@@ -751,9 +1316,51 @@
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>funread</string>
+				<string>ft</string>
 				<key>placeholder</key>
-				<string>funread</string>
+				<string>ft</string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Timeline Keyword</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>FRR_TIMELINE_KEYWORD</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>20</string>
+				<key>placeholder</key>
+				<string>20</string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Timeline Result Limit</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>FRR_TIMELINE_LIMIT</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>fu</string>
+				<key>placeholder</key>
+				<string>fu</string>
 				<key>required</key>
 				<true/>
 				<key>trim</key>
@@ -766,70 +1373,28 @@
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>FOLO_UNREAD_KEYWORD</string>
+			<string>FRR_UNREAD_KEYWORD</string>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>flists</string>
+				<string>fsub</string>
 				<key>placeholder</key>
-				<string>flists</string>
+				<string>fsub</string>
 				<key>required</key>
 				<true/>
 				<key>trim</key>
 				<true/>
 			</dict>
 			<key>description</key>
-			<string>Subscription list keyword</string>
+			<string></string>
 			<key>label</key>
 			<string>Subscriptions Keyword</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>FOLO_LISTS_KEYWORD</string>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>default</key>
-				<string>folo</string>
-				<key>placeholder</key>
-				<string>folo</string>
-				<key>required</key>
-				<true/>
-				<key>trim</key>
-				<true/>
-			</dict>
-			<key>description</key>
-			<string>Timeline keyword</string>
-			<key>label</key>
-			<string>Timeline Keyword</string>
-			<key>type</key>
-			<string>textfield</string>
-			<key>variable</key>
-			<string>FOLO_KEYWORD</string>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>default</key>
-				<string>50</string>
-				<key>placeholder</key>
-				<string>50</string>
-				<key>required</key>
-				<true/>
-				<key>trim</key>
-				<true/>
-			</dict>
-			<key>description</key>
-			<string>Number of entries fetched</string>
-			<key>label</key>
-			<string>Timeline Limit</string>
-			<key>type</key>
-			<string>textfield</string>
-			<key>variable</key>
-			<string>FOLO_LIMIT</string>
+			<string>FRR_SUBSCRIPTIONS_LISTS_KEYWORD</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -839,7 +1404,7 @@
 				<key>required</key>
 				<false/>
 				<key>text</key>
-				<string>Use system proxy</string>
+				<string>Follow Alfred's proxy settings</string>
 			</dict>
 			<key>description</key>
 			<string>Node.js doesn't use the proxy env var by default; This option ensures consistent proxy behaviour like other Alfred workflows.</string>
@@ -852,7 +1417,7 @@
 		</dict>
 	</array>
 	<key>version</key>
-	<string>0.4.2</string>
+	<string>0.5.3</string>
 	<key>webaddress</key>
 	<string>https://github.com/fradeet/alfred-folo-workflow</string>
 </dict>

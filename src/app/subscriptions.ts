@@ -6,9 +6,9 @@
  * titles, kinds, categories, descriptions, and IDs.
  *
  * Output:
- * - stdout: Alfred Script Filter JSON cached for 60s. Each item's
- *   `frr_timeline_filter` variable is a serialized subscription selection; the
- *   response's `frr_result_cache_key` variable names the cached Folo CLI response file
+ * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` carries a
+ *   serialized subscription selection for the timeline app; the response's
+ *   `frrResultCacheKey` variable names the cached Folo CLI response file
  *   backing the list. An empty result yields a non-valid item.
  * - On failure: an error item is emitted and the exit code is 1.
  */
@@ -28,7 +28,7 @@ export class SubscriptionsAppInput {
 
 export class SubscriptionsAppOutput extends AlfredSF {
   constructor(items: AlfredSFItem[], cache = true, variables?: AlfredVariables) {
-    super(items, { cache: cache ? new AlfredSFCache(60) : undefined, variables });
+    super(items, { cache: cache ? new AlfredSFCache(300) : undefined, variables });
   }
 }
 
@@ -37,11 +37,11 @@ export async function subscriptions(input: SubscriptionsAppInput): Promise<Subsc
   const data = getSubscriptions(blockInput);
   const sources = data.subscriptions.flatMap((item) => item.lists ?? item.feeds ?? []);
   const iconFor = await cacheIcons(sources);
-  const items = subscriptionItems(data, input.query, iconFor);
+  const items = subscriptionItems(data, iconFor);
   return new SubscriptionsAppOutput(
     items.length ? items : [emptyItem("No Folo subscriptions", "Try another query")],
     true,
-    { frr_result_cache_key: responseCacheFilename(blockInput.toArguments()) },
+    { frrResultCacheKey: responseCacheFilename(blockInput.toArguments()) },
   );
 }
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * `flogin` Script Filter entry: authenticates with Folo and stores the token.
+ * `folologin` Script Filter entry: authenticates with Folo and stores the token.
  *
  * Input: no query arguments; the workflow must run inside Alfred, which provides
  * `alfred_workflow_bundleid` in the environment.

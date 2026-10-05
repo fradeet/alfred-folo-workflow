@@ -19,7 +19,7 @@ export function responseCacheKey(command: string[]): string {
   return `${prefix}-${digest}`;
 }
 
-/** Returns the cache filename reported to Alfred as the `frr_result_cache_key` variable. */
+/** Returns the cache filename reported to Alfred as the `frrResultCacheKey` variable. */
 export function responseCacheFilename(command: string[]): string {
   return `${responseCacheKey(command)}.json`;
 }
@@ -41,7 +41,7 @@ export function writeResponseCache(command: string[], data: unknown, options: Re
 /** Shape of filenames written by {@link writeResponseCache}. */
 const cacheFilenamePattern = /^[a-zA-Z0-9_-]{1,32}-[0-9a-f]{64}\.json$/;
 
-/** Reads the CLI payload stored under a `frr_result_cache_key` filename. */
+/** Reads the CLI payload stored under a `frrResultCacheKey` filename. */
 export function readResponseCache(filename: string, options: ResponseCacheOptions = {}): unknown {
   if (!cacheFilenamePattern.test(filename)) {
     throw new TypeError("Response cache key must be a filename reported by this workflow");

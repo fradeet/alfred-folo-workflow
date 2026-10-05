@@ -10,17 +10,20 @@ An Alfred workflow backed by the official [Folo CLI](https://api.folo.is/skill.m
   response sets `skipknowledge` so Alfred does not reorder the learned ranking.
 - `flists [query]` — list and locally filter Feed/List subscriptions; Inbox subscriptions are hidden.
 - `funread [query]` — list and locally filter subscriptions that contain unread entries.
-- `flogin` — open the browser, save the token through Alfred, and notify on successful login.
+- `fv` — pick a Folo view (articles, social, pictures, audio, notifications) and open the
+  timeline in it. The selected view reaches the timeline app as a `TimelineViewInput` JSON
+  value such as `{"kind": "view-input", "view": "articles"}` in the item's `arg`;
+  hold Option to include already-read entries.
+- `folologin` — open the browser, save the token through Alfred, and notify on successful login.
 - Subscription and unread results put a complete `SubscriptionSelection` or `UnreadSelection`
-  JSON value in the `frr_timeline_filter` workflow variable for the timeline app; hold Option to
-  open a Feed's original site URL or the Folo share URL.
+  JSON value in each item's `arg` for the timeline app.
 - Timeline results pass a complete `TimelineSelection` JSON value downstream. Both the URL
   action and mark-read action parse the same value without intermediate field extraction.
   Hold Command and press Enter to mark the selected entry and every unread entry above it
   in the rendered list as read.
 - Every Folo CLI request made by a Script Filter stores its response as a JSON file in
   Alfred's workflow cache (`folo-requests/`). The filename is a stable hash of the CLI
-  arguments, and each Script Filter response reports it in the `frr_result_cache_key`
+  arguments, and each Script Filter response reports it in the `frrResultCacheKey`
   workflow variable. The mark-read-above action reads the stored timeline response named
   by this variable so it marks exactly the entries the user saw above the selection.
 - Feed and list icons use Folo's `image` field. Feeds without one fall back to
@@ -35,7 +38,9 @@ workflow configuration.
 ## Requirements
 
 - macOS with Alfred 5 and the Powerpack
-- Node.js 18 or later
+- Node.js 24 or later. Icon downloads use the built-in `fetch`, which honors
+  `HTTP_PROXY`/`HTTPS_PROXY`/`NO_PROXY` through Node 24's `NODE_USE_ENV_PROXY`
+  support in proxied environments.
 - A Folo account
 
 ## Development setup
@@ -76,19 +81,21 @@ serialized mark-read result after a successful update:
 node workflow/dist/app/mark-read.js "$TIMELINE_SELECTION_JSON"
 ```
 
-The mark-read-above action takes the same selection plus the `frr_result_cache_key`
+The mark-read-above action takes the same selection plus the `frrResultCacheKey`
 variable naming the stored timeline response, and reports every entry it marked.
 Entries are marked through concurrent CLI requests, bounded at six in flight:
 
 ```bash
-frr_result_cache_key="$RESULT_CACHE_KEY" \
+frrResultCacheKey="$RESULT_CACHE_KEY" \
   node workflow/dist/app/mark-read-above.js "$TIMELINE_SELECTION_JSON"
 ```
 
-The timeline app accepts Folo share URLs and serialized resource selections directly:
+The timeline app accepts Folo share URLs, serialized resource selections, and Alfred
+node configuration JSON directly:
 
 ```bash
 node workflow/dist/app/timeline.js "https://app.folo.is/share/feeds/<id>"
+node workflow/dist/app/timeline.js '{"view": "articles"}'
 ```
 
 Then open `Folo.alfredworkflow` to install it in Alfred.

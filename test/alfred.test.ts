@@ -15,6 +15,7 @@ import {
   AlfredTVBehaviourResponse,
   AlfredTVBehaviourScroll,
 } from "../src/types/alfred-types.js";
+import { TimelineViewInput } from "../src/types/alfred-node-types.js";
 import { FoloError, parseFoloEnvelope } from "../src/block/folo/client.js";
 import { MarkReadBlockInput } from "../src/block/folo/mark-read.js";
 import { TimelineBlockInput } from "../src/block/folo/timeline.js";
@@ -32,13 +33,12 @@ import {
 } from "../src/types/folo-types.js";
 import { readToken, setWorkflowToken } from "../src/app/login.js";
 import { MarkReadAboveAppOutput, unreadEntryIdsAbove } from "../src/app/mark-read-above.js";
-import { TimelineAppOutput, TimelineDirectInput, parseTimelineAppInput } from "../src/app/timeline.js";
+import { resolveTimelineInput, TimelineAppOutput, TimelineDirectInput, parseTimelineAppInput } from "../src/app/timeline.js";
 import { parseFoloShareUrl } from "../src/shared/folo-url.js";
 import { cacheIcons, feedIconCacheKey, feedIconUrl, loadCachedIcons } from "../src/shared/icon-cache.js";
 import { SubscriptionSelection } from "../src/contracts/subscription-selection.js";
 import { TimelineSelection } from "../src/contracts/timeline-selection.js";
 import { UnreadSelection } from "../src/contracts/unread-selection.js";
-import { resourceUrl } from "../src/app/resource-url.js";
 
 test("feedIconUrl prefers an official image and falls back to Folo's domain icon", () => {
   assert.equal(feedIconUrl({
@@ -85,21 +85,21 @@ test("cacheIcons downloads each icon once and reuses its local path", async () =
     const unread = unreadItems(FoloUnreadResult.from({
       total: 1,
       items: [{ sourceType: "list", sourceId: "feed-1", title: "List", unreadCount: 1 }],
-    }), "", cachedOnly);
+    }), cachedOnly);
     assert.equal(unread[0]?.icon?.path, firstPath);
 
     const items = timelineItems(FoloTimelineResult.from({
       entries: [{ entries: { id: "entry-1", title: "Post" }, feeds: source }],
       nextCursor: null,
       hasNext: false,
-    }), "", second);
+    }), second);
     assert.equal(items[0]?.icon?.path, firstPath);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
 });
 
-test("subscriptionItems maps every subscription target and filters locally", () => {
+test("subscriptionItems maps every subscription target", () => {
   const raw = {
     subscriptions: [
       {
@@ -126,21 +126,20 @@ test("subscriptionItems maps every subscription target and filters locally", () 
   assert.equal(items.length, 2);
   assert.equal(items[0]?.title, "Daily Reads");
   assert.match(items[0]?.subtitle ?? "", /List.*Tech.*2 feeds.*useful bundle/);
-  assert.equal(items[0]?.arg, undefined);
+  assert.equal(items[0]?.variables, undefined);
+  assert.equal(items[0]?.text?.largetype, "Daily Reads");
   assert.deepEqual(
-    SubscriptionSelection.parse(String(items[0]?.variables?.frr_timeline_filter)).subscription,
+    SubscriptionSelection.parse(String(items[0]?.arg)).subscription,
     data.subscriptions[0],
   );
   assert.deepEqual(
-    SubscriptionSelection.parse(String(items[1]?.variables?.frr_timeline_filter)).subscription,
+    SubscriptionSelection.parse(String(items[1]?.arg)).subscription,
     data.subscriptions[1],
   );
-  assert.equal(items[1]?.mods?.alt?.arg, items[1]?.variables?.frr_timeline_filter);
-  assert.equal(subscriptionItems(data, "useful").length, 1);
-  assert.equal(subscriptionItems(data, "missing").length, 0);
+  assert.equal(items[1]?.mods?.alt, undefined);
 });
 
-test("unreadItems maps unread sources and filters locally", () => {
+test("unreadItems maps unread sources", () => {
   const data = FoloUnreadResult.from({
     total: 15,
     items: [
@@ -153,16 +152,19 @@ test("unreadItems maps unread sources and filters locally", () => {
   const items = unreadItems(data);
   assert.equal(items.length, 3);
   assert.match(items[0]?.subtitle ?? "", /12 unread.*Feed.*Tech/);
-  assert.equal(items[0]?.arg, undefined);
+  assert.equal(items[0]?.variables, undefined);
+  const feedAction = items[0]?.action;
+  assert.equal(feedAction, "https://app.folo.is/share/feeds/feed-1");
+  const inboxAction = items[2]?.action;
+  assert.equal(inboxAction, "https://app.folo.is/share/feeds/inbox-inbox-1");
   assert.deepEqual(
-    UnreadSelection.parse(String(items[0]?.variables?.frr_timeline_filter)).item,
+    UnreadSelection.parse(String(items[0]?.arg)).item,
     data.items[0],
   );
-  assert.equal(UnreadSelection.parse(String(items[1]?.variables?.frr_timeline_filter)).resourceType, "list");
-  assert.equal(UnreadSelection.parse(String(items[2]?.variables?.frr_timeline_filter)).resourceId, "inbox-inbox-1");
-  assert.equal(items[0]?.mods?.alt?.arg, items[0]?.variables?.frr_timeline_filter);
-  assert.equal(unreadItems(data, "newsletters").length, 1);
-  assert.equal(unreadItems(data, "missing").length, 0);
+  assert.equal(UnreadSelection.parse(String(items[1]?.arg)).resourceType, "list");
+  assert.equal(UnreadSelection.parse(String(items[2]?.arg)).resourceId, "inbox-inbox-1");
+  assert.equal(items[0]?.mods?.alt, undefined);
+  assert.equal(items[0]?.text?.largetype, "Example Feed");
 });
 
 test("timeline app input restores its nested block input and treats other JSON as a query", () => {
@@ -189,20 +191,6 @@ test("parseFoloShareUrl parses feed and list share URLs", () => {
     id: "list-1",
   });
   assert.equal(parseFoloShareUrl("Alfred Blog"), undefined);
-});
-
-test("resourceUrl consumes complete upstream selections", () => {
-  const subscription = new SubscriptionSelection(new FoloSubscription({
-    feedId: "feed-1",
-    feeds: { id: "feed-1", siteUrl: "https://example.com" },
-  }));
-  const unread = new UnreadSelection(new FoloUnreadItem({
-    sourceType: "list",
-    sourceId: "list-1",
-    unreadCount: 2,
-  }));
-  assert.equal(resourceUrl(SubscriptionSelection.parse(subscription.serialize())).serialize(), "https://example.com");
-  assert.equal(resourceUrl(UnreadSelection.parse(unread.serialize())).serialize(), unread.shareUrl);
 });
 
 test("timeline app input converts share URLs into typed direct input", () => {
@@ -243,6 +231,21 @@ test("TimelineBlockInput maps its fields onto Folo CLI flags", () => {
   ]);
 
   assert.deepEqual(new TimelineBlockInput().withDefaultLimit(50).toArguments(), ["timeline", "--limit", "50"]);
+
+  assert.deepEqual(new TimelineBlockInput().withDefaultUnreadOnly(true).toArguments(), [
+    "timeline",
+    "--limit",
+    "30",
+    "--unread-only",
+  ]);
+  assert.deepEqual(
+    new TimelineBlockInput({ unreadOnly: true }).withDefaultUnreadOnly(false).toArguments(),
+    ["timeline", "--limit", "30", "--unread-only"],
+  );
+  assert.deepEqual(
+    new TimelineBlockInput().withDefaultUnreadOnly(false).toArguments(),
+    ["timeline", "--limit", "30"],
+  );
 });
 
 test("timeline app input preserves subscription and unread selections", () => {
@@ -257,6 +260,19 @@ test("timeline app input preserves subscription and unread selections", () => {
   }));
   assert.deepEqual(parseTimelineAppInput(subscription.serialize()), subscription);
   assert.deepEqual(parseTimelineAppInput(unread.serialize()), unread);
+});
+
+test("timeline app input resolves an Alfred node config into a view request", () => {
+  const parsed = parseTimelineAppInput('{"kind": "view-input", "view": "articles"}');
+  assert.ok(parsed instanceof TimelineViewInput);
+  assert.deepEqual(parsed, new TimelineViewInput("articles"));
+  assert.deepEqual(parseTimelineAppInput('{"view": "articles"}'), new TimelineDirectInput(
+    '{"view": "articles"}',
+  ));
+  assert.deepEqual(resolveTimelineInput(parsed), new TimelineDirectInput(
+    "",
+    new TimelineBlockInput({ view: "articles" }),
+  ));
 });
 
 test("FoloSubscriptionsResult keeps feed, list, and inbox subscriptions", () => {
@@ -309,7 +325,7 @@ test("FoloUnreadResult validates and converts unread subscriptions", () => {
   assert.throws(() => FoloUnreadResult.from({ items: "invalid" }), /items array/i);
 });
 
-test("timelineItems maps and filters Folo entry envelopes", () => {
+test("timelineItems maps Folo entry envelopes", () => {
   const raw = {
     entries: [{
       read: false,
@@ -329,9 +345,10 @@ test("timelineItems maps and filters Folo entry envelopes", () => {
   };
 
   const data = FoloTimelineResult.from(raw);
-  const items = timelineItems(data, "useful");
+  const items = timelineItems(data);
   assert.equal(items.length, 1);
   assert.equal(items[0]?.title, "Hello & Folo");
+  assert.equal(items[0]?.action, "https://example.com/post");
   const selection = TimelineSelection.parse(String(items[0]?.arg));
   assert.equal(selection.url, "https://example.com/post");
   assert.equal(selection.entryId, "entry-1");
@@ -339,7 +356,8 @@ test("timelineItems maps and filters Folo entry envelopes", () => {
   assert.equal(selection.feed.title, "Example Feed");
   assert.equal(selection.subscription?.category, "Tech");
   assert.equal(items[0]?.variables, undefined);
-  assert.equal(timelineItems(data, "missing").length, 0);
+  assert.equal(items[0]?.text?.largetype, "Hello & Folo");
+  assert.equal(items[0]?.match, undefined);
 });
 
 test("MarkReadBlockInput rejects a missing entry ID before calling Folo", () => {
@@ -597,14 +615,14 @@ test("Alfred Script Filter classes serialize nested values and omit empty option
     new AlfredSFItem("Example", {
       arg: "https://example.com",
       text: new AlfredSFItemText("copy", "large"),
-      variables: { frr_timeline_filter: "{}" },
+      variables: { frrTimelineFilter: "{}" },
       valid: false,
     }),
   ], {
     cache: new AlfredSFCache(60, false),
     rerun: 0,
     skipknowledge: false,
-    variables: { frr_result_cache_key: "timeline-abc.json" },
+    variables: { frrResultCacheKey: "timeline-abc.json" },
   });
 
   assert.deepEqual(JSON.parse(JSON.stringify(response)), {
@@ -612,13 +630,13 @@ test("Alfred Script Filter classes serialize nested values and omit empty option
       title: "Example",
       arg: "https://example.com",
       text: { copy: "copy", largetype: "large" },
-      variables: { frr_timeline_filter: "{}" },
+      variables: { frrTimelineFilter: "{}" },
       valid: false,
     }],
     rerun: 0,
     cache: { seconds: 60, loosereload: false },
     skipknowledge: false,
-    variables: { frr_result_cache_key: "timeline-abc.json" },
+    variables: { frrResultCacheKey: "timeline-abc.json" },
   });
 });
 
@@ -637,4 +655,14 @@ test("Alfred Text View classes serialize behaviour values", () => {
     actionoutput: false,
     behaviour: { response: "append", scroll: "end", inputfield: "clear" },
   });
+});
+
+test("TimelineViewInput restores a node's view and rejects malformed payloads", () => {
+  assert.deepEqual(TimelineViewInput.from({ kind: "view-input", view: "articles" }), new TimelineViewInput("articles"));
+  assert.equal(TimelineViewInput.from({ kind: "view-input", view: " articles " }).view, "articles");
+  assert.throws(() => TimelineViewInput.from({ kind: "view-input" }), TypeError);
+  assert.throws(() => TimelineViewInput.from({ kind: "view-input", view: "  " }), TypeError);
+  assert.throws(() => TimelineViewInput.from({ kind: "view-input", view: 0 }), TypeError);
+  assert.throws(() => TimelineViewInput.from("articles"), TypeError);
+  assert.throws(() => TimelineViewInput.from(null), TypeError);
 });

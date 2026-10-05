@@ -6,7 +6,7 @@
  * Input (argv joined with spaces): a serialized timeline selection passed down
  * unchanged from the timeline Script Filter.
  *
- * Environment: `frr_result_cache_key` names the stored timeline response that
+ * Environment: `frrResultCacheKey` names the stored timeline response that
  * produced the list the user acted on; the entries above the selection are read
  * from that record so the action matches the list the user saw.
  *
@@ -97,7 +97,7 @@ export async function markReadAbove(
 async function main(): Promise<void> {
   try {
     const input = TimelineSelection.parse(process.argv.slice(2).join(" "));
-    const output = await markReadAbove(input, process.env.frr_result_cache_key ?? "");
+    const output = await markReadAbove(input, process.env.frrResultCacheKey ?? "");
     process.stdout.write(output.serialize());
   } catch (error: unknown) {
     console.error(error instanceof Error ? error.message : String(error));

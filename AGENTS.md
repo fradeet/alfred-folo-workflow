@@ -3,7 +3,7 @@
 ## Project overview
 
 This repository builds an Alfred workflow for browsing and managing Folo feeds.
-It is a strict TypeScript ESM project targeting Node.js 18 or later. Source files
+It is a strict TypeScript ESM project targeting Node.js 24 or later. Source files
 use `.js` extensions in relative imports so the emitted ESM runs directly in
 `workflow/dist`.
 

@@ -5,14 +5,18 @@
  * Input (argv joined with spaces): either
  * - a plain filter query matched against the fetched entries, or
  * - a serialized {@link SubscriptionSelection} or {@link UnreadSelection}, or
+ * - an {@link TimelineViewInput} JSON value emitted by an Alfred node, such as
+ *   `{"kind": "view-input", "view": "articles"}`, or
  * - a serialized {@link TimelineDirectInput}. Malformed JSON falls back to a query.
  *
- * Environment: `FOLO_LIMIT` sets the default entry limit (digits only, otherwise 30).
+ * Environment: `FRR_TIMELINE_LIMIT` sets the default entry limit (digits only, otherwise 30).
+ * `frrTimelineUnreadOnly` set to `1` adds the unread-only flag to the request.
  *
  * Output:
  * - stdout: Alfred Script Filter JSON cached for 60s. Each item's `arg` carries a
- *   serialized timeline selection; an empty result yields a non-valid
- *   placeholder item. The response's `frr_result_cache_key` variable names the cached
+ *   serialized timeline selection and its `action` exposes the entry URL to
+ *   Universal Actions; an empty result yields a non-valid
+ *   placeholder item. The response's `frrResultCacheKey` variable names the cached
  *   Folo CLI response file backing the list, and `skipknowledge` keeps Alfred from
  *   reordering the timeline's own entry order.
  * - On failure: an error item is emitted and the exit code is 1.
@@ -27,8 +31,13 @@ import { SerializedValue, parseRecord } from "../contracts/serialized-value.js";
 import { SubscriptionSelection } from "../contracts/subscription-selection.js";
 import { UnreadSelection } from "../contracts/unread-selection.js";
 import { AlfredSF, AlfredSFCache, AlfredSFItem, AlfredVariables } from "../types/alfred-types.js";
+import { TimelineViewInput } from "../types/alfred-node-types.js";
 
-export type TimelineAppInput = TimelineDirectInput | SubscriptionSelection | UnreadSelection;
+export type TimelineAppInput =
+  | TimelineDirectInput
+  | SubscriptionSelection
+  | UnreadSelection
+  | TimelineViewInput;
 
 export class TimelineDirectInput extends SerializedValue {
   readonly kind = "timeline-input";
@@ -77,11 +86,15 @@ export function parseTimelineAppInput(value: string): TimelineAppInput {
   if (data.kind === "timeline-input") return TimelineDirectInput.from(data);
   if (data.kind === "subscription-selection") return SubscriptionSelection.from(data);
   if (data.kind === "unread-selection") return UnreadSelection.from(data);
+  if (data.kind === "view-input") return TimelineViewInput.from(data);
   return new TimelineDirectInput(query);
 }
 
-function resolveTimelineInput(input: TimelineAppInput): TimelineDirectInput {
+export function resolveTimelineInput(input: TimelineAppInput): TimelineDirectInput {
   if (input instanceof TimelineDirectInput) return input;
+  if (input instanceof TimelineViewInput) {
+    return new TimelineDirectInput("", new TimelineBlockInput({ view: input.view }));
+  }
   return new TimelineDirectInput(
     "",
     new TimelineBlockInput(
@@ -104,20 +117,24 @@ export class TimelineAppOutput extends AlfredSF {
 
 export async function timeline(input: TimelineAppInput): Promise<TimelineAppOutput> {
   const directInput = resolveTimelineInput(input);
-  const limit = /^\d+$/.test(process.env.FOLO_LIMIT ?? "") ? Number(process.env.FOLO_LIMIT) : 30;
-  const request = directInput.request.withDefaultLimit(limit);
+  const limit = /^\d+$/.test(process.env.FRR_TIMELINE_LIMIT ?? "") ? Number(process.env.FRR_TIMELINE_LIMIT) : 30;
+  const request = directInput.request
+    .withDefaultLimit(limit)
+    .withDefaultUnreadOnly(process.env.frrTimelineUnreadOnly === "1");
   const data = getTimeline(request);
   const iconFor = await cacheIcons(data.entries.map((item) => item.feeds));
-  const items = timelineItems(data, directInput.query, iconFor);
+  const items = timelineItems(data, iconFor);
   const emptySubtitle = request.unreadOnly
     ? "This subscription has no unread entries"
     : request.feed || request.list
       ? "This subscription has no entries"
-      : "Try another query";
+      : request.view
+        ? "This view has no entries"
+        : "Try another query";
   return new TimelineAppOutput(
     items.length ? items : [emptyItem("No Folo entries", emptySubtitle)],
     false,
-    { frr_result_cache_key: responseCacheFilename(request.toArguments()) },
+    { frrResultCacheKey: responseCacheFilename(request.toArguments()) },
   );
 }
 

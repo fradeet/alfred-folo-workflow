@@ -1,3 +1,5 @@
 #!/bin/sh
 
-exec node dist/app/timeline.js "$frr_timeline_filter"
+export frrTimelineUnreadOnly=${frrTimelineUnreadOnly:-1}
+
+exec node dist/app/timeline.js "$frrTimelineFilter"
