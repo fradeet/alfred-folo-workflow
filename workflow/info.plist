@@ -227,16 +227,6 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>1A66D79F-C777-4559-BEF6-19BD667DFFC8</string>
-				<key>modifiers</key>
-				<integer>262144</integer>
-				<key>modifiersubtext</key>
-				<string>Open In Folo</string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
 				<string>283BC7D9-A99A-450B-ACEB-8E90B50EE6D8</string>
 				<key>modifiers</key>
 				<integer>655360</integer>
@@ -254,6 +244,16 @@
 				<string>Next Page</string>
 				<key>vitoclose</key>
 				<true/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>1A66D79F-C777-4559-BEF6-19BD667DFFC8</string>
+				<key>modifiers</key>
+				<integer>262144</integer>
+				<key>modifiersubtext</key>
+				<string>Open In Folo</string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
@@ -613,6 +613,25 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>externaltriggerid</key>
+				<string>timeline</string>
+				<key>passinputasargument</key>
+				<true/>
+				<key>passvariables</key>
+				<true/>
+				<key>workflowbundleid</key>
+				<string>self</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.callexternaltrigger</string>
+			<key>uid</key>
+			<string>A9CE5922-3D43-4EA3-B825-E816BC31892C</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>lastpathcomponent</key>
 				<false/>
 				<key>onlyshowifquerypopulated</key>
@@ -683,6 +702,22 @@
 			<integer>2</integer>
 		</dict>
 		<dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.junction</string>
+			<key>uid</key>
+			<string>9D3BB276-2A78-495C-A670-665AE64CD291</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.junction</string>
+			<key>uid</key>
+			<string>283BC7D9-A99A-450B-ACEB-8E90B50EE6D8</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
 			<key>config</key>
 			<dict>
 				<key>tasksettings</key>
@@ -697,25 +732,6 @@
 			<string>alfred.workflow.automation.task</string>
 			<key>uid</key>
 			<string>E3FDCD1D-BC7D-412E-8B33-DDB13C2ACEF5</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>externaltriggerid</key>
-				<string>timeline</string>
-				<key>passinputasargument</key>
-				<true/>
-				<key>passvariables</key>
-				<true/>
-				<key>workflowbundleid</key>
-				<string>self</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.callexternaltrigger</string>
-			<key>uid</key>
-			<string>A9CE5922-3D43-4EA3-B825-E816BC31892C</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -869,14 +885,6 @@
 			<integer>1</integer>
 		</dict>
 		<dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.junction</string>
-			<key>uid</key>
-			<string>9D3BB276-2A78-495C-A670-665AE64CD291</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
 			<key>config</key>
 			<dict>
 				<key>argument</key>
@@ -979,14 +987,6 @@
 			<string>alfred.workflow.utility.argument</string>
 			<key>uid</key>
 			<string>55454F32-E8CA-43C8-91DA-F41DF7C74598</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.junction</string>
-			<key>uid</key>
-			<string>283BC7D9-A99A-450B-ACEB-8E90B50EE6D8</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -1370,25 +1370,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>externaltriggerid</key>
-				<string>timeline</string>
-				<key>passinputasargument</key>
-				<true/>
-				<key>passvariables</key>
-				<true/>
-				<key>workflowbundleid</key>
-				<string>self</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.callexternaltrigger</string>
-			<key>uid</key>
-			<string>46A9EE5D-7909-4FFA-A3B4-68E991C59B6E</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>alfredfiltersresults</key>
 				<true/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -1485,6 +1466,25 @@
 			<integer>2</integer>
 		</dict>
 		<dict>
+			<key>config</key>
+			<dict>
+				<key>externaltriggerid</key>
+				<string>timeline</string>
+				<key>passinputasargument</key>
+				<true/>
+				<key>passvariables</key>
+				<true/>
+				<key>workflowbundleid</key>
+				<string>self</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.callexternaltrigger</string>
+			<key>uid</key>
+			<string>46A9EE5D-7909-4FFA-A3B4-68E991C59B6E</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
 			<key>type</key>
 			<string>alfred.workflow.utility.junction</string>
 			<key>uid</key>
@@ -1564,7 +1564,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		<key>00633B4B-32B3-45F9-84AD-17E10EA1D712</key>
 		<dict>
 			<key>xpos</key>
-			<real>870</real>
+			<real>1090</real>
 			<key>ypos</key>
 			<real>505</real>
 		</dict>
@@ -1587,21 +1587,21 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		<key>0FB5FEFB-8E29-4BFA-B232-973DD25330F6</key>
 		<dict>
 			<key>xpos</key>
-			<real>1790</real>
+			<real>1800</real>
 			<key>ypos</key>
 			<real>175</real>
 		</dict>
 		<key>13B21D49-ED16-432B-BA87-8C0CF4041AAD</key>
 		<dict>
 			<key>xpos</key>
-			<real>1260</real>
+			<real>1480</real>
 			<key>ypos</key>
-			<real>655</real>
+			<real>805</real>
 		</dict>
 		<key>1A66D79F-C777-4559-BEF6-19BD667DFFC8</key>
 		<dict>
 			<key>xpos</key>
-			<real>1740</real>
+			<real>1750</real>
 			<key>ypos</key>
 			<real>205</real>
 		</dict>
@@ -1610,7 +1610,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 			<key>colorindex</key>
 			<integer>3</integer>
 			<key>xpos</key>
-			<real>2230</real>
+			<real>2240</real>
 			<key>ypos</key>
 			<real>325</real>
 		</dict>
@@ -1626,9 +1626,9 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		<key>283BC7D9-A99A-450B-ACEB-8E90B50EE6D8</key>
 		<dict>
 			<key>xpos</key>
-			<real>1260</real>
+			<real>1480</real>
 			<key>ypos</key>
-			<real>205</real>
+			<real>55</real>
 		</dict>
 		<key>318AF45B-B2CB-4A05-B082-F4C436780C09</key>
 		<dict>
@@ -1642,7 +1642,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		<key>3C69F4F0-BE10-4441-9249-06D93D843E69</key>
 		<dict>
 			<key>xpos</key>
-			<real>820</real>
+			<real>1040</real>
 			<key>ypos</key>
 			<real>505</real>
 		</dict>
@@ -1651,14 +1651,14 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 			<key>note</key>
 			<string>Next Page / Top</string>
 			<key>xpos</key>
-			<real>1360</real>
+			<real>1580</real>
 			<key>ypos</key>
-			<real>625</real>
+			<real>775</real>
 		</dict>
 		<key>497FDFAC-F667-403B-BA5C-4B5F76B2E68E</key>
 		<dict>
 			<key>xpos</key>
-			<real>1960</real>
+			<real>1970</real>
 			<key>ypos</key>
 			<real>205</real>
 		</dict>
@@ -1696,7 +1696,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 			<key>note</key>
 			<string>Mark all read</string>
 			<key>xpos</key>
-			<real>1790</real>
+			<real>1800</real>
 			<key>ypos</key>
 			<real>625</real>
 		</dict>
@@ -1705,7 +1705,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 			<key>colorindex</key>
 			<integer>3</integer>
 			<key>xpos</key>
-			<real>1740</real>
+			<real>1750</real>
 			<key>ypos</key>
 			<real>355</real>
 		</dict>
@@ -1723,7 +1723,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 			<key>note</key>
 			<string>View Timeline (Unread)</string>
 			<key>xpos</key>
-			<real>920</real>
+			<real>1140</real>
 			<key>ypos</key>
 			<real>325</real>
 		</dict>
@@ -1766,9 +1766,9 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		<key>9D3BB276-2A78-495C-A670-665AE64CD291</key>
 		<dict>
 			<key>xpos</key>
-			<real>1180</real>
+			<real>1400</real>
 			<key>ypos</key>
-			<real>205</real>
+			<real>55</real>
 		</dict>
 		<key>9FCCC6CA-5715-44A6-88E7-113666703284</key>
 		<dict>
@@ -1777,7 +1777,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 			<key>note</key>
 			<string>Mark Read</string>
 			<key>xpos</key>
-			<real>2010</real>
+			<real>2020</real>
 			<key>ypos</key>
 			<real>475</real>
 		</dict>
@@ -1786,9 +1786,9 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 			<key>note</key>
 			<string>Next Page / Top</string>
 			<key>xpos</key>
-			<real>1360</real>
+			<real>1580</real>
 			<key>ypos</key>
-			<real>175</real>
+			<real>25</real>
 		</dict>
 		<key>AFD25A23-D265-4DA5-9B23-F503A0CF48C4</key>
 		<dict>
@@ -1802,7 +1802,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 			<key>note</key>
 			<string>Open In Folo</string>
 			<key>xpos</key>
-			<real>2230</real>
+			<real>2240</real>
 			<key>ypos</key>
 			<real>175</real>
 		</dict>
@@ -1822,23 +1822,23 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 			<key>note</key>
 			<string>Refresh result</string>
 			<key>xpos</key>
-			<real>2230</real>
+			<real>2240</real>
 			<key>ypos</key>
 			<real>475</real>
 		</dict>
 		<key>C76878C1-7E80-438C-9C7F-ADEA852FBCC3</key>
 		<dict>
 			<key>xpos</key>
-			<real>1180</real>
+			<real>1400</real>
 			<key>ypos</key>
-			<real>655</real>
+			<real>805</real>
 		</dict>
 		<key>D0B940A1-75B0-456F-8CBF-D86FF7772231</key>
 		<dict>
 			<key>colorindex</key>
 			<integer>3</integer>
 			<key>xpos</key>
-			<real>2010</real>
+			<real>2020</real>
 			<key>ypos</key>
 			<real>325</real>
 		</dict>
@@ -1865,7 +1865,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 		<key>E3FDCD1D-BC7D-412E-8B33-DDB13C2ACEF5</key>
 		<dict>
 			<key>xpos</key>
-			<real>2010</real>
+			<real>2020</real>
 			<key>ypos</key>
 			<real>175</real>
 		</dict>
@@ -1874,7 +1874,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 			<key>note</key>
 			<string>View Timeline (All)</string>
 			<key>xpos</key>
-			<real>920</real>
+			<real>1140</real>
 			<key>ypos</key>
 			<real>475</real>
 		</dict>
@@ -1883,7 +1883,7 @@ After signing in, open the `configPath` shown in the command output. Copy its `t
 			<key>colorindex</key>
 			<integer>3</integer>
 			<key>xpos</key>
-			<real>870</real>
+			<real>1090</real>
 			<key>ypos</key>
 			<real>355</real>
 		</dict>
