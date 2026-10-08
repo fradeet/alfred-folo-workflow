@@ -1640,7 +1640,7 @@
 			<key>config</key>
 			<dict>
 				<key>externaltriggerid</key>
-				<string>timeline</string>
+				<string>timeline_all</string>
 				<key>passinputasargument</key>
 				<true/>
 				<key>passvariables</key>
