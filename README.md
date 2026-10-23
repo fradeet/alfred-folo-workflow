@@ -1,5 +1,11 @@
 # Alfred Folo
 
+## New arch
+
+This project is transitioning to a new architecture, and the workflow is being
+rewritten in Bash. Development of the new version is happening in the
+[folo-workflow2 repository](https://github.com/fradeet/folo-workflow2).
+
 ![][show1]
 
 An Alfred workflow backed by the official [Folo CLI][].
